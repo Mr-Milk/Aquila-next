@@ -1,0 +1,43 @@
+{
+  "name": "aquila-ui",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.6.0",
+    "@emotion/react": "^11.7.0",
+    "@emotion/server": "^11.4.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.1",
+    "@mui/material": "^5.2.3",
+    "@mui/styles": "^5.2.3",
+    "axios": "^0.24.0",
+    "clsx": "^1.1.1",
+    "danfo": "^0.2.34",
+    "dexie": "^3.2.0",
+    "dexie-react-hooks": "^1.0.7",
+    "echarts": "^5.2.2",
+    "echarts-for-react": "^3.0.2",
+    "echarts-stat": "^1.2.0",
+    "mathjs": "^10.0.0",
+    "mui-datatables": "^4.0.0",
+    "natsort": "^2.0.3",
+    "next": "12.0.7",
+    "prop-types": "^15.7.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-dropzone": "^11.4.2",
+    "react-icons": "^4.3.1",
+    "react-window": "^1.8.6",
+    "swr": "^1.1.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "eslint": "8.4.1",
+    "eslint-config-next": "12.0.7"
+  }
+}

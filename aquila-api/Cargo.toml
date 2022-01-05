@@ -1,0 +1,37 @@
+[package]
+name = "aquila-api"
+version = "0.1.0"
+authors = ["Mr-Milk <zym.zym1220@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "3"
+actix-files = "0.5.0"
+actix-cors = "0.5.4"
+config = "0.10.1"
+serde = "1.0.130"
+serde_json = "1.0.59"
+sqlx = { version = "0.4", features = [ "runtime-actix-native-tls", "postgres", "macros", "json", "uuid"] }
+uuid = { version = "0.8", features = ["serde"] }
+dotenv = "0.15.0"
+anyhow = "1.0.51"
+derive_more = "0.99.17"
+log = "0.4"
+env_logger = "0.9.0"
+
+
+rand = "0.8.3"
+rayon = "1.5.1"
+itertools = "0.10.1"
+kiddo = "0.2.1"
+delaunator = "1.0.1"
+geo = "0.18.0"
+counter = "0.5.2"
+ordered-float = "2.8.0"
+ndarray = { version = "0.15.4", features =['rayon', 'serde'] }
+ndarray-stats = "0.5.0"
+num-traits = "0.2.14"
+statrs = "0.15.0"
+nalgebra-sparse = "0.5.0"
