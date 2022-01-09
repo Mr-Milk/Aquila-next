@@ -40,6 +40,8 @@ async fn main() -> Result<()>{
 
     info!("Using postgresql db at: {}", &config.database_url);
 
+    let static_dir = config.static_dir.clone();
+
     let server = HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
@@ -77,7 +79,8 @@ async fn main() -> Result<()>{
                       .max_age(3600)
             )
             .data(db_pool.clone())
-            .service(fs::Files::new("/static", "D:/Projects/SCP-DB/aquila-static").show_files_listing())
+            .service(fs::Files::new("/static", &static_dir).show_files_listing())
+            .service(fs::Files::new("/img", "../image"))
             .service(index)
             .configure(routes::init)
     })
