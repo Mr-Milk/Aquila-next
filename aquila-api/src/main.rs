@@ -80,7 +80,7 @@ async fn main() -> Result<()>{
             )
             .data(db_pool.clone())
             .service(fs::Files::new("/static", &static_dir).show_files_listing())
-            .service(fs::Files::new("/img", "../image"))
+            .service(fs::Files::new("/img", "./image"))
             .service(index)
             .configure(routes::init)
     })
