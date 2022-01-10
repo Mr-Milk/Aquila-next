@@ -70,7 +70,7 @@ async fn main() -> Result<()>{
                       // set allowed methods list
                       .allowed_methods(vec!["GET", "POST"])
                       // set allowed request header list
-                      .allowed_headers(&[header::AUTHORIZATION, header::ACCEPT])
+                      .allowed_headers(&[header::AUTHORIZATION, header::ACCEPT, header::ACCESS_CONTROL_ALLOW_ORIGIN])
                       // add header to allowed list
                       .allowed_header(header::CONTENT_TYPE)
                       // set list of headers that are safe to expose
