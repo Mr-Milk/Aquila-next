@@ -52,10 +52,11 @@ async fn main() -> Result<()>{
             //     .header("Access-Control-Max-Age", 1728000)
             //     .header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"))
             .wrap(Cors::default()
-                      // .allowed_origin("http://project.local:8080")
+                      .allowed_origin("http://localhost:3000") // allow next.js server
+                      .allowed_origin("https://aquila.cheunglab.org")
                       // allow any port on localhost
-                      .allowed_origin_fn(|origin, _req_head| {
-                          origin.as_bytes().starts_with(b"http://localhost")
+                      // .allowed_origin_fn(|origin, _req_head| {
+                      //     origin.as_bytes().starts_with(b"http://localhost")
 
                           // manual alternative:
                           // unwrapping is acceptable on the origin header since this function is
@@ -66,7 +67,7 @@ async fn main() -> Result<()>{
                           //     .unwrap()
                           //     .as_bytes()
                           //     .starts_with(b"http://localhost")
-                      })
+                      // })
                       // set allowed methods list
                       .allowed_methods(vec!["GET", "POST"])
                       // set allowed request header list
