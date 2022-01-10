@@ -10,6 +10,8 @@ import Navbar from '@components/Navbar';
 import SideDrawer from "@components/SideDrawer";
 import HideOnScroll from "@components/HideOnScroll";
 import ClientOnly from "@components/ClientOnly";
+import Image from "next/image";
+import Grid from "@mui/material/Grid";
 
 export const navLinks = [
     {title: "Home", path: "/"},
@@ -39,13 +41,12 @@ const Header = () => {
                         maxWidth={'xl'}
                         sx={{ display: `flex`, justifyContent: `space-between` }}
                     >
-                        <IconButton edge="start" aria-label="home">
-                            <MuiNextLink activeClassName="active" href="/">
-                                <Home xs={{ color: (theme) => theme.palette.common.white }}
-                                    fontSize="large"
-                                />
+                        {/*<IconButton edge="start" aria-label="home">*/}
+                            <MuiNextLink activeClassName="active" href="/" sx={{ mt: 1 }}>
+                                <Image src="/AQUILA-LOGO.svg" width="151" height="57" aria-label="Home"/>
                             </MuiNextLink>
-                        </IconButton>
+
+                        {/*</IconButton>*/}
                         <Navbar navLinks={navLinks}/>
                         <SideDrawer navLinks={navLinks} />
                     </Container>

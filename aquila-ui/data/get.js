@@ -9,8 +9,7 @@ export const fetcher = async url => {
         console.log(e);
     }
 }
-
-const root = "http://localhost:5000";
+const root = process.env.NEXT_PUBLIC_API_URL;
 export const getDbStatsURL = `${root}/dbstats`;
 export const getDataIdURL = `${root}/data_ids`;
 export const getOneRecordURL = `${root}/record`;

@@ -7,6 +7,9 @@ let theme = createTheme({
         primary: orange,
         secondary: lightBlue,
     },
+    // typography: {
+    //     fontFamily: ['Raleway', 'Roboto', 'Arial', '-apple-system'].join(',')
+    // }
 });
 
 theme = responsiveFontSizes(theme);

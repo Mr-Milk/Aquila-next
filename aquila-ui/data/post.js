@@ -30,7 +30,7 @@ export const runner = async (url, body) => {
 // }
 
 
-const root = "http://localhost:5000";
+const root = process.env.NEXT_PUBLIC_API_URL;
 export const runCellNeighbors = `${root}/cell_neighbors`;
 export const runCellDensity = `${root}/cell_density`;
 export const runCellDistribution = `${root}/cell_distribution`;
