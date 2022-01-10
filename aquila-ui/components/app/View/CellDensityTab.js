@@ -3,7 +3,7 @@ import {fetcher, getCellInfoURL} from "@data/get";
 import axios from "axios";
 import {runCellDensity} from "@data/post";
 import BarChart from "@components/Viz/BarChart";
-import {useEffect, useMemo, useRef} from "react";
+import {useEffect, useRef} from "react";
 import Grid from "@mui/material/Grid";
 import natsort from "natsort";
 
@@ -32,9 +32,8 @@ const CellDensityTab = ({roiID}) => {
             console.log("Get density for once");
         }
     }
-    const memoRun = useEffect(() => {
-        runAnalysis(cellData)
-    }, [roiID]);
+
+    useEffect(() => {runAnalysis(cellData)}, [cellData]);
 
     return (
         <Grid container flexDirection="row" justifyContent="center">
@@ -48,7 +47,7 @@ const CellDensityTab = ({roiID}) => {
                 />
             </Grid>
         </Grid>
-        )
+    )
 }
 
 export default CellDensityTab;

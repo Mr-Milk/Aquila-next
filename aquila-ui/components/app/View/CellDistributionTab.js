@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import {fetcher, getCellInfoURL} from "@data/get";
 import axios from "axios";
-import {runCellDistribution, runCellNeighbors} from "@data/post";
+import {runCellDistribution} from "@data/post";
 import Grid from "@mui/material/Grid";
 import Selector from "@components/Selector";
 import {useRef, useState} from "react";
@@ -9,7 +9,6 @@ import NumberInput, {inRangeFloat, inRangeInt, isPosFloat, isPosInt} from "@comp
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -50,7 +49,7 @@ const displayIxValue = (v) => {
 }
 
 
-const ResultTable = ({ data }) => {
+const ResultTable = ({data}) => {
 
     const size = data.cell_type.length;
 
@@ -63,7 +62,7 @@ const ResultTable = ({ data }) => {
             ix: displayIxValue(data.ix_value[i])
         })).sort(natsort())
         return (
-            <TableContainer component={Paper} sx={{ minWidth: 400, boxShadow: 0, maxHeight: 400 }}>
+            <TableContainer component={Paper} sx={{minWidth: 400, boxShadow: 0, maxHeight: 400}}>
                 <Table size="small">
                     <TableHead>
                         <TableRow>
@@ -93,7 +92,7 @@ const ResultTable = ({ data }) => {
 
 
 const CellDistributionTab = ({roiID}) => {
-    const { data: cellData, _ } = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+    const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
 
     const r = useRef(10);
     const times = useRef(500);
@@ -111,7 +110,9 @@ const CellDistributionTab = ({roiID}) => {
     const [raiseRunError, setRaiseRunError] = useState(false);
     const [showResult, setShowResult] = useState(0);
 
-    const handleMethodSelect = (e) => {setMethod(e.target.value)};
+    const handleMethodSelect = (e) => {
+        setMethod(e.target.value)
+    };
 
     const checkTimes = (e) => {
         if (!inRangeInt(e.target.value, 1, 1000)) {
@@ -122,12 +123,12 @@ const CellDistributionTab = ({roiID}) => {
         }
     };
     const checkR = (e) => {
-      if (!isPosFloat(e.target.value)) {
-          setErrorR(true);
-      } else {
-          setErrorR(false);
-          r.current = e.target.value;
-      }
+        if (!isPosFloat(e.target.value)) {
+            setErrorR(true);
+        } else {
+            setErrorR(false);
+            r.current = e.target.value;
+        }
     }
     const checkQuad = (e) => {
         const quads = e.target.value.toString().split(",").map((i) => parseInt(i));
@@ -163,7 +164,7 @@ const CellDistributionTab = ({roiID}) => {
                 r.current,
                 times.current,
                 quad.current,
-                );
+            );
             axios.post(runCellDistribution, body).then((res) => {
                 result.current = res.data;
                 setShowResult(showResult + 1)
@@ -177,81 +178,81 @@ const CellDistributionTab = ({roiID}) => {
         return (
             <>
                 <Grid container flexDirection="row" alignItems="center" justifyContent="flex-start" spacing={2}>
-                <Grid item>
-                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                        'id': 'Index of Dispersion (Random sampling)',
-                        'morisita': 'Morisita Index (Quadratic statistic)',
-                        'clark-evans': 'Clark-Evans Index (Nearest Neighbors based)',
-                    }} sx={{ maxWidth: '150px' }}/>
-                </Grid>
-                <Grid item style={{display: method === 'id' ? 'block' : 'none'}}>
-                    <NumberInput
-                        label={"Radius"}
-                        error={errorR}
-                        helperText="Positive number"
-                        onChange={checkR}
-                        sx={{maxWidth: "80px"}}
-                    />
-                </Grid>
-                <Grid item style={{display: method === 'id' ? 'block' : 'none'}}>
-                    <NumberInput
-                        label={"Repeat"}
-                        error={errorTimes}
-                        helperText="1-1000 Integer"
-                        onChange={checkTimes}
-                        sx={{maxWidth: "80px"}}
-                    />
-                </Grid>
+                    <Grid item>
+                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+                            'id': 'Index of Dispersion (Random sampling)',
+                            'morisita': 'Morisita Index (Quadratic statistic)',
+                            'clark-evans': 'Clark-Evans Index (Nearest Neighbors based)',
+                        }} sx={{maxWidth: '150px'}}/>
+                    </Grid>
+                    <Grid item style={{display: method === 'id' ? 'block' : 'none'}}>
+                        <NumberInput
+                            label={"Radius"}
+                            error={errorR}
+                            helperText="Positive number"
+                            onChange={checkR}
+                            sx={{maxWidth: "80px"}}
+                        />
+                    </Grid>
+                    <Grid item style={{display: method === 'id' ? 'block' : 'none'}}>
+                        <NumberInput
+                            label={"Repeat"}
+                            error={errorTimes}
+                            helperText="1-1000 Integer"
+                            onChange={checkTimes}
+                            sx={{maxWidth: "80px"}}
+                        />
+                    </Grid>
 
-                <Grid item style={{display: method === 'morisita' ? 'block' : 'none'}}>
-                    <NumberInput
-                        label={"Quadrat"}
-                        error={errorQuad}
-                        helperText="eg. 10,10"
-                        useNumber={false}
-                        onChange={checkQuad}
-                        sx={{maxWidth: "80px"}}
-                    />
+                    <Grid item style={{display: method === 'morisita' ? 'block' : 'none'}}>
+                        <NumberInput
+                            label={"Quadrat"}
+                            error={errorQuad}
+                            helperText="eg. 10,10"
+                            useNumber={false}
+                            onChange={checkQuad}
+                            sx={{maxWidth: "80px"}}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <NumberInput
+                            label={"p value"}
+                            error={errorPvalue}
+                            helperText="Number between 0 to 1"
+                            defaultValue={pvalue.current}
+                            onChange={checkPvalue}
+                            sx={{maxWidth: "80px"}}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            disableElevation
+                            sx={{color: "common.white"}}
+                            onClick={handleRun}
+                        >
+                            Run
+                        </Button>
+                        <Snackbar
+                            open={raiseRunError}
+                            autoHideDuration={6000}
+                            message="Invalid Input Parameter"
+                            security="error"
+                            onClose={() => setRaiseRunError(false)}
+                        >
+                            <Alert onClose={() => setRaiseRunError(false)} severity="error" sx={{width: '100%'}}>
+                                Invalid input parameter
+                            </Alert>
+                        </Snackbar>
+                    </Grid>
                 </Grid>
-                <Grid item>
-                    <NumberInput
-                        label={"p value"}
-                        error={errorPvalue}
-                        helperText="Number between 0 to 1"
-                        defaultValue={pvalue.current}
-                        onChange={checkPvalue}
-                        sx={{maxWidth: "80px"}}
-                    />
-                </Grid>
-                <Grid item>
-                    <Button
-                        variant="contained"
-                        disableElevation
-                        sx={{color: "common.white"}}
-                        onClick={handleRun}
-                    >
-                        Run
-                    </Button>
-                    <Snackbar
-                        open={raiseRunError}
-                        autoHideDuration={6000}
-                        message="Invalid Input Parameter"
-                        security="error"
-                        onClose={() => setRaiseRunError(false)}
-                    >
-                        <Alert onClose={() => setRaiseRunError(false)} severity="error" sx={{width: '100%'}}>
-                            Invalid input parameter
-                        </Alert>
-                    </Snackbar>
-                </Grid>
-            </Grid>
                 <Grid component={"div"} container flexDirection="row" justifyContent="center" alignItems="center">
                     <Grid component={"div"} item sx={{mt: 2}}>
                         <ResultTable data={result.current}/>
                     </Grid>
                 </Grid>
             </>
-                    )
+        )
     }
 }
 

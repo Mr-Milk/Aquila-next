@@ -1,4 +1,4 @@
-import {runCellNeighbors, runner} from "@data/post";
+import {runCellNeighbors} from "@data/post";
 import useSWR from "swr";
 import {fetcher, getCellInfoURL} from "@data/get";
 import CellMap from "@components/Viz/CellMap";
@@ -10,7 +10,6 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert"
 import axios from "axios";
-import {useLazyBool} from "@components/CustomHooks";
 
 
 const getRunBody = (cx, cy, ct, method, r, k) => {
@@ -73,7 +72,9 @@ const FindNeighborsTab = ({roiID, updateNeighbors, neighborsData}) => {
         setShowViz(0);
     }, [roiID]);
 
-    const handleMethodSelect = (e) => {setMethod(e.target.value)};
+    const handleMethodSelect = (e) => {
+        setMethod(e.target.value)
+    };
 
     const checkR = (e) => {
         if (!isPosInt(e.target.value)) {
@@ -109,7 +110,10 @@ const FindNeighborsTab = ({roiID, updateNeighbors, neighborsData}) => {
         }
     }
 
-    if (!cellData) { return <></> };
+    if (!cellData) {
+        return <></>
+    }
+
 
     return (
         <>

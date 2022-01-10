@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import {styled} from '@mui/material/styles';
 
 
-const RootStyle = styled(Card)(({ theme }) => ({
+const RootStyle = styled(Card)(({theme}) => ({
     boxShadow: 'none',
     textAlign: 'center',
     width: theme.spacing(25),
@@ -15,7 +15,7 @@ const RootStyle = styled(Card)(({ theme }) => ({
 }));
 
 
-const IconWrapperStyle = styled('div')(({ theme }) => ({
+const IconWrapperStyle = styled('div')(({theme}) => ({
     margin: 'auto',
     display: 'flex',
     borderRadius: '50%',
@@ -32,21 +32,21 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 }));
 
 
-const StatsCard = ({ iconcolor, data, title, ...props }) => {
+const StatsCard = ({iconcolor, data, title, ...props}) => {
     const used_data = (data == undefined) ? 0 : data;
-    return  (
+    return (
         <RootStyle>
-            <IconWrapperStyle sx={{ color: iconcolor }}>
+            <IconWrapperStyle sx={{color: iconcolor}}>
                 <Typography variant={"h3"}>
                     {props.children}
                 </Typography>
             </IconWrapperStyle>
             <Typography variant="h3">{used_data}</Typography>
-            <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
+            <Typography variant="subtitle2" sx={{opacity: 0.72}}>
                 {title}
             </Typography>
         </RootStyle>
-)
+    )
 }
 
 export default StatsCard;

@@ -5,7 +5,7 @@ import {Grid} from "@mui/material";
 
 const CellComponentTab = ({roiID}) => {
 
-    const { data, _ } = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+    const {data, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
 
     if (data === undefined) {
         return <></>

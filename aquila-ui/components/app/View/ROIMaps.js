@@ -2,7 +2,7 @@ import ViewROICellMap from "@components/app/View/ROICellMap";
 import ViewROIExpMap from "@components/app/View/ROIExpMap";
 import useSWR from "swr";
 import {fetcher, getOneRecordURL} from "@data/get";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import VirtualizedAutoComplete from "@components/VirtualizedAutoComplete";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -15,8 +15,8 @@ import ExpDist from "@components/app/View/ExpDist";
 
 const ROIMaps = ({dataID, roiID}) => {
 
-    const {data, error} = useSWR(`${getOneRecordURL}/${dataID}`, fetcher);
-    const markers = (data !== undefined) ? data.markers : [];
+    const { data } = useSWR(`${getOneRecordURL}/${dataID}`, fetcher);
+    const markers = useMemo(() => (data !== undefined) ? data.markers : [""], [data]);
 
     const [marker, setMarker] = useState("");
     const [value, setValue] = useState(0);
@@ -27,11 +27,11 @@ const ROIMaps = ({dataID, roiID}) => {
 
     const mixcode = 'ROI-Viewer';
 
-    useEffect(() => setMarker(markers[0]), []);
+    useEffect(() => setMarker(markers[0]), [markers]);
 
     return (
-        <Box sx={{ width: '100%', mt: 4, border: 1, borderColor: 'divider' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>
+            <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="Cell Map" {...a11yProps(0, mixcode)} />
                     <Tab label="Expression Map" {...a11yProps(1, mixcode)} />
@@ -54,7 +54,7 @@ const ROIMaps = ({dataID, roiID}) => {
                                     label={'Select marker'}
                                     value={marker}
                                     onChange={(e, marker) => setMarker(marker)}
-                                    sx={{ width: "200px", mb: 2 }}
+                                    sx={{width: "200px", mb: 2}}
                                 />
                             </Grid>
                             <Grid item>

@@ -11,9 +11,9 @@ const LinkPool = {
     MERFISH: "http://zhuang.harvard.edu/merfish.html",
 };
 
-export const TechChip = ({ name }) => {
+export const TechChip = ({name}) => {
     return (
-        <a href={LinkPool[name]} target="_blank" rel="noreferrer noopener" style={{ textDecoration: "none"}}>
+        <a href={LinkPool[name]} target="_blank" rel="noreferrer noopener" style={{textDecoration: "none"}}>
             <Chip
                 variant="outlined"
                 label={name}

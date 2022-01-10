@@ -12,7 +12,7 @@ import Heatmap from "@components/Viz/Heatmap";
 import natsort from "natsort";
 import axios from "axios";
 
-const patternMap = { '0': 'Non significant', '1': 'Attract', '-1': 'Repeal' }
+const patternMap = {'0': 'Non significant', '1': 'Attract', '-1': 'Repeal'}
 
 
 const processResult = (data) => {
@@ -29,7 +29,7 @@ const processResult = (data) => {
 }
 
 
-const CellCellInteractionTab = ({ roiID, neighborsData }) =>  {
+const CellCellInteractionTab = ({roiID, neighborsData}) => {
 
     const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
 
@@ -47,7 +47,9 @@ const CellCellInteractionTab = ({ roiID, neighborsData }) =>  {
         setShowViz(0);
     }, [roiID]);
 
-    const handleMethodSelect = (e) => {setMethod(e.target.value)};
+    const handleMethodSelect = (e) => {
+        setMethod(e.target.value)
+    };
 
     const checkTimes = (e) => {
         if (!inRangeInt(e.target.value, 1, 1000)) {
@@ -87,7 +89,10 @@ const CellCellInteractionTab = ({ roiID, neighborsData }) =>  {
         }
     }
 
-    if (!cellData) { return <></> };
+    if (!cellData) {
+        return <></>
+    }
+
 
     const labels = [...new Set(cellData.cell_type)].sort(natsort());
     console.log(labels)

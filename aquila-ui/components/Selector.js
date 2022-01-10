@@ -3,7 +3,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
-const Selector = ({ title, value, onChange, items, sx }) => {
+const Selector = ({title, value, onChange, items, sx}) => {
 
     return (
         <FormControl variant="standard" sx={sx}>

@@ -2,7 +2,7 @@ import MUIDataTable from "mui-datatables";
 import useSWR from "swr";
 import {fetcher, getROIMetaURL} from "@data/get";
 import {styled} from "@mui/material/styles";
-import {useMemo} from "react";
+import {useCallback, useMemo} from "react";
 
 
 const ViewROIButton = styled('span')(({theme}) => ({
@@ -15,17 +15,16 @@ const ViewROIButton = styled('span')(({theme}) => ({
 }))
 
 
+const ROITable = ({dataID, updateFn}) => {
 
-const ROITable = ({ dataID, updateFn }) => {
-
-    const { data, _ } = useSWR(`${getROIMetaURL}/${dataID}`, fetcher);
+    const {data, _} = useSWR(`${getROIMetaURL}/${dataID}`, fetcher);
 
     const renderData = [];
     data.map((d) => {
         renderData.push(JSON.parse(d["meta"]));
     });
 
-    const getColumns = (data) => {
+    const getColumns = useCallback((data) => {
         const columns = [];
         const header = (data === undefined) ? ['roi_id'] : Object.keys(JSON.parse(data[0]['meta']));
         header.map((h) => {
@@ -48,8 +47,8 @@ const ROITable = ({ dataID, updateFn }) => {
                         }
                     }
                 })
-            } else if (h === "data_uuid"){ }
-            else {
+            } else if (h === "data_uuid") {
+            } else {
                 columns.push({
                     name: h,
                     label: h.replace(/^\w/, (c) => c.toUpperCase()),
@@ -61,9 +60,9 @@ const ROITable = ({ dataID, updateFn }) => {
             }
         });
         return columns;
-    }
+    }, [updateFn]);
 
-    const columns = useMemo(() => getColumns(data), []);
+    const columns = useMemo(() => getColumns(data), [data, getColumns]);
 
     const options = {
         selectableRowsHideCheckboxes: true,
@@ -82,15 +81,15 @@ const ROITable = ({ dataID, updateFn }) => {
     };
 
     if (typeof window !== "undefined") {
-    return (
-        <MUIDataTable
-            title="Select ROI"
-            data={renderData}
-            columns={columns}
-            options={options}
-        />
-    ); }
-    else {
+        return (
+            <MUIDataTable
+                title="Select ROI"
+                data={renderData}
+                columns={columns}
+                options={options}
+            />
+        );
+    } else {
         return <></>
     }
 

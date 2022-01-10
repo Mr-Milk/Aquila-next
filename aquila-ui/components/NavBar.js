@@ -2,16 +2,16 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import MuiNextLink from "./Link";
 
-const Navbar = ({ navLinks }) => {
+const Navbar = ({navLinks}) => {
     return (
         <Toolbar
             component="nav"
             sx={{
-                display: { xs: `none`, md: `flex` },
+                display: {xs: `none`, md: `flex`},
             }}
         >
             <Stack direction="row" spacing={4}>
-                {navLinks.map(({ title, path }, i) => (
+                {navLinks.map(({title, path}, i) => (
                     <MuiNextLink
                         key={`${title}${i}`}
                         href={path}
@@ -20,8 +20,9 @@ const Navbar = ({ navLinks }) => {
                             color: "black",
 
                             "&:hover": {
-                            color: "primary.main",
-                            },}}
+                                color: "primary.main",
+                            },
+                        }}
                     >
                         {title}
                     </MuiNextLink>

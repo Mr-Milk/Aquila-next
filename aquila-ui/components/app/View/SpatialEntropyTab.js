@@ -8,12 +8,12 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
-import {runCellDistribution, runEntropy, runSpatialEntropy} from "@data/post";
+import {runEntropy, runSpatialEntropy} from "@data/post";
 import Typography from "@mui/material/Typography";
 
 
-const SpatialEntropyTab = ({ roiID }) => {
-    const { data: cellData, _ } = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+const SpatialEntropyTab = ({roiID}) => {
+    const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
 
     const d = useRef(10);
 
@@ -22,7 +22,9 @@ const SpatialEntropyTab = ({ roiID }) => {
     const [errorD, setErrorD] = useState(false);
     const [raiseRunError, setRaiseRunError] = useState(false);
 
-    const handleMethodSelect = (e) => {setMethod(e.target.value)};
+    const handleMethodSelect = (e) => {
+        setMethod(e.target.value)
+    };
 
     const checkD = (e) => {
         if (!isPosInt(e.target.value)) {
@@ -35,8 +37,9 @@ const SpatialEntropyTab = ({ roiID }) => {
 
     const handleRun = () => {
         if (method === "spatial-entropy") {
-            if (errorD) {setRaiseRunError(true);}
-            else {
+            if (errorD) {
+                setRaiseRunError(true);
+            } else {
                 const body = {
                     cell_x: cellData.cell_x,
                     cell_y: cellData.cell_y,
@@ -100,7 +103,8 @@ const SpatialEntropyTab = ({ roiID }) => {
                     </Snackbar>
                 </Grid>
             </Grid>
-            { (result !== 0) ? <Typography component="h3" sx={{ mt: 2 }}>Entropy is: {result.toFixed(5)}</Typography> : <></>}
+            {(result !== 0) ?
+                <Typography component="h3" sx={{mt: 2}}>Entropy is: {result.toFixed(5)}</Typography> : <></>}
         </>)
     }
 

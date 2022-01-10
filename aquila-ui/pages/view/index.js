@@ -19,35 +19,33 @@ const ViewPage = ({fallback}) => {
             </SWRConfig>
         </>
 
-)
+    )
 }
 
-const Table = () =>
-    {
-        const {data, _} = useSWR(getRecordsURL, fetcher);
+const Table = () => {
+    const {data, _} = useSWR(getRecordsURL, fetcher);
 
-        if (data != undefined) {
-            return <DataTable data={data}/>
-        } else {
-            return <Skeleton variant={"rectangular"} width={200} height={20}></Skeleton>
-        }
-
+    if (data != undefined) {
+        return <DataTable data={data}/>
+    } else {
+        return <Skeleton variant={"rectangular"} width={200} height={20}></Skeleton>
     }
 
-export async function getStaticProps()
-    {
-        const data = await fetcher(getRecordsURL);
+}
 
-        const fallbackData = {};
-        fallbackData[`${getRecordsURL}`] = data
+export async function getStaticProps() {
+    const data = await fetcher(getRecordsURL);
 
-        console.log(fallbackData)
+    const fallbackData = {};
+    fallbackData[`${getRecordsURL}`] = data
 
-        return {
-            props: {
-                fallback: fallbackData
-            }
+    console.log(fallbackData)
+
+    return {
+        props: {
+            fallback: fallbackData
         }
     }
+}
 
 export default ViewPage;

@@ -24,25 +24,24 @@ const ContentBox = styled('div')(
         paddingLeft: theme.spacing(4),
         paddingRight: theme.spacing(4),
         height: theme.spacing(65),
-}))
+    }))
 
 
-const DetailsPage = ({ id, init_roi, fallback  }) => {
+const DetailsPage = ({id, init_roi, fallback}) => {
 
     const [currentROI, setROI] = useState(init_roi);
-    const selectROI = (roiID) => {setROI(roiID)};
 
     return (
-        <SWRConfig value={{ fallback }}>
+        <SWRConfig value={{fallback}}>
             <Head>
                 <title>Aquila | Data Details</title>
             </Head>
-            <Container maxWidth={"xl"} sx={{ mt: 4, mb: 4}}>
+            <Container maxWidth={"xl"} sx={{mt: 4, mb: 4}}>
                 <Grid component={"div"} container flexDirection="row" justifyContent="space-around" spacing={6}>
                     <Grid component={"div"} item xs={12} md={4}>
                         <ClientOnly>
                             <ContentBox>
-                                <Typography variant={"h6"} sx={{ mb: 2, mt: 1 }}>Data Summary</Typography>
+                                <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Data Summary</Typography>
                                 <RecordDetailsTable dataID={id}/>
                             </ContentBox>
                         </ClientOnly>
@@ -50,7 +49,7 @@ const DetailsPage = ({ id, init_roi, fallback  }) => {
                     <Grid component={"div"} item xs={12} md={8}>
                         <ClientOnly>
                             <ContentBox>
-                                <ROITable dataID={id} updateFn={selectROI}/>
+                                <ROITable dataID={id} updateFn={setROI}/>
                             </ContentBox>
                         </ClientOnly>
 
@@ -87,7 +86,7 @@ export async function getStaticPaths() {
     }
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({params}) {
     const RecordURL = `${getOneRecordURL}/${params.id}`;
     const ROIMetaURL = `${getROIMetaURL}/${params.id}`;
     const data_records = await fetcher(RecordURL);

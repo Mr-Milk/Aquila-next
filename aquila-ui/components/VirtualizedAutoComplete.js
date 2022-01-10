@@ -10,7 +10,7 @@ import {createContext, forwardRef, useContext, useEffect, useRef} from "react";
 const LISTBOX_PADDING = 8; // px
 
 function renderRow(props) {
-    const { data, index, style } = props;
+    const {data, index, style} = props;
     const dataSet = data[index];
     const inlineStyle = {
         ...style,
@@ -26,6 +26,7 @@ function renderRow(props) {
 
 const OuterElementContext = createContext({});
 
+// eslint-disable-next-line react/display-name
 const OuterElementType = forwardRef((props, ref) => {
     const outerProps = useContext(OuterElementContext);
     return <div ref={ref} {...props} {...outerProps} />;
@@ -46,7 +47,7 @@ const ListboxComponent = forwardRef(function ListboxComponent(
     props,
     ref
 ) {
-    const { children, ...other } = props;
+    const {children, ...other} = props;
     const itemData = [];
     children.forEach((item) => {
         itemData.push(item);
@@ -123,7 +124,7 @@ export default function VirtualizedAutoComplete({options, label, ...leftProps}) 
             PopperComponent={StyledPopper}
             ListboxComponent={ListboxComponent}
             options={options}
-            renderInput={(params) => <TextField variant="standard" {...params} label={label} />}
+            renderInput={(params) => <TextField variant="standard" {...params} label={label}/>}
             renderOption={(props, option) => [props, option]}
             {...leftProps}
         />

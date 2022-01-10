@@ -11,10 +11,11 @@ const createColumns = (name, label) => {
         options: {
             filter: true,
             sort: true,
-        }}
+        }
+    }
 }
 
-const DataTable = ({ data }) => {
+const DataTable = ({data}) => {
 
     data.map((d) => {
         d.download = `/static/${d.data_uuid}`;
@@ -33,14 +34,16 @@ const DataTable = ({ data }) => {
             options: {
                 filter: false,
                 sort: true,
-            }},
+            }
+        },
         {
             name: 'published',
             label: 'Journal',
             options: {
                 filter: false,
                 sort: true,
-            }},
+            }
+        },
         {
             name: "source_url",
             label: "Publication",

@@ -1,4 +1,4 @@
-import { min, max } from "mathjs";
+import {max, min} from "mathjs";
 import ReactECharts from 'echarts-for-react';
 import {titleOpts} from "@components/Viz/config";
 
@@ -24,12 +24,12 @@ function histogram(arr, binCnt) {
         x: interval,
         y: bins,
     };
-};
+}
 
 
 const Histogram = ({arr, title}) => {
 
-    const { x, y } = histogram(arr, 10);
+    const {x, y} = histogram(arr, 10);
 
     const options = {
         ...titleOpts(title),
@@ -52,8 +52,8 @@ const Histogram = ({arr, title}) => {
 
     return <ReactECharts
         option={options}
-        opts={{ locale: "EN" }}
-        style={{ width: '350px', height: '250px' }}
+        opts={{locale: "EN"}}
+        style={{width: '350px', height: '250px'}}
     />
 }
 

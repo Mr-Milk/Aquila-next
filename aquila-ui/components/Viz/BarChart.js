@@ -1,14 +1,14 @@
 import ReactECharts from "echarts-for-react";
 import {titleOpts} from "@components/Viz/config";
 
-const BarChart = ({ x, y, width, height, title }) => {
+const BarChart = ({x, y, width, height, title}) => {
 
     const options = {
         ...titleOpts(title),
         tooltip: {
             trigger: 'item',
         },
-        grid:{
+        grid: {
             containLabel: true,
         },
         xAxis: {
@@ -39,8 +39,8 @@ const BarChart = ({ x, y, width, height, title }) => {
 
     return <ReactECharts
         option={options}
-        opts={{ locale: "EN" }}
-        style={{ width: width, height: height}}
+        opts={{locale: "EN"}}
+        style={{width: width, height: height}}
     />
 }
 

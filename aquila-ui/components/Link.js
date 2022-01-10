@@ -10,7 +10,7 @@ import {styled} from '@mui/material/styles';
 const Anchor = styled('a')({});
 
 export const NextLinkComposed = React.forwardRef(function NextLinkComposed(props, ref) {
-    const { to, linkAs, href, replace, scroll, shallow, prefetch, locale, ...other } = props;
+    const {to, linkAs, href, replace, scroll, shallow, prefetch, locale, ...other} = props;
 
     return (
         <NextLink

@@ -6,7 +6,7 @@ import Menu from "@mui/icons-material/Menu";
 import MuiNextLink from "./Link";
 import {useState} from "react";
 
-const SideDrawer = ({ navLinks }) => {
+const SideDrawer = ({navLinks}) => {
     const [state, setState] = useState({
         right: false,
     });
@@ -19,17 +19,17 @@ const SideDrawer = ({ navLinks }) => {
             return;
         }
 
-        setState({ ...state, [anchor]: open });
+        setState({...state, [anchor]: open});
     };
 
     const list = (anchor) => (
         <Box
-            sx={{ width: 250, marginTop: `auto`, marginBottom: `auto` }}
+            sx={{width: 250, marginTop: `auto`, marginBottom: `auto`}}
             role="presentation"
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
         >
-            {navLinks.map(({ title, path }, i) => (
+            {navLinks.map(({title, path}, i) => (
                 <Typography
                     variannt="button"
                     key={`${title}${i}`}
@@ -39,7 +39,7 @@ const SideDrawer = ({ navLinks }) => {
                         textTransform: `uppercase`,
                     }}
                 >
-                    <MuiNextLink sx={{ color: "common.white" }} href={path}>
+                    <MuiNextLink sx={{color: "common.white"}} href={path}>
                         {title}
                     </MuiNextLink>
                 </Typography>
@@ -55,10 +55,10 @@ const SideDrawer = ({ navLinks }) => {
                 onClick={toggleDrawer("right", true)}
                 sx={{
                     color: `primary.main`,
-                    display: { xs: `inline`, md: `none` },
+                    display: {xs: `inline`, md: `none`},
                 }}
             >
-                <Menu fontSize="large" />
+                <Menu fontSize="large"/>
             </IconButton>
             <Drawer
                 elevation={0}

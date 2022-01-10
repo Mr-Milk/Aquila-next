@@ -30,14 +30,14 @@ export const rdbu11 = [
 ]
 
 export const titleOpts = (title) => ({
-        title: {
-            text: title,
-            left: "center",
-            top: "top",
-            textStyle: {
-                fontSize: 14,
-            },
-        }
+    title: {
+        text: title,
+        left: "center",
+        top: "top",
+        textStyle: {
+            fontSize: 14,
+        },
+    }
 })
 
 export const tooltipOpts = () => ({

@@ -1,9 +1,9 @@
-import {memo, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
-import {a11yProps, TabPanel} from "@components/TabPanel";
+import {TabPanel} from "@components/TabPanel";
 import useSWR from "swr";
 import {fetcher, getOneRecordURL} from "@data/get";
 import FindNeighborsTab from "@components/app/View/FindNeighborsTab";
@@ -47,8 +47,6 @@ const TabTitle = ({label, disabled, disabledText, ...other}) => {
 }
 
 
-
-
 const AnalysisTab = ({dataID, roiID}) => {
 
     const {data, error} = useSWR(`${getOneRecordURL}/${dataID}`, fetcher);
@@ -88,7 +86,8 @@ const AnalysisTab = ({dataID, roiID}) => {
                     <TabTitle id="tab-b-3" label="Spatial Entropy" disabled={!hasCellType}
                               disabledText={noCellTypeHelp}/>
                     <Tab id="tab-b-4" label="Find Neighbors"/>
-                    <TabTitle id="tab-b-5" label="Cell-Cell Interaction" disabled={false}//disabled={(!hasCellType) || (!neighborsReady)}
+                    <TabTitle id="tab-b-5" label="Cell-Cell Interaction"
+                              disabled={false}//disabled={(!hasCellType) || (!neighborsReady)}
                               disabledText={findNeighborsHelp(neighborsReady, hasCellType)}/>
                     <TabTitle id="tab-b-6" label="Spatial co-expression" disabled={!neighborsReady}
                               disabledText={noNeighborsHelp}/>
@@ -110,7 +109,8 @@ const AnalysisTab = ({dataID, roiID}) => {
                     <SpatialEntropyTab roiID={roiID}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={4}>
-                    <FindNeighborsTab roiID={roiID} updateNeighbors={afterNeighbors} neighborsData={neighborsData.current}/>
+                    <FindNeighborsTab roiID={roiID} updateNeighbors={afterNeighbors}
+                                      neighborsData={neighborsData.current}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={5}>
                     <Typography>Cell-Cell Interaction</Typography>

@@ -1,12 +1,11 @@
 import ReactECharts from "echarts-for-react";
-import {color_pool, rdbu11, titleOpts} from "@components/Viz/config";
-import {round} from "mathjs";
+import {rdbu11, titleOpts} from "@components/Viz/config";
 
-const Heatmap = ({ data, xlabel, ylabel, title, width, height }) => {
+const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
 
     const options = {
         ...titleOpts(title),
-        grid:{
+        grid: {
             left: "5%",
             right: "10%",
             containLabel: true,
@@ -68,8 +67,8 @@ const Heatmap = ({ data, xlabel, ylabel, title, width, height }) => {
 
     return <ReactECharts
         option={options}
-        opts={{ locale: "EN" }}
-        style={{ width: width, height: height}}
+        opts={{locale: "EN"}}
+        style={{width: width, height: height}}
     />
 }
 

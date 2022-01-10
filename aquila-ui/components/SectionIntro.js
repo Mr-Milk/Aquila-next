@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 
 const SectionIntro = () => {
     return (
-        <Container component="section" maxWidth="md" sx={{ mt: 2, mb: 2 }}>
+        <Container component="section" maxWidth="md" sx={{mt: 2, mb: 2}}>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} container flexDirection="column" justifyContent="center" alignItems="center">
                     <Typography component="h2" variant="h4" textAlign="center" gutterBottom>
@@ -18,7 +18,7 @@ const SectionIntro = () => {
                         we collect single cell data with spatial information. 
                         Start viewing the data at the table below.`}
                     </Typography>
-                    <MuiNextLink href="/view" sx={{ mt: 2 }}>
+                    <MuiNextLink href="/view" sx={{mt: 2}}>
                         <Button variant="outlined" disableElevation>
                             Browse Data
                         </Button>

@@ -8,7 +8,7 @@ function Item() {
 
 const NotFoundPage = () => {
     return (
-        <Container component={"section"} maxWidth={"sm"} sx={{ mt: 16, mb: 16 }}>
+        <Container component={"section"} maxWidth={"sm"} sx={{mt: 16, mb: 16}}>
             <Grid container rowSpacing={3} flexDirection={"row"}>
                 <Grid item xs={12}>
                     <Image
@@ -19,8 +19,8 @@ const NotFoundPage = () => {
                         height={300}
                     />
                 </Grid>
-                <Grid item xs={12} sx={{ mt: 4, textAlign: "center" }}>
-                    <Typography variant={"subtitle2"} sx={{ pb: 2 }}>404 Not Found</Typography>
+                <Grid item xs={12} sx={{mt: 4, textAlign: "center"}}>
+                    <Typography variant={"subtitle2"} sx={{pb: 2}}>404 Not Found</Typography>
                     <Typography variant={"h5"}>
                         Oops! The page you are looking for is hijacked by UFO.
                     </Typography>

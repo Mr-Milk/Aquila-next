@@ -4,7 +4,7 @@ import CellMap from "@components/Viz/CellMap";
 
 const ViewROICellMap = ({roiID}) => {
 
-    const { data, _ } = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+    const {data, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
 
     // function getRandomInt(min, max) {
     //     min = Math.ceil(min);

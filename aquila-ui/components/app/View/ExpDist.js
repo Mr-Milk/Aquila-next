@@ -5,7 +5,7 @@ import {fetcher, getCellExpURL} from "@data/get";
 
 const ExpDist = ({roiID, marker}) => {
 
-    const { data: ExpData } = useSWR(`${getCellExpURL}/${roiID}/${marker}`, fetcher);
+    const {data: ExpData} = useSWR(`${getCellExpURL}/${roiID}/${marker}`, fetcher);
 
     if (ExpData === undefined) {
         return <></>

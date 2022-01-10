@@ -4,7 +4,7 @@ import {ResponsiveSize, ResponsiveSymbolSize} from "@components/Viz/ResponsiveSi
 import {legendOpts, titleOpts} from "@components/Viz/config";
 
 
-const CellMap = ({ cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...leftProps }) => {
+const CellMap = ({cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...leftProps}) => {
 
     const hasCellType = (ct !== undefined);
     const size = cx.length;
@@ -65,9 +65,9 @@ const CellMap = ({ cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...lef
 
     return <ReactECharts
         option={options}
-        opts={{ locale: "EN" }}
+        opts={{locale: "EN"}}
         style={canvasSize}
-        />
+    />
 }
 
 CellMap.propTypes = {

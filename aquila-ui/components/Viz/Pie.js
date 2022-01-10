@@ -1,10 +1,12 @@
 import ReactECharts from 'echarts-for-react';
-import {legendOpts, titleOpts} from "@components/Viz/config";
+import {titleOpts} from "@components/Viz/config";
 import natsort from "natsort";
 
 const Counter = (arr) => {
     const counts = {};
-    arr.forEach((i) => {counts[i] = counts[i] ? counts[i] + 1 : 1;})
+    arr.forEach((i) => {
+        counts[i] = counts[i] ? counts[i] + 1 : 1;
+    })
     return Object.entries(counts).map(([k, v]) => {
         return {name: k, value: v}
     });
@@ -52,8 +54,8 @@ const Pie = ({arr, width, height, title}) => {
 
     return <ReactECharts
         option={options}
-        opts={{ locale: "EN" }}
-        style={{ width: width, height: height}}
+        opts={{locale: "EN"}}
+        style={{width: width, height: height}}
     />
 }
 
