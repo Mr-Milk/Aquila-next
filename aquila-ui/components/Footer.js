@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Github from "@mui/icons-material/Github";
+import GitHub from "@mui/icons-material/GitHub";
 import Email from "@mui/icons-material/Email";
 import Science from "@mui/icons-material/Science";
 import IconButton from "@mui/material/IconButton";
@@ -36,7 +36,7 @@ const Footer = () => {
             sx={{mb: 3}}
         >
             <IconButton sx={IconButtonStyle}>
-                <Github/>
+                <GitHub/>
             </IconButton>
             <IconButton sx={IconButtonStyle}>
                 <Email/>
