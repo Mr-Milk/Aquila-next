@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import {fetcher, getOneRecordURL} from "@data/get";
+import {fetcher, getOneRecordURL} from "@/data/get";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link"
-import {TechChip} from "@components/InfoDisplay/Chips";
+import {TechChip} from "@/components/InfoDisplay/Chips";
 
 
 const TitleCol = (props) => {

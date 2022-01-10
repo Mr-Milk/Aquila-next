@@ -1,8 +1,8 @@
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "@data/get";
+import {fetcher, getCellInfoURL} from "@/data/get";
 import axios from "axios";
-import {runCellDensity} from "@data/post";
-import BarChart from "@components/Viz/BarChart";
+import {runCellDensity} from "@/data/post";
+import BarChart from "@/components/Viz/BarChart";
 import {useEffect, useRef} from "react";
 import Grid from "@mui/material/Grid";
 import natsort from "natsort";
@@ -33,7 +33,9 @@ const CellDensityTab = ({roiID}) => {
         }
     }
 
-    useEffect(() => {runAnalysis(cellData)}, [cellData]);
+    useEffect(() => {
+        runAnalysis(cellData)
+    }, [cellData]);
 
     return (
         <Grid container flexDirection="row" justifyContent="center">

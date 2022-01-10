@@ -1,5 +1,5 @@
 import ReactECharts from "echarts-for-react";
-import {rdbu11, titleOpts} from "@components/Viz/config";
+import {rdbu11, titleOpts} from "@/components/Viz/config";
 
 const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
 

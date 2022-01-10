@@ -1,7 +1,7 @@
 import ReactECharts from 'echarts-for-react';
 import PropTypes from 'prop-types'
-import {ResponsiveSize, ResponsiveSymbolSize} from "@components/Viz/ResponsiveSize";
-import {legendOpts, titleOpts} from "@components/Viz/config";
+import {ResponsiveSize, ResponsiveSymbolSize} from "@/components/Viz/ResponsiveSize";
+import {legendOpts, titleOpts} from "@/components/Viz/config";
 
 
 const CellMap = ({cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...leftProps}) => {

@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import {fetcher, getCellExpURL, getCellInfoURL} from "@data/get";
-import ExpressionMap from "@components/Viz/ExpressionMap";
+import {fetcher, getCellExpURL, getCellInfoURL} from "@/data/get";
+import ExpressionMap from "@/components/Viz/ExpressionMap";
 
 
 const ViewROIExpMap = ({roiID, marker}) => {

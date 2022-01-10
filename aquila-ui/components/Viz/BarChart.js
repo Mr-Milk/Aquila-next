@@ -1,5 +1,5 @@
 import ReactECharts from "echarts-for-react";
-import {titleOpts} from "@components/Viz/config";
+import {titleOpts} from "@/components/Viz/config";
 
 const BarChart = ({x, y, width, height, title}) => {
 

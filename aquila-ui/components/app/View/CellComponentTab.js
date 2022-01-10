@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "@data/get";
-import Pie from "@components/Viz/Pie";
+import {fetcher, getCellInfoURL} from "@/data/get";
+import Pie from "@/components/Viz/Pie";
 import {Grid} from "@mui/material";
 
 const CellComponentTab = ({roiID}) => {

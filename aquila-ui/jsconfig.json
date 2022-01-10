@@ -2,13 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components/*": [
+      "@/components/*": [
         "components/*"
       ],
-      "@data/*": [
+      "@/data/*": [
         "data/*"
       ],
-      "@db/*": [
+      "@/db/*": [
         "db/*"
       ]
     }

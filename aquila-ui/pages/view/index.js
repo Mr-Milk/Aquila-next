@@ -1,6 +1,6 @@
-import {fetcher, getRecordsURL} from "@data/get";
+import {fetcher, getRecordsURL} from "@/data/get";
 import useSWR, {SWRConfig} from "swr";
-import DataTable from "@components/DataTable/RecordsTable";
+import DataTable from "@/components/DataTable/RecordsTable";
 import {Container, Skeleton} from "@mui/material";
 import Head from 'next/head';
 

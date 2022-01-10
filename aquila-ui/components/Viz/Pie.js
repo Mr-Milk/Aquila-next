@@ -1,5 +1,5 @@
 import ReactECharts from 'echarts-for-react';
-import {titleOpts} from "@components/Viz/config";
+import {titleOpts} from "@/components/Viz/config";
 import natsort from "natsort";
 
 const Counter = (arr) => {

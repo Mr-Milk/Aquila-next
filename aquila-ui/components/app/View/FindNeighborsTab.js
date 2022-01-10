@@ -1,11 +1,11 @@
-import {runCellNeighbors} from "@data/post";
+import {runCellNeighbors} from "@/data/post";
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "@data/get";
-import CellMap from "@components/Viz/CellMap";
+import {fetcher, getCellInfoURL} from "@/data/get";
+import CellMap from "@/components/Viz/CellMap";
 import Grid from "@mui/material/Grid";
 import {useEffect, useRef, useState} from "react";
-import Selector from "@components/Selector";
-import NumberInput, {isPosInt} from "@components/NumberInput";
+import Selector from "@/components/Selector";
+import NumberInput, {isPosInt} from "@/components/NumberInput";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert"

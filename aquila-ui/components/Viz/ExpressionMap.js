@@ -1,7 +1,7 @@
 import ReactECharts from 'echarts-for-react';
 import {max, min, round} from "mathjs";
-import {ResponsiveSize, ResponsiveSymbolSize} from "@components/Viz/ResponsiveSize";
-import {color_pool, titleOpts} from "@components/Viz/config";
+import {ResponsiveSize, ResponsiveSymbolSize} from "@/components/Viz/ResponsiveSize";
+import {color_pool, titleOpts} from "@/components/Viz/config";
 
 const AssignColor = (colors, arr, min, max) => {
     const cut = colors.length;

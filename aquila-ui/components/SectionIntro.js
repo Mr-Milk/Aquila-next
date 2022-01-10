@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Typography from "@mui/material/Typography";
-import MuiNextLink from "@components/Link";
+import MuiNextLink from "@/components/Link";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
