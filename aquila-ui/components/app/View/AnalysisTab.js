@@ -3,16 +3,16 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
-import {TabPanel} from "@/components/TabPanel";
+import {TabPanel} from "components/TabPanel";
 import useSWR from "swr";
-import {fetcher, getOneRecordURL} from "@/data/get";
-import FindNeighborsTab from "@/components/app/View/FindNeighborsTab";
-import CellComponentTab from "@/components/app/View/CellComponentTab";
-import CellDensityTab from "@/components/app/View/CellDensityTab";
-import CellDistributionTab from "@/components/app/View/CellDistributionTab";
-import SpatialEntropyTab from "@/components/app/View/SpatialEntropyTab";
+import {fetcher, getOneRecordURL} from "data/get";
+import FindNeighborsTab from "components/app/View/FindNeighborsTab";
+import CellComponentTab from "components/app/View/CellComponentTab";
+import CellDensityTab from "components/app/View/CellDensityTab";
+import CellDistributionTab from "components/app/View/CellDistributionTab";
+import SpatialEntropyTab from "components/app/View/SpatialEntropyTab";
 import Tooltip from "@mui/material/Tooltip";
-import CellCellInteractionTab from "@/components/app/View/CellCellInteractionTab";
+import CellCellInteractionTab from "components/app/View/CellCellInteractionTab";
 
 
 const noCellTypeHelp = "Cell type annotation unavailable in this dataset"

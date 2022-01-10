@@ -1,7 +1,7 @@
 import {Container, Grid} from "@mui/material";
-import SectionIntro from "@/components/SectionIntro";
-import StasCard from "@/components/InfoDisplay/StatsCard";
-import {fetcher, getDbStatsURL} from "@/data/get";
+import SectionIntro from "components/SectionIntro";
+import StasCard from "components/InfoDisplay/StatsCard";
+import {fetcher, getDbStatsURL} from "data/get";
 import useSWR, {SWRConfig} from "swr";
 import {IoStatsChart} from "react-icons/io5";
 import {FaLungsVirus} from "react-icons/fa";

@@ -1,16 +1,16 @@
-import ViewROICellMap from "@/components/app/View/ROICellMap";
-import ViewROIExpMap from "@/components/app/View/ROIExpMap";
+import ViewROICellMap from "components/app/View/ROICellMap";
+import ViewROIExpMap from "components/app/View/ROIExpMap";
 import useSWR from "swr";
-import {fetcher, getOneRecordURL} from "@/data/get";
+import {fetcher, getOneRecordURL} from "data/get";
 import {useEffect, useMemo, useState} from "react";
-import VirtualizedAutoComplete from "@/components/VirtualizedAutoComplete";
+import VirtualizedAutoComplete from "components/VirtualizedAutoComplete";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import {a11yProps, TabPanel} from "@/components/TabPanel";
-import ExpDist from "@/components/app/View/ExpDist";
+import {a11yProps, TabPanel} from "components/TabPanel";
+import ExpDist from "components/app/View/ExpDist";
 
 
 const ROIMaps = ({dataID, roiID}) => {

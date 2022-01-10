@@ -1,14 +1,14 @@
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "@/data/get";
+import {fetcher, getCellInfoURL} from "data/get";
 import {useRef, useState} from "react";
 import Grid from "@mui/material/Grid";
-import Selector from "@/components/Selector";
-import NumberInput, {isPosInt} from "@/components/NumberInput";
+import Selector from "components/Selector";
+import NumberInput, {isPosInt} from "components/NumberInput";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import axios from "axios";
-import {runEntropy, runSpatialEntropy} from "@/data/post";
+import {runEntropy, runSpatialEntropy} from "data/post";
 import Typography from "@mui/material/Typography";
 
 

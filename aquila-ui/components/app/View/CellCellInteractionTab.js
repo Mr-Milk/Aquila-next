@@ -1,14 +1,14 @@
 import {useEffect, useRef, useState} from "react";
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "@/data/get";
+import {fetcher, getCellInfoURL} from "data/get";
 import Grid from "@mui/material/Grid";
-import Selector from "@/components/Selector";
-import NumberInput, {inRangeFloat, inRangeInt} from "@/components/NumberInput";
+import Selector from "components/Selector";
+import NumberInput, {inRangeFloat, inRangeInt} from "components/NumberInput";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import {runCellInterations} from "@/data/post";
-import Heatmap from "@/components/Viz/Heatmap";
+import {runCellInterations} from "data/post";
+import Heatmap from "components/Viz/Heatmap";
 import natsort from "natsort";
 import axios from "axios";
 

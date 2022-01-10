@@ -1,8 +1,8 @@
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "@/data/get";
+import {fetcher, getCellInfoURL} from "data/get";
 import axios from "axios";
-import {runCellDensity} from "@/data/post";
-import BarChart from "@/components/Viz/BarChart";
+import {runCellDensity} from "data/post";
+import BarChart from "components/Viz/BarChart";
 import {useEffect, useRef} from "react";
 import Grid from "@mui/material/Grid";
 import natsort from "natsort";

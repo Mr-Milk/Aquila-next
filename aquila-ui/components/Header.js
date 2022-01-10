@@ -3,11 +3,11 @@ import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import {styled} from "@mui/styles";
 import Home from "@mui/icons-material/Home"
-import MuiNextLink from "@/components/Link";
-import Navbar from '@/components/Navbar';
-import SideDrawer from "@/components/SideDrawer";
-import HideOnScroll from "@/components/HideOnScroll";
-import ClientOnly from "@/components/ClientOnly";
+import MuiNextLink from "components/Link";
+import Navbar from 'components/Navbar';
+import SideDrawer from "components/SideDrawer";
+import HideOnScroll from "components/HideOnScroll";
+import ClientOnly from "components/ClientOnly";
 import Image from "next/image";
 
 export const navLinks = [

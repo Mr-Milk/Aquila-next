@@ -1,6 +1,6 @@
-import Histogram from "@/components/Viz/Histogram";
+import Histogram from "components/Viz/Histogram";
 import useSWR from "swr";
-import {fetcher, getCellExpURL} from "@/data/get";
+import {fetcher, getCellExpURL} from "data/get";
 
 
 const ExpDist = ({roiID, marker}) => {

@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "@/data/get";
-import CellMap from "@/components/Viz/CellMap";
+import {fetcher, getCellInfoURL} from "data/get";
+import CellMap from "components/Viz/CellMap";
 
 const ViewROICellMap = ({roiID}) => {
 

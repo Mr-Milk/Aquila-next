@@ -1,6 +1,6 @@
 import {max, min} from "mathjs";
 import ReactECharts from 'echarts-for-react';
-import {titleOpts} from "@/components/Viz/config";
+import {titleOpts} from "components/Viz/config";
 
 // histogram([100, 101, 102, 230, 304, 305, 400], 3) === [3, 1, 3];
 function histogram(arr, binCnt) {

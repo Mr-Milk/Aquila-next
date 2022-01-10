@@ -1,15 +1,15 @@
-import {fetcher, getDataIdURL, getOneRecordURL, getROIMetaURL} from "@/data/get";
+import {fetcher, getDataIdURL, getOneRecordURL, getROIMetaURL} from "data/get";
 import {SWRConfig} from "swr";
 import {Container, Grid} from "@mui/material";
 import {styled} from "@mui/styles";
 import {useState} from "react";
-import ROITable from "@/components/DataTable/ROISelector";
-import RecordDetailsTable from "@/components/DataTable/RecordDetailsTable";
-import ROIMaps from "@/components/app/View/ROIMaps";
+import ROITable from "components/DataTable/ROISelector";
+import RecordDetailsTable from "components/DataTable/RecordDetailsTable";
+import ROIMaps from "components/app/View/ROIMaps";
 import Typography from "@mui/material/Typography";
-import ClientOnly from "@/components/ClientOnly";
+import ClientOnly from "components/ClientOnly";
 import Head from 'next/head';
-import AnalysisTab from "@/components/app/View/AnalysisTab";
+import AnalysisTab from "components/app/View/AnalysisTab";
 
 
 // export const ROIContext = createContext({value: "", loadROI: ""});

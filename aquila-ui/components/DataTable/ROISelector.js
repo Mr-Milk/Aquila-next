@@ -1,6 +1,6 @@
 import MUIDataTable from "mui-datatables";
 import useSWR from "swr";
-import {fetcher, getROIMetaURL} from "@/data/get";
+import {fetcher, getROIMetaURL} from "data/get";
 import {styled} from "@mui/material/styles";
 import {useCallback, useMemo} from "react";
 
