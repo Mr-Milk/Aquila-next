@@ -1,5 +1,5 @@
-import ReactECharts from "echarts-for-react";
 import {titleOpts} from "components/Viz/config";
+import Echarts from "./echarts-obj";
 
 const BarChart = ({x, y, width, height, title}) => {
 
@@ -37,7 +37,7 @@ const BarChart = ({x, y, width, height, title}) => {
         ]
     }
 
-    return <ReactECharts
+    return <Echarts
         option={options}
         opts={{locale: "EN"}}
         style={{width: width, height: height}}

@@ -55,7 +55,7 @@ const getRunBody = (cx, cy, ct, method, r, k) => {
 // }
 
 
-const FindNeighborsTab = ({roiID, updateNeighbors, neighborsData}) => {
+const FindNeighborsTab = ({roiID, updateNeighbors, getNeighbors}) => {
 
     const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
 
@@ -109,6 +109,7 @@ const FindNeighborsTab = ({roiID, updateNeighbors, neighborsData}) => {
             }).catch((e) => console.log(e))
         }
     }
+    const neighborsData = getNeighbors();
 
     if (!cellData) {
         return <></>

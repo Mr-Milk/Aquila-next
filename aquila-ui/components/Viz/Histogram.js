@@ -1,12 +1,11 @@
-import {max, min} from "mathjs";
-import ReactECharts from 'echarts-for-react';
 import {titleOpts} from "components/Viz/config";
+import Echarts from "./echarts-obj";
 
 // histogram([100, 101, 102, 230, 304, 305, 400], 3) === [3, 1, 3];
 function histogram(arr, binCnt) {
     binCnt = binCnt || 4;
-    const first = min(arr);
-    const binWidth = (max(arr) - first) / binCnt;
+    const first = Math.min(arr);
+    const binWidth = (Math.max(arr) - first) / binCnt;
     const len = arr.length;
     const bins = [];
     const interval = [];
@@ -50,9 +49,8 @@ const Histogram = ({arr, title}) => {
         ]
     }
 
-    return <ReactECharts
+    return <Echarts
         option={options}
-        opts={{locale: "EN"}}
         style={{width: '350px', height: '250px'}}
     />
 }

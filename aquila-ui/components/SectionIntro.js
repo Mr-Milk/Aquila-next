@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 
 const SectionIntro = () => {
     return (
-        <Container component="section" maxWidth="md" sx={{mt: 2, mb: 2}}>
+        <Container component="section" maxWidth="md" sx={{mt: {sm: 2, xs: 4}, mb: 2}}>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} container flexDirection="column" justifyContent="center" alignItems="center">
                     <Typography component="h2" variant="h4" textAlign="center" gutterBottom>

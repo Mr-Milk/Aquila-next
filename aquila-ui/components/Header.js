@@ -41,7 +41,7 @@ const Header = () => {
                         >
                             {/*<IconButton edge="start" aria-label="home">*/}
                             <MuiNextLink activeClassName="active" href="/" sx={{mt: 1}}>
-                                <Image src="/AQUILA-LOGO.svg" width="151" height="57" aria-label="Home"/>
+                                <Image src="/AQUILA-LOGO.svg" width="113" height="45" aria-label="Home"/>
                             </MuiNextLink>
 
                             {/*</IconButton>*/}

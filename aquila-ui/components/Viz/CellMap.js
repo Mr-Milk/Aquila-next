@@ -1,4 +1,5 @@
-import ReactECharts from 'echarts-for-react';
+// import ReactECharts from 'echarts-for-react';
+import Echarts from "./echarts-obj";
 import PropTypes from 'prop-types'
 import {ResponsiveSize, ResponsiveSymbolSize} from "components/Viz/ResponsiveSize";
 import {legendOpts, titleOpts} from "components/Viz/config";
@@ -63,11 +64,7 @@ const CellMap = ({cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...left
         ],
     }
 
-    return <ReactECharts
-        option={options}
-        opts={{locale: "EN"}}
-        style={canvasSize}
-    />
+    return <Echarts option={options} style={canvasSize}/>
 }
 
 CellMap.propTypes = {

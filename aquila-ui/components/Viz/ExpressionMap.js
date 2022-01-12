@@ -1,5 +1,4 @@
-import ReactECharts from 'echarts-for-react';
-import {max, min, round} from "mathjs";
+import Echarts from "./echarts-obj";
 import {ResponsiveSize, ResponsiveSymbolSize} from "components/Viz/ResponsiveSize";
 import {color_pool, titleOpts} from "components/Viz/config";
 
@@ -31,8 +30,8 @@ const AssignColor = (colors, arr, min, max) => {
 
 const ExpMap = ({cx, cy, exp, markerName, ...leftProps}) => {
 
-    const min_exp = min(exp);
-    const max_exp = max(exp);
+    const min_exp = Math.min(exp);
+    const max_exp = Math.max(exp);
     const colors = AssignColor(color_pool, exp);
     const size = cx.length;
     const canvasSize = ResponsiveSize(size);
@@ -61,7 +60,7 @@ const ExpMap = ({cx, cy, exp, markerName, ...leftProps}) => {
             inRange: {
                 color: color_pool,
             },
-            text: [round(max_exp, 0), round(min_exp, 0)],
+            text: [Math.round(max_exp), Math.round(min_exp)],
         },
         series: [
             {
@@ -76,7 +75,7 @@ const ExpMap = ({cx, cy, exp, markerName, ...leftProps}) => {
     };
 
     return (
-        <ReactECharts option={options} opts={{locale: "EN"}} style={canvasSize}/>
+        <Echarts option={options} style={canvasSize}/>
     )
 }
 

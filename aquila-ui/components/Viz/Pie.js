@@ -1,6 +1,6 @@
-import ReactECharts from 'echarts-for-react';
 import {titleOpts} from "components/Viz/config";
 import natsort from "natsort";
+import Echarts from "./echarts-obj";
 
 const Counter = (arr) => {
     const counts = {};
@@ -52,9 +52,8 @@ const Pie = ({arr, width, height, title}) => {
         ]
     }
 
-    return <ReactECharts
+    return <Echarts
         option={options}
-        opts={{locale: "EN"}}
         style={{width: width, height: height}}
     />
 }

@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -50,7 +50,7 @@ const TabTitle = ({label, disabled, disabledText, ...other}) => {
 const AnalysisTab = ({dataID, roiID}) => {
 
     const {data, error} = useSWR(`${getOneRecordURL}/${dataID}`, fetcher);
-    const hasCellType = data.has_cell_type;
+    const hasCellType = (data === undefined) ? true : data.has_cell_type;
 
     const neighborsData = useRef({});
     const [value, setValue] = useState(0);
@@ -62,10 +62,12 @@ const AnalysisTab = ({dataID, roiID}) => {
     const afterNeighbors = (neighbors) => {
         neighborsData.current = neighbors;
         setNeighborsStatus(true)
-    };
-    const getNeighborsData = () => {
-        return neighborsData.current
-    };
+    }
+    const getNeighbors = () => neighborsData.current
+
+    useEffect(() => {
+        setNeighborsStatus(false)
+    }, [roiID])
 
     return (
         <Box id="analysis-box-outer-box" sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>
@@ -109,8 +111,11 @@ const AnalysisTab = ({dataID, roiID}) => {
                     <SpatialEntropyTab roiID={roiID}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={4}>
-                    <FindNeighborsTab roiID={roiID} updateNeighbors={afterNeighbors}
-                                      neighborsData={neighborsData.current}/>
+                    <FindNeighborsTab roiID={roiID}
+                                      updateNeighbors={afterNeighbors}
+                        // neighborsData={neighborsData.current}
+                                      getNeighbors={getNeighbors}
+                    />
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={5}>
                     <Typography>Cell-Cell Interaction</Typography>

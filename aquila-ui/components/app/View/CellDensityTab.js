@@ -3,15 +3,15 @@ import {fetcher, getCellInfoURL} from "data/get";
 import axios from "axios";
 import {runCellDensity} from "data/post";
 import BarChart from "components/Viz/BarChart";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import Grid from "@mui/material/Grid";
 import natsort from "natsort";
 
-const sorter = natsort();
 
 const CellDensityTab = ({roiID}) => {
 
     const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+    const [showViz, setShowViz] = useState(0);
     let densityResult = useRef({x: [], y: []});
 
     const runAnalysis = (data) => {
@@ -28,14 +28,15 @@ const CellDensityTab = ({roiID}) => {
                 let k = Object.keys(result).sort(natsort());
                 let v = k.map((i) => result[i]);
                 densityResult.current = {x: k, y: v};
+                setShowViz(showViz + 1)
             }).catch((e) => console.log(e));
-            console.log("Get density for once");
         }
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         runAnalysis(cellData)
-    }, [cellData]);
+    }, [roiID]);
 
     return (
         <Grid container flexDirection="row" justifyContent="center">

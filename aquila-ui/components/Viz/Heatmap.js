@@ -1,5 +1,5 @@
-import ReactECharts from "echarts-for-react";
 import {rdbu11, titleOpts} from "components/Viz/config";
+import Echarts from "./echarts-obj";
 
 const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
 
@@ -65,9 +65,8 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
         ]
     }
 
-    return <ReactECharts
+    return <Echarts
         option={options}
-        opts={{locale: "EN"}}
         style={{width: width, height: height}}
     />
 }

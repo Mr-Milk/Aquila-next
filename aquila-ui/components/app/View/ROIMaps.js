@@ -27,7 +27,8 @@ const ROIMaps = ({dataID, roiID}) => {
 
     const mixcode = 'ROI-Viewer';
 
-    useEffect(() => setMarker(markers[0]), [markers]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => setMarker(markers[0]), []);
 
     return (
         <Box sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>

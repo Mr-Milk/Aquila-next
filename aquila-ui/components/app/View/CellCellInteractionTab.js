@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import useSWR from "swr";
 import {fetcher, getCellInfoURL} from "data/get";
 import Grid from "@mui/material/Grid";
@@ -22,8 +22,9 @@ const processResult = (data) => {
     return [...Array(size).keys()].map((i) => {
         let t1 = data.type1[i];
         let t2 = data.type2[i];
+        // let pattern = parseInt(data.pattern[i]);
+        // let v = (pattern === 0) ? 0 : data.score[i];
         let v = data.score[i];
-        let pattern = parseInt(data.pattern[i]).toString();
         return [t1, t2, v,]// `${t1} - ${t2}`, pattern]
     })
 }
@@ -36,12 +37,19 @@ const CellCellInteractionTab = ({roiID, neighborsData}) => {
     const pvalue = useRef(0.05);
     const times = useRef(500);
     const result = useRef({type1: []});
+    const labels = useRef([]);
 
     const [method, setMethod] = useState("pval");
     const [errorTimes, setErrorTimes] = useState(false);
     const [errorPvalue, setErrorPvalue] = useState(false);
     const [raiseRunError, setRaiseRunError] = useState(false);
     const [showViz, setShowViz] = useState(0);
+
+    useMemo(() => {
+        if (cellData !== undefined) {
+            labels.current = [...new Set(cellData.cell_type)].sort(natsort())
+        }
+    }, [cellData]);
 
     useEffect(() => {
         setShowViz(0);
@@ -92,10 +100,6 @@ const CellCellInteractionTab = ({roiID, neighborsData}) => {
     if (!cellData) {
         return <></>
     }
-
-
-    const labels = [...new Set(cellData.cell_type)].sort(natsort());
-    console.log(labels)
 
     return (
         <>
@@ -154,8 +158,8 @@ const CellCellInteractionTab = ({roiID, neighborsData}) => {
                     {
                         showViz ? <Heatmap title="Cell interactions"
                                            data={result.current}
-                                           xlabel={labels}
-                                           ylabel={labels}
+                                           xlabel={labels.current}
+                                           ylabel={labels.current}
                                            height={500}
                                            width={500}
                         /> : <></>
