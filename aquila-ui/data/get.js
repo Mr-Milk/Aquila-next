@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export const fetcher = async url => {
-    console.log(`GET: ${url}`)
     try {
         const res = await axios.get(url);
         return res.data;

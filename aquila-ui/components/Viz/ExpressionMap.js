@@ -30,8 +30,8 @@ const AssignColor = (colors, arr, min, max) => {
 
 const ExpMap = ({cx, cy, exp, markerName, ...leftProps}) => {
 
-    const min_exp = Math.min(exp);
-    const max_exp = Math.max(exp);
+    const min_exp = Math.min(...exp);
+    const max_exp = Math.max(...exp);
     const colors = AssignColor(color_pool, exp);
     const size = cx.length;
     const canvasSize = ResponsiveSize(size);
