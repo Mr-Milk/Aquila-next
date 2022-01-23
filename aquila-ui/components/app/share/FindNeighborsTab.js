@@ -1,6 +1,6 @@
 import {runCellNeighbors} from "data/post";
 import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "data/get";
+import {fetcher, getCellInfoURL, useCellData} from "data/get";
 import CellMap from "components/Viz/CellMap";
 import Grid from "@mui/material/Grid";
 import {useEffect, useRef, useState} from "react";
@@ -55,9 +55,7 @@ const getRunBody = (cx, cy, ct, method, r, k) => {
 // }
 
 
-const FindNeighborsTab = ({roiID, updateNeighbors, getNeighbors}) => {
-
-    const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+const FindNeighborsTab = ({roiID, cellData, updateNeighbors, getNeighbors}) => {
 
     const r = useRef(10);
     const k = useRef(3);
@@ -68,9 +66,7 @@ const FindNeighborsTab = ({roiID, updateNeighbors, getNeighbors}) => {
     const [raiseRunError, setRaiseRunError] = useState(false);
     const [showViz, setShowViz] = useState(0);
 
-    useEffect(() => {
-        setShowViz(0);
-    }, [roiID]);
+    useEffect(() => {setShowViz(0);}, [roiID]);
 
     const handleMethodSelect = (e) => {
         setMethod(e.target.value)

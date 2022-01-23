@@ -46,7 +46,6 @@ const SpatialEntropyTab = ({roiID}) => {
                     cell_type: cellData.cell_type,
                     d: parseInt(d.current)
                 };
-                console.log(body)
                 axios.post(runSpatialEntropy, body).then((res) => {
                     setResult(res.data.entropy);
                 }).catch((e) => console.log(e))

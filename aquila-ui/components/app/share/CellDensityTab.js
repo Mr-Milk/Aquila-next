@@ -8,9 +8,8 @@ import Grid from "@mui/material/Grid";
 import natsort from "natsort";
 
 
-const CellDensityTab = ({roiID}) => {
+const CellDensityTab = ({ cellData }) => {
 
-    const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
     const [showViz, setShowViz] = useState(0);
     let densityResult = useRef({x: [], y: []});
 
@@ -33,10 +32,9 @@ const CellDensityTab = ({roiID}) => {
         }
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         runAnalysis(cellData)
-    }, [roiID]);
+    }, [cellData, runAnalysis]);
 
     return (
         <Grid container flexDirection="row" justifyContent="center">

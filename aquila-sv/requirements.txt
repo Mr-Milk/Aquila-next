@@ -1,0 +1,9 @@
+numpy
+pandas
+anndata
+scipy
+gpflow
+patsy
+NaiveDE
+fastapi[full]
+uvicorn

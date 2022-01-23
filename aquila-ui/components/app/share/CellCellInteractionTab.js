@@ -30,9 +30,7 @@ const processResult = (data) => {
 }
 
 
-const CellCellInteractionTab = ({roiID, neighborsData}) => {
-
-    const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
 
     const pvalue = useRef(0.05);
     const times = useRef(500);
