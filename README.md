@@ -4,9 +4,23 @@
 
 The scripts are written in Python, the database use PostgreSQL.
 
-### API Server `aquila-api`
+### API Server `aquila-api` and `aquila-sv`
 
 The API Server is written in Rust, including the analysis code. The spatial variable gene is called from python, so a specific python env must be satified.
+
+To run a dev build
+```shell
+cd aquila-api
+cargo watch -x 'run --bin aquila-api' --workdir .
+```
+
+To run a production build
+```shell
+cargo build --release && ./target/release/aquila-api
+```
+
+The computed server for spatial variable gene is in FastAPI and run as docker image.
+
 
 ### UI `aquila-ui`
 
