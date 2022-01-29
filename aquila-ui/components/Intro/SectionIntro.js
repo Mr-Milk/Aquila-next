@@ -2,12 +2,11 @@ import Image from "next/image";
 import Typography from "@mui/material/Typography";
 import MuiNextLink from "components/Link";
 import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 
 const SectionIntro = () => {
     return (
-        <Container component="section" maxWidth="md" sx={{mt: {sm: 2, xs: 4}, mb: 2}}>
+
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={6} container flexDirection="column" justifyContent="center" alignItems="center">
                     <Typography component="h2" variant="h4" textAlign="center" gutterBottom>
@@ -15,8 +14,7 @@ const SectionIntro = () => {
                     </Typography>
                     <Typography component="p" textAlign="center">
                         {`Aquila is a spatial single cell pathology database, 
-                        we collect single cell data with spatial information. 
-                        Start viewing the data at the table below.`}
+                        we collect single cell data with spatial information.`}
                     </Typography>
                     <MuiNextLink href="/view" sx={{mt: 2}}>
                         <Button variant="outlined" disableElevation>
@@ -34,7 +32,6 @@ const SectionIntro = () => {
                     />
                 </Grid>
             </Grid>
-        </Container>
     );
 };
 

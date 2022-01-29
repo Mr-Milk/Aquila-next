@@ -55,14 +55,14 @@ pub fn chisquare2pvalue(chi2_value: f64, ddof: f64) -> f64 {
     1.0 - chi2_dist.cdf(chi2_value)
 }
 
-pub fn build_array2(data: &Vec<Vec<usize>>, indices: Vec<usize>) -> Array2<f64> {
+pub fn build_array2(data: &Vec<Vec<f64>>, indices: Vec<usize>) -> Array2<f64> {
     let mut arr1: Vec<f64> = vec![];
     let pairs_count = indices.len();
     let marker_count = data.len();
 
     for marker_vec in data {
         for i in &indices {
-            arr1.push(*marker_vec.get(*i).unwrap() as f64)
+            arr1.push(*marker_vec.get(*i).unwrap())
         }
     }
     Array::from_shape_vec((marker_count, pairs_count), arr1).unwrap()
