@@ -43,6 +43,7 @@ def anndata2static(data: Union[ad.AnnData, Path, str], save_dir=None, dry_run=Fa
     for f in ['cell_x', 'cell_y']:
         assert f in obs_keys, f"`{f}` not in obs keys"
     assert 'markers' in var_keys, "`markers` not in var keys"
+    markers = data.var['markers']
     has_cell_type = True if 'cell_type' in obs_keys else False
 
     roi_cols = data.uns['roi_cols']
@@ -52,10 +53,6 @@ def anndata2static(data: Union[ad.AnnData, Path, str], save_dir=None, dry_run=Fa
 
     roi_info: pd.DataFrame = data.obs[roi_cols]
     cell_info: pd.DataFrame = data.obs[cell_info_cols]
-    if marker_col is None:
-        markers = data.var.index
-    else:
-        markers = data.var[marker_col]
 
     cell_exp = pd.DataFrame(data=data.X)
     cell_exp.columns = markers
@@ -63,7 +60,8 @@ def anndata2static(data: Union[ad.AnnData, Path, str], save_dir=None, dry_run=Fa
     hash_seed = str(len(roi_info)) + str(cell_exp.shape[1])
     h = hashlib.blake2s(digest_size=16)
     h.update(hash_seed.encode())
-    save_dir = save_dir / h.hexdigest()
+    data_id = h.hexdigest()
+    save_dir = save_dir / data_id
 
     if not dry_run:
         save_dir.mkdir(exist_ok=True)

@@ -49,6 +49,7 @@ def copy2remote(source, remote, ssh_config=None) -> Popen:
     log.info(f"Copy {source} to {remote} on host {hostname}")
 
     ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(hostname, username=username, password=password)
     sftp = ssh.open_sftp()
     sftp.put(source, remote)
@@ -210,4 +211,4 @@ def create_record(
     df2sql(cell_info_db, CellInfo)
     log.info("Successfully dump to database")
 
-    # copy2remote(entry/'all.zip', f"{config['REMOTE_DIR']}/{data_uuid}.zip")
+    copy2remote(entry/'all.zip', f"{config['REMOTE_DIR']}/{data_uuid}.zip")
