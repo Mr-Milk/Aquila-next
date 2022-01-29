@@ -105,7 +105,7 @@ const DataTable = ({data}) => {
         textLabels: {
             body: {
                 columnHeaderTooltip: column => {
-                    return (hints[column.name] != undefined) ? hints[column.name] : column.label
+                    return (hints[column.name] !== undefined) ? hints[column.name] : column.label
                 }
             }
         }

@@ -15,12 +15,10 @@ const ViewROIButton = styled('span')(({theme}) => ({
 }))
 
 
-const ROITable = ({dataID, updateFn}) => {
-
-    const {data, _} = useSWR(`${getROIMetaURL}/${dataID}`, fetcher);
+const ROITable = ({ roiMeta, updateFn }) => {
 
     const renderData = [];
-    data.map((d) => {
+    roiMeta.map((d) => {
         renderData.push(JSON.parse(d["meta"]));
     });
 
@@ -62,7 +60,7 @@ const ROITable = ({dataID, updateFn}) => {
         return columns;
     }, [updateFn]);
 
-    const columns = useMemo(() => getColumns(data), [data, getColumns]);
+    const columns = useMemo(() => getColumns(roiMeta), [roiMeta, getColumns]);
 
     const options = {
         selectableRowsHideCheckboxes: true,
@@ -71,7 +69,6 @@ const ROITable = ({dataID, updateFn}) => {
         elevation: 0,
         download: false,
         responsive: "standard",
-        // customFooter: () => {return <></>},
         setTableProps: () => {
             return {
                 // material ui v4 only

@@ -1,6 +1,4 @@
 import {useEffect, useMemo, useRef, useState} from "react";
-import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "data/get";
 import Grid from "@mui/material/Grid";
 import Selector from "components/Selector";
 import NumberInput, {inRangeFloat, inRangeInt} from "components/NumberInput";
@@ -11,6 +9,7 @@ import {runCellInterations} from "data/post";
 import Heatmap from "components/Viz/Heatmap";
 import natsort from "natsort";
 import axios from "axios";
+import RunBotton from "./RunAnalysisButton";
 
 const patternMap = {'0': 'Non significant', '1': 'Attract', '-1': 'Repeal'}
 
@@ -130,25 +129,7 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
                     />
                 </Grid>
                 <Grid item>
-                    <Button
-                        variant="contained"
-                        disableElevation
-                        sx={{color: "common.white"}}
-                        onClick={handleRun}
-                    >
-                        Run
-                    </Button>
-                    <Snackbar
-                        open={raiseRunError}
-                        autoHideDuration={6000}
-                        message="Invalid Input Parameter"
-                        security="error"
-                        onClose={() => setRaiseRunError(false)}
-                    >
-                        <Alert onClose={() => setRaiseRunError(false)} severity="error" sx={{width: '100%'}}>
-                            Invalid input parameter
-                        </Alert>
-                    </Snackbar>
+                    <RunBotton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
                 </Grid>
             </Grid>
             <Grid component={"div"} container flexDirection="row" justifyContent="center" alignItems="center">

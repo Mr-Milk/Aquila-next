@@ -12,7 +12,7 @@ const NotFoundPage = () => {
             <Grid container rowSpacing={3} flexDirection={"row"}>
                 <Grid item xs={12}>
                     <Image
-                        src={"/undraw_taken_re_yn20.svgene"}
+                        src={"/undraw_taken_re_yn20.svg"}
                         alt={"data visualization"}
                         layout={"responsive"}
                         width={400}

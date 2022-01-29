@@ -35,10 +35,3 @@ export function TabPanel(props) {
         return <></>
     }
 }
-
-export function a11yProps(index, mixcode) {
-    return {
-        id: `${mixcode}-Panel-${index}`,
-        'aria-controls': `${mixcode}-${index}`,
-    };
-}

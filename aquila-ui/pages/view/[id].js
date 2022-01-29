@@ -1,8 +1,16 @@
-import {fetcher, getDataIdURL, getOneRecordURL, getROIMetaURL} from "data/get";
-import {SWRConfig} from "swr";
+import {
+    fetcher,
+    getDataIdURL,
+    getOneRecordURL,
+    getROIMetaURL,
+    useCellData,
+    useDataInfo,
+    useROIMeta
+} from "data/get";
+import useSWR, {SWRConfig} from "swr";
 import {Container, Grid} from "@mui/material";
 import {styled} from "@mui/styles";
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import ROITable from "components/DataTable/ROISelector";
 import RecordDetailsTable from "components/DataTable/RecordDetailsTable";
 import ROIMaps from "components/app/View/ROIMaps";
@@ -11,8 +19,6 @@ import ClientOnly from "components/ClientOnly";
 import Head from 'next/head';
 import AnalysisTab from "components/app/View/AnalysisTab";
 
-
-// export const ROIContext = createContext({value: "", loadROI: ""});
 
 const ContentBox = styled('div')(
     ({theme}) => ({
@@ -27,9 +33,18 @@ const ContentBox = styled('div')(
     }))
 
 
-const DetailsPage = ({id, init_roi, fallback}) => {
 
-    const [currentROI, setROI] = useState(init_roi);
+const DetailsPage = ({ id, initROI, initMarker, fallback }) => {
+
+    const [currentROI, setROI] = useState(initROI);
+    const [marker, setMarker] = useState(initMarker);
+
+    const changeMarker = (e, v) => setMarker(v);
+
+    const {data: recordData} = useDataInfo(id);
+    const {data: roiMeta} = useROIMeta(id);
+    const {data: cellData} = useCellData(currentROI);
+
 
     return (
         <SWRConfig value={{fallback}}>
@@ -49,24 +64,15 @@ const DetailsPage = ({id, init_roi, fallback}) => {
                     <Grid component={"div"} item xs={12} md={8}>
                         <ClientOnly>
                             <ContentBox>
-                                <ROITable dataID={id} updateFn={setROI}/>
+                                <ROITable roiMeta={roiMeta} updateFn={setROI}/>
                             </ContentBox>
                         </ClientOnly>
 
                     </Grid>
                 </Grid>
-
-
-                {/*<ROIContext.Provider value={{*/}
-                {/*    currentROI, loadROI: currentValue => {setROI(currentValue)}*/}
-                {/*}}>*/}
-
-
-                {/*</ROIContext.Provider>*/}
-                <ROIMaps dataID={id} roiID={currentROI}/>
-                <AnalysisTab dataID={id} roiID={currentROI}/>
+                <ROIMaps  roiID={currentROI} recordData={recordData} cellData={cellData} marker={marker} updateMarker={changeMarker}/>
+                <AnalysisTab roiID={currentROI} recordData={recordData} cellData={cellData}/>
             </Container>
-
         </SWRConfig>
     )
 }
@@ -89,18 +95,22 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}) {
     const RecordURL = `${getOneRecordURL}/${params.id}`;
     const ROIMetaURL = `${getROIMetaURL}/${params.id}`;
-    const data_records = await fetcher(RecordURL);
-    const roi_info = await fetcher(ROIMetaURL);
-    const init_roi = roi_info[0]['roi_id'];
+
+    const recordData = await fetcher(RecordURL);
+    const roiMeta = await fetcher(ROIMetaURL);
+
+    const initROI = roiMeta[0]['roi_id'];
+    const initMarker = recordData.markers[0];
 
     const fallbackData = {};
-    fallbackData[`${RecordURL}`] = data_records
-    fallbackData[`${ROIMetaURL}`] = roi_info
+    fallbackData[`${RecordURL}`] = recordData
+    fallbackData[`${ROIMetaURL}`] = roiMeta
 
     return {
         props: {
             id: params.id,
-            init_roi: init_roi,
+            initROI: initROI,
+            initMarker: initMarker,
             fallback: fallbackData
         }
     }

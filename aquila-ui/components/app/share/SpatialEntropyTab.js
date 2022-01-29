@@ -10,10 +10,10 @@ import Alert from "@mui/material/Alert";
 import axios from "axios";
 import {runEntropy, runSpatialEntropy} from "data/post";
 import Typography from "@mui/material/Typography";
+import RunBotton from "./RunAnalysisButton";
 
 
-const SpatialEntropyTab = ({roiID}) => {
-    const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+const SpatialEntropyTab = ({ cellData }) => {
 
     const d = useRef(10);
 
@@ -81,25 +81,7 @@ const SpatialEntropyTab = ({roiID}) => {
                     />
                 </Grid>
                 <Grid item>
-                    <Button
-                        variant="contained"
-                        disableElevation
-                        sx={{color: "common.white"}}
-                        onClick={handleRun}
-                    >
-                        Run
-                    </Button>
-                    <Snackbar
-                        open={raiseRunError}
-                        autoHideDuration={6000}
-                        message="Invalid Input Parameter"
-                        security="error"
-                        onClose={() => setRaiseRunError(false)}
-                    >
-                        <Alert onClose={() => setRaiseRunError(false)} severity="error" sx={{width: '100%'}}>
-                            Invalid input parameter
-                        </Alert>
-                    </Snackbar>
+                    <RunBotton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
                 </Grid>
             </Grid>
             {(result !== 0) ?

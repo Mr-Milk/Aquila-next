@@ -7,23 +7,19 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Grid";
+import {Tooltip} from "@mui/material";
 
 
 const Footer = () => {
 
     const IconButtonStyle = {
-        bgcolor: "primary.main",
         borderRadius: "50%",
         color: "white",
-        '&:hover': {
-            bgcolor: "primary.light"
-        }
     }
 
     return <Box component="footer" sx={{
         py: 3,
         textAlign: "center",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
         borderTopStyle: "solid",
         borderTopWidth: "1px",
         backdropFilter: "blur(8px)",
@@ -33,22 +29,46 @@ const Footer = () => {
             direction="row"
             justifyContent="center"
             spacing={2}
-            sx={{mb: 3}}
+            sx={{my: 2}}
         >
-            <IconButton sx={IconButtonStyle}>
-                <GitHub/>
-            </IconButton>
-            <IconButton sx={IconButtonStyle}>
-                <Email/>
-            </IconButton>
-            <IconButton sx={IconButtonStyle}>
-                <Science/>
-            </IconButton>
+            <Tooltip title="Github">
+                <IconButton href="https://github.com/Mr-Milk/Aquila-next"
+                            sx={{
+                                bgcolor: "#0C0C0C",
+                                '&:hover': {bgcolor: "#434343"},
+                                ...IconButtonStyle
+                            }}>
+                    <GitHub/>
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Email us">
+                <IconButton href="mailto:echeung@um.edu.mo"
+                            sx={{
+                                bgcolor: "#0D5661",
+                                '&:hover': {bgcolor: "#0089A7"},
+                                ...IconButtonStyle
+                            }}
+                >
+                    <Email/>
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Lab page">
+                <IconButton href="https://cheunglab.org"
+                            sx={{
+                                bgcolor: "#CC543A",
+                                '&:hover': {bgcolor: "#ED784A"},
+                                ...IconButtonStyle
+                            }}>
+                    <Science/>
+                </IconButton>
+            </Tooltip>
         </Stack>
 
         <Grid container direction="row" alignItems="center" justifyContent="center" spacing={2}>
             <Grid item>
-                <Typography align="right" color={"black"}>
+                <Typography align="right" color={"black"} fontFamily={"Outfit"}>
                     ©{new Date().getFullYear()} Cheung Lab, University of Macau
                 </Typography>
             </Grid>

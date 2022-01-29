@@ -1,18 +1,21 @@
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import {TabPanel} from "components/TabPanel";
 import useSWR from "swr";
-import {fetcher, getOneRecordURL} from "data/get";
-import FindNeighborsTab from "components/app/View/FindNeighborsTab";
-import CellComponentTab from "components/app/View/CellComponentTab";
-import CellDensityTab from "components/app/View/CellDensityTab";
-import CellDistributionTab from "components/app/View/CellDistributionTab";
-import SpatialEntropyTab from "components/app/View/SpatialEntropyTab";
+import {fetcher, getOneRecordURL, useCellData, useExpData} from "data/get";
+import FindNeighborsTab from "components/app/share/FindNeighborsTab";
+import CellComponentTab from "components/app/share/CellComponentTab";
+import CellDensityTab from "components/app/share/CellDensityTab";
+import CellDistributionTab from "components/app/share/CellDistributionTab";
+import SpatialEntropyTab from "components/app/share/SpatialEntropyTab";
 import Tooltip from "@mui/material/Tooltip";
-import CellCellInteractionTab from "components/app/View/CellCellInteractionTab";
+import CellCellInteractionTab from "components/app/share/CellCellInteractionTab";
+import SpatialCoExpTab from "./SpatialCoExpTab";
+import SpatialAutocorrTab from "../share/SpatialAutocorrTab";
+import SVGeneTab from "../share/SVGeneTab";
 
 
 const noCellTypeHelp = "Cell type annotation unavailable in this dataset"
@@ -47,23 +50,20 @@ const TabTitle = ({label, disabled, disabledText, ...other}) => {
 }
 
 
-const AnalysisTab = ({dataID, roiID}) => {
+const AnalysisTab = ({ roiID, recordData, cellData }) => {
 
-    const {data, error} = useSWR(`${getOneRecordURL}/${dataID}`, fetcher);
-    const hasCellType = (data === undefined) ? true : data.has_cell_type;
+    const hasCellType = recordData.has_cell_type;
 
     const neighborsData = useRef({});
     const [value, setValue] = useState(0);
     const [neighborsReady, setNeighborsStatus] = useState(false);
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    const handleChange = (e, v) => setValue(v)
     const afterNeighbors = (neighbors) => {
         neighborsData.current = neighbors;
         setNeighborsStatus(true)
     }
-    const getNeighbors = () => neighborsData.current
+    const getNeighbors = useCallback(() => neighborsData.current, [])
 
     useEffect(() => {
         setNeighborsStatus(false)
@@ -91,44 +91,57 @@ const AnalysisTab = ({dataID, roiID}) => {
                     <TabTitle id="tab-b-5" label="Cell-Cell Interaction"
                               disabled={false}//disabled={(!hasCellType) || (!neighborsReady)}
                               disabledText={findNeighborsHelp(neighborsReady, hasCellType)}/>
-                    <TabTitle id="tab-b-6" label="Spatial co-expression" disabled={!neighborsReady}
-                              disabledText={noNeighborsHelp}/>
-                    <TabTitle id="tab-b-7" label="Spatial autocorrelation" disabled={!neighborsReady}
-                              disabledText={noNeighborsHelp}/>
-                    <TabTitle id="tab-b-8" label="Spatial variable gene" disabled={!neighborsReady}
-                              disabledText={noNeighborsHelp}/>
+                    {/*<TabTitle id="tab-b-6" label="Spatial co-expression" disabled={!neighborsReady}*/}
+                    {/*          disabledText={noNeighborsHelp}/>*/}
+                    <TabTitle id="tab-b-7" label="Spatial autocorrelation"
+                              disabled={false}//disabled={!neighborsReady}
+                              disabledText={noNeighborsHelp}
+                    />
+                    <TabTitle id="tab-b-8" label="Spatial variable gene"
+                              disabled={false}//disabled={!neighborsReady}
+                              disabledText={noNeighborsHelp}
+                    />
                 </Tabs>
                 <TabPanel roiID={roiID} value={value} index={0}>
-                    <CellComponentTab roiID={roiID}/>
+                    <CellComponentTab cellData={cellData}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={1}>
-                    <CellDensityTab roiID={roiID}/>
+                    <CellDensityTab cellData={cellData}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={2}>
-                    <CellDistributionTab roiID={roiID}/>
+                    <CellDistributionTab cellData={cellData}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={3}>
-                    <SpatialEntropyTab roiID={roiID}/>
+                    <SpatialEntropyTab cellData={cellData}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={4}>
                     <FindNeighborsTab roiID={roiID}
+                                      cellData={cellData}
                                       updateNeighbors={afterNeighbors}
-                        // neighborsData={neighborsData.current}
                                       getNeighbors={getNeighbors}
                     />
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={5}>
-                    <Typography>Cell-Cell Interaction</Typography>
-                    <CellCellInteractionTab roiID={roiID} neighborsData={neighborsData.current}/>
+                    <CellCellInteractionTab roiID={roiID} cellData={cellData} neighborsData={neighborsData.current}/>
                 </TabPanel>
+                {/*<TabPanel roiID={roiID} value={value} index={6}>*/}
+                {/*    <Typography>Spatial co-expression page</Typography>*/}
+                {/*    <SpatialCoExpTab roiID={roiID} getNeighbors={getNeighbors} />*/}
+                {/*</TabPanel>*/}
                 <TabPanel roiID={roiID} value={value} index={6}>
-                    <Typography>Spatial co-expression page</Typography>
+                    <SpatialAutocorrTab roiID={roiID}
+                                        recordData={recordData}
+                                        cellData={cellData}
+                                        getNeighbors={getNeighbors}
+                                        getExpData={useExpData}
+                    />
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={7}>
-                    <Typography>Spatial autocorrelation page</Typography>
-                </TabPanel>
-                <TabPanel roiID={roiID} value={value} index={8}>
-                    <Typography>Spatial variable gene page</Typography>
+                    <SVGeneTab roiID={roiID}
+                                        recordData={recordData}
+                                        cellData={cellData}
+                                        getExpData={useExpData}
+                    />
                 </TabPanel>
             </Box>
         </Box>

@@ -1,9 +1,7 @@
-import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "data/get";
 import axios from "axios";
 import {runCellDensity} from "data/post";
 import BarChart from "components/Viz/BarChart";
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import Grid from "@mui/material/Grid";
 import natsort from "natsort";
 
@@ -13,7 +11,7 @@ const CellDensityTab = ({ cellData }) => {
     const [showViz, setShowViz] = useState(0);
     let densityResult = useRef({x: [], y: []});
 
-    const runAnalysis = (data) => {
+    const runAnalysis = useCallback((data) => {
         if (data === undefined) {
             return {}
         } else {
@@ -30,11 +28,13 @@ const CellDensityTab = ({ cellData }) => {
                 setShowViz(showViz + 1)
             }).catch((e) => console.log(e));
         }
-    }
+    }, [showViz])
 
+    // do not remove this line, don't give a shit about the IDE
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         runAnalysis(cellData)
-    }, [cellData, runAnalysis]);
+    }, [cellData]);
 
     return (
         <Grid container flexDirection="row" justifyContent="center">

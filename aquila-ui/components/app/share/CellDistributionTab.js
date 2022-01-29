@@ -1,5 +1,3 @@
-import useSWR from "swr";
-import {fetcher, getCellInfoURL} from "data/get";
 import axios from "axios";
 import {runCellDistribution} from "data/post";
 import Grid from "@mui/material/Grid";
@@ -17,6 +15,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import natsort from "natsort";
+import RunBotton from "./RunAnalysisButton";
 
 
 const getRunBody = (cx, cy, ct, method, pvalue, r, resample, quad) => {
@@ -73,11 +72,11 @@ const ResultTable = ({data}) => {
                     </TableHead>
                     <TableBody>
                         {
-                            [...Array(size).keys()].map((i) => (
+                            rebakeData.map((item, i) => (
                                 <TableRow key={i}>
-                                    <TableCell>{data.cell_type[i]}</TableCell>
-                                    <TableCell>{patternMap[data.pattern[i]]}</TableCell>
-                                    <TableCell>{displayIxValue(data.ix_value[i])}</TableCell>
+                                    <TableCell>{item.cell_type}</TableCell>
+                                    <TableCell>{item.pattern}</TableCell>
+                                    <TableCell>{item.ix}</TableCell>
                                 </TableRow>
                             ))
                         }
@@ -91,8 +90,7 @@ const ResultTable = ({data}) => {
 }
 
 
-const CellDistributionTab = ({roiID}) => {
-    const {data: cellData, _} = useSWR(`${getCellInfoURL}/${roiID}`, fetcher);
+const CellDistributionTab = ({ cellData }) => {
 
     const r = useRef(10);
     const times = useRef(500);
@@ -110,9 +108,7 @@ const CellDistributionTab = ({roiID}) => {
     const [raiseRunError, setRaiseRunError] = useState(false);
     const [showResult, setShowResult] = useState(0);
 
-    const handleMethodSelect = (e) => {
-        setMethod(e.target.value)
-    };
+    const handleMethodSelect = (e) => setMethod(e.target.value);
 
     const checkTimes = (e) => {
         if (!inRangeInt(e.target.value, 1, 1000)) {
@@ -225,25 +221,7 @@ const CellDistributionTab = ({roiID}) => {
                         />
                     </Grid>
                     <Grid item>
-                        <Button
-                            variant="contained"
-                            disableElevation
-                            sx={{color: "common.white"}}
-                            onClick={handleRun}
-                        >
-                            Run
-                        </Button>
-                        <Snackbar
-                            open={raiseRunError}
-                            autoHideDuration={6000}
-                            message="Invalid Input Parameter"
-                            security="error"
-                            onClose={() => setRaiseRunError(false)}
-                        >
-                            <Alert onClose={() => setRaiseRunError(false)} severity="error" sx={{width: '100%'}}>
-                                Invalid input parameter
-                            </Alert>
-                        </Snackbar>
+                        <RunBotton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
                     </Grid>
                 </Grid>
                 <Grid component={"div"} container flexDirection="row" justifyContent="center" alignItems="center">
