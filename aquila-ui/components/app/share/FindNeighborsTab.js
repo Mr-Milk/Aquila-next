@@ -4,9 +4,6 @@ import Grid from "@mui/material/Grid";
 import {useEffect, useRef, useState} from "react";
 import Selector from "components/Selector";
 import NumberInput, {isPosInt} from "components/NumberInput";
-import Button from "@mui/material/Button";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert"
 import axios from "axios";
 import RunBotton from "./RunAnalysisButton";
 

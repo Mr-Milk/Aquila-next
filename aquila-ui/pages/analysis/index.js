@@ -1,6 +1,6 @@
 import {useDropzone} from 'react-dropzone';
 import Container from "@mui/material/Container";
-import {memo, useRef, useState} from "react";
+import {memo, useEffect, useRef, useState} from "react";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import {v4 as uuid4} from 'uuid';
@@ -25,9 +25,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import {cellInfo, expInfo, roiRecord} from "db/fileprocess";
-import {ErrorOutline} from "@mui/icons-material";
-import {useWorker, WORKER_STATUS} from "@koale/useworker";
+import ErrorOutline from "@mui/icons-material/ErrorOutline";
+import * as Comlink from "comlink";
 
 
 function humanFileSize(bytes, si = false, dp = 1) {
@@ -55,28 +54,28 @@ function humanFileSize(bytes, si = false, dp = 1) {
 const InfoSection = () => {
     return (
         <Box component="div"
-                 sx={{
-                     p: 2,
-                     my: 4,
-                     maxWidth: "500px",
-                     borderRadius: 2,
-                     borderStyle: 'solid',
-                     borderColor: "primary.main",
-                 }}
-            >
-                <Alert severity="info" icon={false} sx={{mb: 2}}>
-                    <AlertTitle>File Preparation</AlertTitle>
-                    {`You need to prepare three files with same line number to run analysis on Aquila.
+             sx={{
+                 p: 2,
+                 my: 4,
+                 maxWidth: "500px",
+                 borderRadius: 2,
+                 borderStyle: 'solid',
+                 borderColor: "primary.main",
+             }}
+        >
+            <Alert severity="info" icon={false} sx={{mb: 2}}>
+                <AlertTitle>File Preparation</AlertTitle>
+                {`You need to prepare three files with same line number to run analysis on Aquila.
                     Each line represent a cell (single-cell data) or a dot (non single-cell data) record.
                     You can click on the ❔ to check the details.`}
-                </Alert>
+            </Alert>
 
-                <Alert severity="info" icon={false}>
-                    <AlertTitle>Data Privacy</AlertTitle>
-                    All your data will be kept on this computer, only
-                    when you run the analysis will send data to server. None of the information from
-                    ROI File will be sent.</Alert>
-            </Box>
+            <Alert severity="info" icon={false}>
+                <AlertTitle>Data Privacy</AlertTitle>
+                All your data will be kept on this computer, only
+                when you run the analysis will send data to server. None of the information from
+                ROI File will be sent.</Alert>
+        </Box>
     )
 }
 
@@ -153,12 +152,12 @@ const StatusBar = ({status, text}) => {
     } else if (status === 'error') {
         return (
             <>
-            <ErrorOutline color='error' sx={{ml: 2, mt: 1}}/>
-            <Snackbar open={true} autoHideDuration={6000}>
-                <Alert severity="error" sx={{width: '100%'}}>
-                    Error occurs when processing files!
-                </Alert>
-            </Snackbar>
+                <ErrorOutline color='error' sx={{ml: 2, mt: 1}}/>
+                <Snackbar open={true} autoHideDuration={6000}>
+                    <Alert severity="error" sx={{width: '100%'}}>
+                        Error occurs when processing files!
+                    </Alert>
+                </Snackbar>
             </>
 
         )
@@ -181,9 +180,28 @@ const AnalysisPage = () => {
         expFile: "",
     })
 
+    // workers state
+    const [comlinkMessage, setComlinkMessage] = useState("");
+    const comlinkWorkerRef = useRef();
+    const comlinkWorkerApiRef = useRef();
+
+    useEffect(() => {
+        comlinkWorkerRef.current = new Worker(new URL('../../db/fileprocess.js', import.meta.url), {type: "module"})
+        comlinkWorkerApiRef.current = Comlink.wrap(comlinkWorkerRef.current);
+        console.log(comlinkWorkerRef)
+        return () => {
+            comlinkWorkerRef.current.terminate();
+        }
+    }, [])
+
     const checkIDExist = async (e) => {
         const exists = await db.DataRecords.get(e.target.value);
-        exists ? setErrorID(true) : setErrorID(false);
+        if (exists) {
+            setErrorID(true);
+        } else {
+            setErrorID(false);
+            dataID.current = e.target.value;
+        }
     }
 
     const onMetaDrop = (fs) => setFiles({...files, metaFile: fs[0]})
@@ -205,46 +223,40 @@ const AnalysisPage = () => {
         getInputProps: expInputProps,
     } = useDropzone({multiple: false, onDrop: onExpDrop});
 
-    const [runExpInfo] = useWorker(expInfo)
 
     const handleRun = async () => {
         setStatus("loading")
         // db.DataRecords.add({id: dataID.current, created_at: new Date().getTime()})
         try {
             setLoadingText("Processing ROI File")
-            const result = await roiRecord(files.metaFile, dataID.current)
+            const result = await comlinkWorkerApiRef.current.roiRecord(files.metaFile, dataID.current)
             console.log(result)
             setLoadingText("Processing Cell Info File")
-            const hasCellType = await cellInfo(files.infoFile, dataID.current, result.roiCellCount, result.roiMapper)
+            const hasCellType = await comlinkWorkerApiRef.current.cellInfo(files.infoFile, dataID.current, result.roiCellCount, result.roiMapper)
             console.log(hasCellType)
             setLoadingText("Processing Exp File")
-            console.log(WORKER_STATUS)
-            const expResult = await expInfo(files.expFile, dataID.current, result.roiCellCount, result.roiMapper)
+            const expResult = await comlinkWorkerApiRef.current.expInfo(files.expFile, dataID.current, result.roiCellCount, result.roiMapper)
             console.log(expResult)
+
+            const dataRecord = {
+                id: dataID.current,
+                created_at: new Date().getTime(),
+                has_cell_type: hasCellType,
+                roi_count: result.roiCount,
+                cell_count: result.cellCount,
+                marker_count: expResult.markerCount,
+                markers: expResult.markers,
+            }
+
+            db.DataRecords.add(dataRecord)
+            setStatus("finished")
+
         } catch (e) {
             setStatus("error")
             setLoadingText(e)
         }
 
-        // setLoadingText("Processing Exp File")
-        // const expResult = expInfo(files.expFile, dataID.current, result.roiCellCount, result.roiMapper)
-        // if (expResult.error) {
-        //     setStatus("error");
-        //     return;
-        // }
 
-        // const dataRecord = {
-        //     id: dataID.current,
-        //     created_at: new Date().getTime(),
-        //     hasCellType: infoResult.hasCellType,
-        //     roi_count: result.roiCount,
-        //     cell_count: result.cellCount,
-        //     marker_count: expResult.markerCount,
-        //     markers: expResult.markers,
-        // }
-        //
-        // db.DataRecords.add(dataRecord)
-        setStatus("finished")
     }
 
     return (
@@ -360,7 +372,7 @@ const AnalysisPage = () => {
                         defaultValue={dataID.current}
                         onChange={checkIDExist}
                         error={errorID}
-                        helperText={errorID ? 'ID already exists' : 'Better give a meaningful name or leave it as default'}
+                        helperText={errorID ? 'ID already exists' : 'Better give it a meaningful name'}
                         sx={{width: "320px", my: 4}}
                     />
                 </Grid>

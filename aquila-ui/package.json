@@ -18,8 +18,10 @@
     "@mui/material": "^5.2.3",
     "@mui/styles": "^5.2.3",
     "@next/bundle-analyzer": "^12.0.7",
+    "@plaiceholder/next": "^2.2.0",
     "axios": "^0.24.0",
     "clsx": "^1.1.1",
+    "comlink": "^4.3.1",
     "danfo": "^0.2.34",
     "dexie": "3.2.1-beta.2",
     "dexie-react-hooks": "^1.1.1",
@@ -35,6 +37,7 @@
     "next-compose-plugins": "^2.2.1",
     "next-transpile-modules": "^9.0.0",
     "papaparse": "^5.3.1",
+    "plaiceholder": "^2.2.0",
     "prop-types": "^15.7.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -44,8 +47,10 @@
     "react-timeago": "^6.2.1",
     "react-window": "^1.8.6",
     "recoil": "^0.5.2",
+    "sharp": "^0.30.0",
     "swr": "^1.1.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "worker-plugin": "^5.0.1"
   },
   "devDependencies": {
     "eslint": "8.4.1",

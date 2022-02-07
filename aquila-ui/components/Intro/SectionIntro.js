@@ -3,27 +3,32 @@ import Typography from "@mui/material/Typography";
 import MuiNextLink from "components/Link";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 
 const SectionIntro = () => {
 
     return (
         <>
-            <Grid container direction="row" alignItems="center" justifyContent="center" sx={{
-                my: { sm: 4 }
+            <Grid container direction="row" alignItems="center" justifyContent="space-evenly" sx={{
+                my: {sm: 4}
             }}>
                 <Grid item xs={10} sm={6} md={4} sx={{textAlign: "center"}}>
-                    <Typography component="h2" variant="h4" gutterBottom>
-                        {`What's Aquila?`}
-                    </Typography>
-                    <Typography component="p">
-                        {`Aquila is a spatial single cell pathology database, 
+                    <Box sx={{ maxWidth: 500 }}>
+                        <Typography variant="h4" gutterBottom>
+                            {`What's Aquila?`}
+                        </Typography>
+                        <Typography>
+                            {`Aquila is a spatial single cell pathology database, 
                         we collect single cell data with spatial information.`}
-                    </Typography>
-                    <MuiNextLink href="/view">
+                        </Typography>
+                        <MuiNextLink href="/view">
                         <Button variant="outlined" disableElevation sx={{my: 2}}>
                             Browse Data
                         </Button>
                     </MuiNextLink>
+                    </Box>
+
+
                 </Grid>
                 <Grid item xs={10} sm={6} md={4}>
                     <Image
@@ -36,10 +41,10 @@ const SectionIntro = () => {
                 </Grid>
             </Grid>
 
-            <Grid container direction="row" alignItems="center" justifyContent="center"
-                  sx={{my: { sm: 4 }}}>
+            <Grid container direction="row" alignItems="center" justifyContent="space-evenly"
+                  sx={{my: {sm: 4}}}>
 
-                <Grid item xs={10} sm={6} md={4} sx={{ mb: {xs: 2} }}>
+                <Grid item xs={10} sm={6} md={4} sx={{mb: {xs: 2}}}>
                     <Image
                         src={"/undraw_data_extraction_re_0rd3.svg"}
                         alt={"data visualization"}

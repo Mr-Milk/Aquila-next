@@ -1,16 +1,8 @@
-import {
-    fetcher,
-    getDataIdURL,
-    getOneRecordURL,
-    getROIMetaURL,
-    useCellData,
-    useDataInfo,
-    useROIMeta
-} from "data/get";
-import useSWR, {SWRConfig} from "swr";
+import {fetcher, getDataIdURL, getOneRecordURL, getROIMetaURL, useCellData, useDataInfo, useROIMeta} from "data/get";
+import {SWRConfig} from "swr";
 import {Container, Grid} from "@mui/material";
 import {styled} from "@mui/styles";
-import {useMemo, useState} from "react";
+import {useState} from "react";
 import ROITable from "components/DataTable/ROISelector";
 import RecordDetailsTable from "components/DataTable/RecordDetailsTable";
 import ROIMaps from "components/app/View/ROIMaps";

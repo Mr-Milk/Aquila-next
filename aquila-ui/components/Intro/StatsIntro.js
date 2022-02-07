@@ -1,14 +1,8 @@
 import Grid from "@mui/material/Grid";
 // import StasCard from "../InfoDisplay/StatsCard";
-import {IoStatsChart} from "react-icons/io5";
-import {FaLungsVirus} from "react-icons/fa";
-import {GiHeartOrgan} from "react-icons/gi";
-import useSWR from "swr";
-import {fetcher, getDbStatsURL} from "data/get";
+import {useDBStats} from "data/get";
 import Typography from "@mui/material/Typography";
-import {IconContext} from "react-icons";
 import Puzzle from "../icons/Puzzle";
-import Lung from "../icons/Lung";
 import Cells from "../icons/Cells";
 import Badperson from "../icons/Badperson";
 
@@ -33,32 +27,24 @@ const StatsCard = ({ data, title, children }) => {
 
 const StatsIntro = () => {
 
-    const { data } = useSWR(getDbStatsURL, fetcher);
-
-    let dataCount, diseaseCount, tissueCount = [0, 0, 0];
-
-    if (data !== undefined) {
-        dataCount = data.data_count;
-        diseaseCount = data.disease_count;
-        tissueCount = data.tissue_count;
-    }
+    const { data } = useDBStats();
 
     return (
-        <Grid container flexDirection="row" alignItems="center" justifyContent="space-evenly" sx={{
-            my: 6, px: 8,
+        <Grid container flexDirection="row" alignItems="center" justifyContent="space-between" sx={{
+            my: 6, px: {md: 24, xs: 12},
         }}>
             <Grid item>
-                <StatsCard title={"Total Data"} data={dataCount}>
+                <StatsCard title={"Total Data"} data={data.data_count}>
                     <Puzzle width={50} height={50}/>
                 </StatsCard>
             </Grid>
             <Grid item>
-                <StatsCard title={"Total Disease"} data={diseaseCount}>
+                <StatsCard title={"Total Disease"} data={data.disease_count}>
                     <Badperson width={50} height={50}/>
                 </StatsCard>
             </Grid>
             <Grid item>
-                <StatsCard title={"Total Tissue"} data={tissueCount}>
+                <StatsCard title={"Total Tissue"} data={data.disease_count}>
                     <Cells width={50} height={50}/>
                 </StatsCard>
             </Grid>

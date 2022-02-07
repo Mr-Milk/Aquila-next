@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link"
 import Chip from "@mui/material/Chip";
+import {InfoRow, TitleCol} from "./utils";
 
 const LinkPool = {
     MIBI: "https://www.ionpath.com/",
@@ -37,31 +38,6 @@ const TechChip = ({name}) => {
     )
 }
 
-
-const TitleCol = (props) => {
-    return <TableCell>
-        <Typography sx={{fontWeight: "medium"}} variant={"body2"}>
-            {props.children}
-        </Typography>
-    </TableCell>
-}
-
-
-const TextCol = (props) => {
-    return <TableCell>
-        <Typography variant={"body2"}>
-            {props.children}
-        </Typography>
-    </TableCell>
-}
-
-
-const InfoRow = ({title, info}) => {
-    return <TableRow>
-        <TitleCol>{title}</TitleCol>
-        <TextCol>{info}</TextCol>
-    </TableRow>
-}
 
 const RecordDetailsTable = ({dataID}) => {
 

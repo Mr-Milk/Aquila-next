@@ -1,7 +1,6 @@
 import {useRef, useState} from "react";
-import NumberInput, {inRangeFloat, isPosInt} from "../../NumberInput";
+import NumberInput, {inRangeFloat} from "../../NumberInput";
 import axios from "axios";
-import {runEntropy, runSpatialAutoCorr, runSVGene} from "../../../data/post";
 import Grid from "@mui/material/Grid";
 import Selector from "../../Selector";
 import RunBotton from "./RunAnalysisButton";

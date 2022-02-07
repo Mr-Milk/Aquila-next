@@ -1,4 +1,4 @@
-import {Container, Grid} from "@mui/material";
+import {Container} from "@mui/material";
 import SectionIntro from "components/Intro/SectionIntro";
 import {fetcher, getDbStatsURL} from "data/get";
 import {SWRConfig} from "swr";

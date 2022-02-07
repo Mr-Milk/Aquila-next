@@ -7,13 +7,6 @@ let theme = createTheme({
         primary: orange,
         secondary: lightBlue,
     },
-    typography: {
-        fontFamily: ['Infer', 'Roboto', 'Arial', '-apple-system'].join(','),
-        h3: {fontWeight: 600},
-        h4: {fontWeight: 500},
-        h5: {fontWeight: 500},
-        h6: {fontWeight: 500},
-    }
 });
 
 theme = responsiveFontSizes(theme);

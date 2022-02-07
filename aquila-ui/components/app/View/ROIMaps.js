@@ -1,5 +1,5 @@
-import {useCellData, useDataInfo, useExpData} from "data/get";
-import {useEffect, useState} from "react";
+import {useExpData} from "data/get";
+import {useState} from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";

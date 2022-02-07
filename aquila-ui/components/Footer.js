@@ -73,7 +73,7 @@ const Footer = () => {
                 </Typography>
             </Grid>
             <Grid item>
-                <Avatar src="https://www.um.edu.mo/wp-content/uploads/2020/09/cropped-512-192x192.png"/>
+                <Avatar src="/UM-Logo.png"/>
             </Grid>
         </Grid>
     </Box>;

@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import {v4 as uuid4} from 'uuid';
 import {db} from 'db/schema';
+import * as Comlink from "comlink";
 
 
 const getHeader = (file, preview = 10) => {
@@ -20,7 +21,9 @@ const getHeader = (file, preview = 10) => {
 }
 
 
-export function roiRecord(file, dataID) {
+function roiRecord(file, dataID) {
+
+    console.log("call roi record")
 
     let roiCellCount = {};
     let roiMapper = {};
@@ -82,7 +85,7 @@ export function roiRecord(file, dataID) {
 }
 
 
-export async function cellInfo(file, dataID, roiCellCount, roiMapper) {
+async function cellInfo(file, dataID, roiCellCount, roiMapper) {
 
     const template = {
         cell_x: [],
@@ -153,7 +156,7 @@ export async function cellInfo(file, dataID, roiCellCount, roiMapper) {
 }
 
 
-export async function expInfo(file, dataID, roiCellCount, roiMapper) {
+async function expInfo(file, dataID, roiCellCount, roiMapper) {
 
     let lineCount = 0
 
@@ -218,3 +221,12 @@ export async function expInfo(file, dataID, roiCellCount, roiMapper) {
         })
     })
 }
+
+
+const fileApi = {
+    roiRecord,
+    cellInfo,
+    expInfo,
+}
+
+Comlink.expose(fileApi);

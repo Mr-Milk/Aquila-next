@@ -3,12 +3,11 @@ import Grid from "@mui/material/Grid";
 import Viewer from "../icons/Viewer";
 import Analysis from "../icons/Analysis";
 import Security from "../icons/Security";
-import {Container} from "@mui/material";
 
 const FeaturesCard = ({ title, content, children }) => {
     return (
         <Grid container flexDirection="column" sx={{
-            maxWidth: {md: '250px', xs: '350px'},
+            maxWidth: { xs: '250px'},
             my: {xs: 2 }
         }}>
             <Grid item>

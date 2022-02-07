@@ -30,7 +30,7 @@ const Record = ({ record, onClick }) => {
                 size="small"
                 target="_blank"
                 rel="noreferrer"
-                href={`/${record.id}`}
+                href={`/analysis/${record.id}`}
                 sx={{color: "#2D6D4B"}}
             >
                 <OpenInNew/>

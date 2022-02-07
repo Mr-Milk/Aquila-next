@@ -1,5 +1,4 @@
 import Grid from "@mui/material/Grid";
-import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
 import Histogram from "../../Viz/Histogram";
 import ExpMap from "../../Viz/ExpressionMap";
 import CellMap from "../../Viz/CellMap";
@@ -27,6 +26,7 @@ export const ExpPanel = ({ cellData, expData, marker }) => {
 }
 
 export const CellMapPanel = ({ cellData }) => {
+    console.log(cellData)
     return (
         <Grid component={"div"} container flexDirection="row" justifyContent="center">
             <Grid component={"div"} item>

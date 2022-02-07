@@ -1,10 +1,10 @@
-import {useCallback, useMemo, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import Grid from "@mui/material/Grid";
 import Selector from "../../Selector";
 import NumberInput, {inRangeFloat} from "../../NumberInput";
 import RunBotton from "../share/RunAnalysisButton";
 import axios from "axios";
-import {runSpatialCoexp, runSpatialCoexpDB} from "data/post";
+import {runSpatialCoexpDB} from "data/post";
 import Graph from "../../Viz/Graph";
 
 
