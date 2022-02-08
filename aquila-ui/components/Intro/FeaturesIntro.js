@@ -7,8 +7,12 @@ import Security from "../icons/Security";
 const FeaturesCard = ({ title, content, children }) => {
     return (
         <Grid container flexDirection="column" sx={{
-            maxWidth: { xs: '250px'},
-            my: {xs: 2 }
+            mt: { xs: 2 },
+            maxWidth: {
+                xs: "400px",
+                sm: "200px",
+                md: "250px",
+            }
         }}>
             <Grid item>
                 { children }
@@ -28,7 +32,16 @@ const FeaturesIntro = () => {
     return(
         <>
         <Grid container direction="row" justifyContent="space-evenly" alignItems="top" sx={{
-            borderTop: 1, borderColor: "divider", py: 6, px: { xs: 4 }
+            borderTop: 1,
+            borderColor: "divider",
+            px: {
+                xs: 3,
+                sm: 5,
+            },
+            pt: {
+                sm: 4,
+            },
+            mb: 4
         }}>
             <Grid item>
                 <FeaturesCard title="Viewer" content={`Navigation through all ROIs in a dataset, 

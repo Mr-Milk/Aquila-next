@@ -22,15 +22,23 @@ export default class MyDocument extends Document {
                     <meta name='format-detection' content='telephone=no'/>
                     <meta name='mobile-web-app-capable' content='yes'/>
                     <meta name="theme-color" content={theme.palette.primary.main}/>
+                    <meta name="msapplication-TileColor" content="#da532c"/>
 
                     <link rel='manifest' href='/manifest.json'/>
+                    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png"/>
+                    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+                    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png"/>
+                    <link rel="manifest" href="/icons/site.webmanifest"/>
+                    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5"/>
 
                     {/*Load required font*/}
                     <link rel="preconnect" href="https://fonts.googleapis.com"/>
-                    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={"true"}/>
+                    <link rel="preconnect" href="https://fonts.gstatic.com"
+                          crossOrigin={"true"}/>
                     <link rel="stylesheet"
                           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
-                    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit&display=swap"/>
+                    <link rel="stylesheet"
+                          href="https://fonts.googleapis.com/css2?family=Outfit&display=swap"/>
                 </Head>
                 <body>
                 <Main/>
@@ -99,4 +107,5 @@ MyDocument.getInitialProps = async (ctx) => {
         // Styles fragment is rendered after the app and page rendering finish.
         styles: [...React.Children.toArray(initialProps.styles), ...emotionStyleTags],
     };
-};
+}
+;

@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 /scripts/*.csv
-**/public/workbox-*.js
-**/public/sw.js
+**/public/*.zip
+**/public/*.js*
 # dependencies
 /node_modules
 /.pnp

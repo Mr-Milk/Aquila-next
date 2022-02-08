@@ -28,9 +28,16 @@ const withPWA = require("next-pwa");
 // };
 
 module.exports = withPlugins(
-    [withPlaiceholder, withBundleAnalyzer, withTranspileModules, [withPWA, {
-                pwa: { dest: 'public', disable: process.env.NODE_ENV === 'development', },
-
+    [
+        withPlaiceholder,
+        withBundleAnalyzer,
+        withTranspileModules,
+        [withPWA, {
+                pwa: {
+                    mode: 'production',
+                    dest: 'public',
+                    disable: process.env.NODE_ENV === 'development',
+                },
     }]],
     {
         reactStrictMode: true,

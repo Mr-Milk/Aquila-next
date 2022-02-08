@@ -37,6 +37,7 @@ const SectionIntro = () => {
                         layout={"responsive"}
                         width={850}
                         height={350}
+                        priority
                     />
                 </Grid>
             </Grid>
