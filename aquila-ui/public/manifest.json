@@ -1,0 +1,16 @@
+{
+  "name": "Aquila",
+  "short_name": "Aquila",
+  "description": "Spatial single cell database and analysis platform",
+  "icons": [
+    {
+      "src": "/AQUILA.svg",
+      "type": "image/svg"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#ffa726",
+  "background_color": "#FFFFFF"
+}
