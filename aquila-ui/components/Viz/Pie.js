@@ -1,23 +1,16 @@
 import {titleOpts} from "components/Viz/config";
 import natsort from "natsort";
 import Echarts from "./echarts-obj";
+import {counter} from "components/math";
 
-const Counter = (arr) => {
-    const counts = {};
-    arr.forEach((i) => {
-        counts[i] = counts[i] ? counts[i] + 1 : 1;
-    })
-    return Object.entries(counts).map(([k, v]) => {
-        return {name: k, value: v}
-    });
-}
+
 
 const Pie = ({arr, width, height, title}) => {
 
     width = width || '350px';
     height = height || '250px';
 
-    const data = Counter(arr);
+    const data = counter(arr);
     const legendData = data.map((i) => i.name).sort(natsort());
 
     const options = {

@@ -6,6 +6,7 @@ import Selector from "components/Selector";
 import NumberInput, {isPosInt} from "components/NumberInput";
 import axios from "axios";
 import RunBotton from "./RunAnalysisButton";
+import Typography from "@mui/material/Typography";
 
 
 const getRunBody = (cx, cy, ct, method, r, k) => {
@@ -51,7 +52,7 @@ const getRunBody = (cx, cy, ct, method, r, k) => {
 // }
 
 
-const FindNeighborsTab = ({roiID, cellData, updateNeighbors, getNeighbors}) => {
+const FindNeighborsTab = ({roiID, cellData, updateNeighbors, getNeighbors, getBBOX}) => {
 
     const r = useRef(10);
     const k = useRef(3);
@@ -102,14 +103,16 @@ const FindNeighborsTab = ({roiID, cellData, updateNeighbors, getNeighbors}) => {
         }
     }
     const neighborsData = getNeighbors();
+    const bboxData = getBBOX();
 
     if (!cellData) {
-        return <></>
+        return null
     }
 
 
     return (
         <>
+            <Typography>Bounding box of current ROI: {Math.abs(bboxData.x2-bboxData.x1).toFixed(1)} * {Math.abs(bboxData.y2-bboxData.y1).toFixed(1)}</Typography>
             <Grid container flexDirection="row" alignItems="center" justifyContent="flex-start" spacing={2}>
                 <Grid item>
                     <Selector title="Method" value={method} onChange={handleMethodSelect} items={{

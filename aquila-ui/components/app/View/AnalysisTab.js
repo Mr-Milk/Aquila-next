@@ -47,11 +47,17 @@ const TabTitle = ({label, disabled, disabledText, ...other}) => {
 }
 
 
+const bbox = (x, y) => {
+    return {x1: Math.min(...x), x2: Math.max(...x), y1: Math.min(...y), y2: Math.max(...y)}
+}
+
+
 const AnalysisTab = ({ roiID, recordData, cellData }) => {
 
     const hasCellType = recordData.has_cell_type;
 
     const neighborsData = useRef({});
+    const bboxData = useRef({});
     const [value, setValue] = useState(0);
     const [neighborsReady, setNeighborsStatus] = useState(false);
 
@@ -61,10 +67,13 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
         setNeighborsStatus(true)
     }
     const getNeighbors = useCallback(() => neighborsData.current, [])
+    const getBBOX = useCallback(() => bboxData.current, [])
 
     useEffect(() => {
         setNeighborsStatus(false)
-    }, [roiID])
+        bboxData.current = bbox(cellData.cell_x, cellData.cell_y)
+        console.log(bboxData.current)
+    }, [cellData.cell_x, cellData.cell_y, roiID])
 
     return (
         <Box id="analysis-box-outer-box" sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>
@@ -103,7 +112,7 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
                     <CellComponentTab cellData={cellData}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={1}>
-                    <CellDensityTab cellData={cellData}/>
+                    <CellDensityTab cellData={cellData} getBBOX={getBBOX}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={2}>
                     <CellDistributionTab cellData={cellData}/>
@@ -116,6 +125,7 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
                                       cellData={cellData}
                                       updateNeighbors={afterNeighbors}
                                       getNeighbors={getNeighbors}
+                                      getBBOX={getBBOX}
                     />
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={5}>

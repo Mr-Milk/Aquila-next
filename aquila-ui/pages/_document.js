@@ -4,16 +4,32 @@ import createEmotionServer from '@emotion/server/create-instance';
 import createEmotionCache from '../styles/createEmotionCache';
 import theme from "../styles/theme";
 
+
+const APP_NAME = 'Aquila'
+const APP_DESCRIPTION = 'Spatial single cell database and analysis platform'
+
 export default class MyDocument extends Document {
     render() {
         return (
             <Html lang="en">
                 <Head>
-                    {/* PWA primary color */}
+                    {/*PWA Config Section*/}
+                    <meta name='application-name' content={APP_NAME}/>
+                    <meta name='apple-mobile-web-app-capable' content='yes'/>
+                    <meta name='apple-mobile-web-app-status-bar-style' content='default'/>
+                    <meta name='apple-mobile-web-app-title' content={APP_NAME}/>
+                    <meta name='description' content={APP_DESCRIPTION}/>
+                    <meta name='format-detection' content='telephone=no'/>
+                    <meta name='mobile-web-app-capable' content='yes'/>
                     <meta name="theme-color" content={theme.palette.primary.main}/>
+
+                    <link rel='manifest' href='/manifest.json'/>
+
+                    {/*Load required font*/}
                     <link rel="preconnect" href="https://fonts.googleapis.com"/>
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={"true"}/>
-                    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+                    <link rel="stylesheet"
+                          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
                     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit&display=swap"/>
                 </Head>
                 <body>

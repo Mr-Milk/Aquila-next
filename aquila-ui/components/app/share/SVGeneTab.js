@@ -6,6 +6,7 @@ import Selector from "../../Selector";
 import RunBotton from "./RunAnalysisButton";
 import Typography from "@mui/material/Typography";
 import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
+import {runSVGene} from "../../../data/post";
 
 
 const SVGeneTab = ({ roiID, recordData, cellData, getExpData }) => {
@@ -47,7 +48,7 @@ const SVGeneTab = ({ roiID, recordData, cellData, getExpData }) => {
             console.log(body)
             // in production mode, we can use runSVGene
             // in dev mode, use http://localhost:8000/svgene
-            axios.post('http://localhost:8000/svgene', body).then((res) => {
+            axios.post(runSVGene, body).then((res) => {
                     setResult(res.data.isSV);
                 }
             )

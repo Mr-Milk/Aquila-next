@@ -35,6 +35,7 @@
     "natsort": "^2.0.3",
     "next": "^12.0.7",
     "next-compose-plugins": "^2.2.1",
+    "next-pwa": "^5.4.4",
     "next-transpile-modules": "^9.0.0",
     "papaparse": "^5.3.1",
     "plaiceholder": "^2.2.0",
