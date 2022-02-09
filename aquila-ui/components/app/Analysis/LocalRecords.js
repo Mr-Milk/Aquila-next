@@ -10,21 +10,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 import TimeAgo from "react-timeago";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
+import Paper from "@mui/material/Paper";
+import Chip from "@mui/material/Chip";
+import Box from "@mui/material/Box";
 
 
-const Record = ({ record, onClick }) => {
+const Record = ({record, onClick}) => {
     return (
-        <Box component="span" sx={{display: "inline-block"}}>
-            <Typography component="span" variant="body1" sx={{
-                textDecoration: "underline",
-                fontStyle: "italic",
-                mr: 1
-            }}>
-                {record.id}
-            </Typography>
+        <>
+        <Chip label={record.id} sx={{mr: 1}}/>
+        <Paper elevation={0} component="span" sx={{ display: "inline-block", my: 1}}>
+
             <TimeAgo date={record.created_at}/>
             <IconButton
                 size="small"
@@ -41,8 +38,8 @@ const Record = ({ record, onClick }) => {
                 onClick={onClick}>
                 <Delete/>
             </IconButton>
-
-        </Box>
+        </Paper>
+        </>
     )
 }
 
@@ -53,7 +50,6 @@ const LocalRecords = () => {
     const [open, setOpen] = useState(false);
     const allID = useLiveQuery(() => db.DataRecords.orderBy('created_at').reverse().toArray())
 
-    console.log(allID)
     const deleteRecord = () => {
         db.DataRecords.delete(deleteID.current)
         deleteID.current = ""
@@ -61,20 +57,19 @@ const LocalRecords = () => {
     }
 
     return (
-        <>
-            <ul>
-                {(allID?.length > 0) ? allID.map((record) => <li key={record.id}>
+        <Box component="div" sx={{ my: 2 }}>
+            {(allID?.length > 0) ? allID.map((record) =>
 
-                <Record record={record} onClick={() => {
-                deleteID.current = record.id;
-                setOpen(true)
-            }}/>
-                </li>) : <></>}
-            </ul>
-            {(allID?.length === 0) ? <Alert severity="info" color="warning" sx={{maxWidth: "400px", mb: 4 }}>
-                    No record is found. Start by trying out the example!
-            </Alert> : <></>
-        }
+                <div key={record.id}>
+                    <Record record={record} onClick={() => {
+                        deleteID.current = record.id;
+                        setOpen(true)
+                    }}/></div>) : null}
+
+            {(allID?.length === 0) ? <Alert severity="info" color="warning" sx={{maxWidth: "400px", mb: 4}}>
+                No record is found. Start by trying out the example!
+            </Alert> : null
+            }
 
 
             <Dialog
@@ -95,7 +90,7 @@ const LocalRecords = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Box>
     )
 }
 

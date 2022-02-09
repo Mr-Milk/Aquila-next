@@ -8,9 +8,8 @@ import {db} from "db/schema";
 import LocalRecords from "components/app/Analysis/LocalRecords";
 import ClientOnly from "components/ClientOnly";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import UploadFile from "@mui/icons-material/UploadFile";
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import MetaExample from "components/app/Analysis/MetaExample";
 import FileExampleHelper from "components/app/Analysis/FileExampleHelper";
 import LooksOne from "@mui/icons-material/LooksOne";
@@ -27,6 +26,9 @@ import Snackbar from "@mui/material/Snackbar";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import * as Comlink from "comlink";
+import Switch from '@mui/material/Switch';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 
 function humanFileSize(bytes, si = false, dp = 1) {
@@ -87,6 +89,7 @@ const ShowFile = ({file, onDelete}) => {
         return (
             <Chip
                 label={`${file.path}, ${humanFileSize(file.size)}`}
+                sx={{ml: 2}}
                 onDelete={onDelete}
                 variant="outlined"
                 color="success"
@@ -96,6 +99,7 @@ const ShowFile = ({file, onDelete}) => {
         return (
             <Tooltip title={"Please upload a file"}>
                 <Chip
+                    sx={{ml: 2}}
                     label={"No File"}
                     variant="outlined"
                     color="error"
@@ -107,48 +111,52 @@ const ShowFile = ({file, onDelete}) => {
 
 const FileUploadRegion = ({rootProps, inputProps, helperText}) => {
     return (
-        <Box component="div" sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '60px',
-            width: '200px',
-            padding: '20px',
+        <Stack direction="row" alignItems="center" justifyContent="center" sx={{
+            p: {xs: 1, sm: 2},
             borderWidth: 2,
             borderRadius: 2,
             borderColor: 'primary.main',
             borderStyle: 'dashed',
-            backgroundColor: '#ffffff',
             color: "#58513e",
             outline: 'none',
             cursor: 'pointer',
-            marginLeft: "10px",
-            marginRight: "20px",
         }} {...rootProps}>
 
             <input {...inputProps} />
+            <FileUploadIcon sx={{mr: 0.5}}/>
             <Typography component="span" sx={{
                 display: 'flex',
-                justifyContent: 'center'
+                flexDirection: "column",
+                justifyContent: 'flex-start',
+                overflow: 'hidden',
             }}>
-                <UploadFile sx={{mr: 0.5}}/>{helperText}
+                {helperText}
+                <Typography variant="body2" sx={{color: "darkgrey", display: {xs: 'none', sm: 'block'}}}>{`Drop here or click`}</Typography>
+                <Typography variant="body2" sx={{color: "darkgrey", display: {xs: 'block', sm: 'none'}}}>{`Press to select`}</Typography>
             </Typography>
-            <Typography variant="caption" sx={{color: "darkgrey"}}>{`(Drag'n drop or click)`}</Typography>
 
-        </Box>
+
+        </Stack>
     )
 }
 
 
 const StatusBar = ({status, text}) => {
     if (status === 'loading') {
-        return <Stack direction="row" spacing={1} alignItems="center">
-            <CircularProgress color="success" size={25} sx={{ml: 2}}/>
-            <Typography variant={"caption"} color="green">{text}</Typography>
-        </Stack>
+        return (
+            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 2}}>
+                <CircularProgress color="success" size={25}/>
+                <Typography color="green">{text}</Typography>
+            </Stack>
+        )
     } else if (status === 'finished') {
-        return <CheckCircleOutlineIcon color="success" sx={{ml: 2, mt: 1}}/>
+        return (
+            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 2}}>
+                <CheckCircleOutlineIcon color="success"/>
+                <Typography color="green">{`Finished`}</Typography>
+            </Stack>
+        )
+
     } else if (status === 'error') {
         return (
             <>
@@ -169,7 +177,7 @@ const StatusBar = ({status, text}) => {
 
 const AnalysisPage = () => {
 
-    const dataID = useRef(uuid4());
+    const dataID = useRef(uuid4().slice(0, 8));
     const [loadingText, setLoadingText] = useState("Working on it");
     const [status, setStatus] = useState("waiting"); // "waiting", "loading", "finished", "error"
     const [openHelp, setOpenHelp] = useState("none"); // "meta", "info", "exp", "none"
@@ -179,6 +187,9 @@ const AnalysisPage = () => {
         infoFile: "",
         expFile: "",
     })
+
+    const [isSingleCell, setIsSingleCell] = useState(true);
+    const handleSwitch = (e) => setIsSingleCell(e.target.checked)
 
     // workers state
     const [comlinkMessage, setComlinkMessage] = useState("");
@@ -246,6 +257,7 @@ const AnalysisPage = () => {
                 cell_count: result.cellCount,
                 marker_count: expResult.markerCount,
                 markers: expResult.markers,
+                is_single_cell: isSingleCell,
             }
 
             db.DataRecords.add(dataRecord)
@@ -260,17 +272,14 @@ const AnalysisPage = () => {
     }
 
     return (
-        <Container component="section" maxWidth="xl" sx={{mt: 4, ml: {xs: 2}}}>
+        <Container component="section" maxWidth="xl" sx={{mt: 4, ml: {sm: 2}}}>
 
             <MemoInfoSection/>
             <Typography variant="h4" sx={{mb: 3}}>Upload Files</Typography>
+            <Stack alignItems="top" justifyContent="flex-start" spacing={4}>
 
-            <Grid container direction="column" alignItems="top" justifyContent="flex-start" spacing={4}>
-                <Grid item>
-                    <div style={{display: "flex", alignItems: "center"}}>
-
-                        <LooksOne sx={{mr: 1, color: "secondary.main"}}/>
-
+                    <Stack direction="row" alignItems="center">
+                        <LooksOne sx={{ color: "secondary.main"}}/>
                         <FileExampleHelper
                             title={'ROI File Example'}
                             open={(openHelp === 'meta')}
@@ -282,7 +291,6 @@ const AnalysisPage = () => {
                             </Typography>
                             <MetaExample/>
                         </FileExampleHelper>
-
                         <FileUploadRegion
                             rootProps={metaRootProps()}
                             inputProps={metaInputProps()}
@@ -292,104 +300,97 @@ const AnalysisPage = () => {
                         <ShowFile file={files.metaFile}
                                   onDelete={() => setFiles({...files, metaFile: ""})}
                         />
+                        </Stack>
 
-                    </div>
-
-                </Grid>
-                <Grid item>
-                    <div style={{display: "flex", alignItems: "center"}}>
-
-                        <LooksTwo sx={{mr: 1, color: "secondary.main"}}/>
-
-                        <FileExampleHelper
-                            title={'Cell Info File Example'}
-                            open={(openHelp === 'info')}
-                            onClose={() => setOpenHelp("none")}
-                            onClick={() => setOpenHelp("info")}
-                        >
-                            <Typography sx={{mb: 2, maxWidth: "400px"}}>
-                                {`Must have following columns, if you are spatial transcriptome
+                <Stack direction="row" alignItems="center">
+                    <LooksTwo sx={{mr: {sm: 1}, color: "secondary.main"}}/>
+                    <FileExampleHelper
+                        title={'Cell Info File Example'}
+                        open={(openHelp === 'info')}
+                        onClose={() => setOpenHelp("none")}
+                        onClick={() => setOpenHelp("info")}
+                    >
+                        <Typography sx={{mb: 2, maxWidth: "400px"}}>
+                            {`Must have following columns, if you are spatial transcriptome
                                 data, you don't need to specify cell type. Remember the order 
                                 must match exact as listed beneath.`}
-                            </Typography>
-                            <ul style={{lineHeight: "35px"}}>
-                                <li>Cell coordination X: <Chip label="Cell X" size='small'/></li>
-                                <li>Cell coordination Y: <Chip label="Cell Y" size='small'/></li>
-                                <li>Cell Type <i>(Optional)</i>: <Chip label="Cell Type" size='small'/></li>
-                            </ul>
-                            <CellInfoExample/>
-                        </FileExampleHelper>
+                        </Typography>
+                        <ul style={{lineHeight: "35px"}}>
+                            <li>Cell coordination X: <Chip label="Cell X" size='small'/></li>
+                            <li>Cell coordination Y: <Chip label="Cell Y" size='small'/></li>
+                            <li>Cell Type <i>(Optional)</i>: <Chip label="Cell Type" size='small'/></li>
+                        </ul>
+                        <CellInfoExample/>
+                    </FileExampleHelper>
 
-                        <FileUploadRegion
-                            rootProps={infoRootProps()}
-                            inputProps={infoInputProps()}
-                            helperText={"Cell Info File"}
-                        />
-
-                        <ShowFile file={files.infoFile}
-                                  onDelete={() => setFiles({...files, infoFile: ""})}
-                        />
-
-                    </div>
-
-                </Grid>
-                <Grid item>
-                    <div style={{display: "flex", alignItems: "center"}}>
-                        <Looks3 sx={{mr: 1, color: "secondary.main"}}/>
-
-
-                        <FileExampleHelper
-                            title={'Expression File Example'}
-                            open={(openHelp === 'exp')}
-                            onClose={() => setOpenHelp("none")}
-                            onClick={() => setOpenHelp("exp")}
-                        >
-                            <Typography sx={{mb: 2, maxWidth: "300px"}}>
-                                Each line should annotate the ROI that a cell belongs to
-                            </Typography>
-                            <MetaExample/>
-                        </FileExampleHelper>
-
-                        <FileUploadRegion
-                            rootProps={expRootProps()}
-                            inputProps={expInputProps()}
-                            helperText={"Expression File"}
-                        />
-
-                        <ShowFile file={files.expFile}
-                                  onDelete={() => setFiles({...files, expFile: ""})}
-                        />
-                    </div>
-
-                </Grid>
-            </Grid>
-
-            <Grid container direction="row" alignItems="center">
-                <Grid item>
-                    <TextField
-                        label="Data ID (Optional)"
-                        variant="standard"
-                        defaultValue={dataID.current}
-                        onChange={checkIDExist}
-                        error={errorID}
-                        helperText={errorID ? 'ID already exists' : 'Better give it a meaningful name'}
-                        sx={{width: "320px", my: 4}}
+                    <FileUploadRegion
+                        rootProps={infoRootProps()}
+                        inputProps={infoInputProps()}
+                        helperText={"Cell Info File"}
                     />
-                </Grid>
-                <Grid item>
-                    <Button
-                        onClick={handleRun}
-                        variant="contained"
-                        disableElevation
-                        // disabled={(status !== 'waiting')}
-                        sx={{ml: 2, color: "common.white"}}>
-                        GO!
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <StatusBar status={status} text={loadingText}/>
-                </Grid>
-            </Grid>
+
+                    <ShowFile file={files.infoFile}
+                              onDelete={() => setFiles({...files, infoFile: ""})}
+                    />
+                </Stack>
+
+                <Stack direction="row" alignItems="center">
+                    <Looks3 sx={{mr: {sm: 1}, color: "secondary.main"}}/>
+                    <FileExampleHelper
+                        title={'Expression File Example'}
+                        open={(openHelp === 'exp')}
+                        onClose={() => setOpenHelp("none")}
+                        onClick={() => setOpenHelp("exp")}
+                    >
+                        <Typography sx={{mb: 2, maxWidth: "300px"}}>
+                            Each line should annotate the ROI that a cell belongs to
+                        </Typography>
+                        <MetaExample/>
+                    </FileExampleHelper>
+
+                    <FileUploadRegion
+                        rootProps={expRootProps()}
+                        inputProps={expInputProps()}
+                        helperText={"Expression File"}
+                    />
+
+                    <ShowFile file={files.expFile}
+                              onDelete={() => setFiles({...files, expFile: ""})}
+                    />
+                </Stack>
+
+            </Stack>
+
+            <FormGroup sx={{ mt: 2 }}>
+              <FormControlLabel
+                  control={<Switch
+                      disabled={(status === 'loading')}
+                      checked={isSingleCell}
+                      onChange={handleSwitch}/>}
+                  label="Single Cell Data" />
+            </FormGroup>
+
+            <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{mt: 2, mb: 2}}>
+                <TextField
+                    label="Data ID (Optional)"
+                    variant="standard"
+                    defaultValue={dataID.current}
+                    onChange={checkIDExist}
+                    error={errorID}
+                    helperText={errorID ? 'ID already exists' : 'Better give it a meaningful name'}
+                    sx={{width: "200px", mb: {xs: 1, sm: 0}, mr: {xs:1, sm: 0}}}
+                />
+                <Button
+                    onClick={handleRun}
+                    variant="contained"
+                    disableElevation
+                    disabled={(status === 'loading')}
+                    sx={{ml: {sm: 2}, color: "common.white"}}>
+                    GO!
+                </Button>
+            </Stack>
+
+            <StatusBar status={status} text={loadingText}/>
 
             <Typography variant="h4">Analysis Records</Typography>
             <ClientOnly>

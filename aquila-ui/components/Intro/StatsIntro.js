@@ -12,10 +12,10 @@ const StatsCard = ({ data, title, children }) => {
     return (
         <Stack alignItems="center">
             { children }
-            <Typography variant="h4">
+            <Typography variant="h4" sx={{ mt: 1 }}>
                 { data }
             </Typography>
-            <Typography variant="subtitle1" sx={{ opacity: 0.72 }}>
+            <Typography sx={{ fontWeight: 500, opacity: 0.8 }}>
                 { title }
             </Typography>
         </Stack>
@@ -29,7 +29,7 @@ const StatsIntro = () => {
 
     return (
         <Grid container flexDirection="row" alignItems="center" justifyContent="space-between" sx={{
-            my: 4, px: { xs: 4, sm: 6, md: 24 }
+            my: 6, px: { xs: 4, sm: 6, md: 24 }
         }}>
             <Grid item>
                 <StatsCard title={"Data"} data={data.data_count}>

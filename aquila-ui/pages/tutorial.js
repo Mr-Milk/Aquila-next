@@ -331,7 +331,7 @@ const TutorialPage = ({images}) => {
             <Head>
                 <title>Aquila | Tutorial</title>
             </Head>
-            <Container maxWidth="xl" sx={{mt: 2, mb: 2 }}>
+            <Container maxWidth="xl" sx={{ my: 2, mx: {md:4}}}>
                 <VerticalLinearStepper title={"Browse Data"} steps={browseSteps}/>
                 <VerticalLinearStepper title={"Analyze Your Data"} steps={submitSteps}/>
                 <VerticalLinearStepper title={"Using Analyze Panel"} steps={dataSteps}/>

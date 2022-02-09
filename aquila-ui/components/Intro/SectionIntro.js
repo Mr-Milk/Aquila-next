@@ -5,47 +5,65 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 
+
+
+const WrapBox = ({children}) => {
+    return <Box sx={{maxHeight: "500px", maxWidth: "500px", textAlign: "center"}}>
+        {children}
+    </Box>
+}
+
+const IntroNav = ({title, description, buttonText, href}) => {
+    return <WrapBox>
+        <Typography variant="h4" gutterBottom>
+            {title}
+        </Typography>
+        <Typography>{description}</Typography>
+        <MuiNextLink href={href}>
+            <Button variant="outlined" disableElevation sx={{my: 2}}>
+                {buttonText}
+            </Button>
+        </MuiNextLink>
+    </WrapBox>
+}
+
 const SectionIntro = () => {
 
     return (
         <>
-            <Grid container direction="row" alignItems="center" justifyContent="space-evenly" sx={{
-                my: {sm: 4}
-            }}>
-                <Grid item xs={10} sm={6} md={4} sx={{textAlign: "center"}}>
-                    <Box sx={{ maxWidth: 500 }}>
-                        <Typography variant="h4" gutterBottom>
-                            {`What's Aquila?`}
-                        </Typography>
-                        <Typography>
-                            {`Aquila is a spatial single cell pathology database, 
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}
+                  sx={{
+                      mt: {sm: 2},
+                  }}>
+                <Grid item xs={10} sm={5}>
+                    <IntroNav
+                        title={`What's Aquila?`}
+                        description={`Aquila is a spatial single cell pathology database, 
                         we collect single cell data with spatial information.`}
-                        </Typography>
-                        <MuiNextLink href="/view">
-                        <Button variant="outlined" disableElevation sx={{my: 2}}>
-                            Browse Data
-                        </Button>
-                    </MuiNextLink>
-                    </Box>
-
-
-                </Grid>
-                <Grid item xs={10} sm={6} md={4}>
-                    <Image
-                        src={"/undraw_projections_re_1mrh.svg"}
-                        alt={"data visualization"}
-                        layout={"responsive"}
-                        width={850}
-                        height={350}
-                        priority
+                        href="/view"
+                        buttonText={"Browse Data"}
                     />
+                </Grid>
+
+                <Grid item xs={10} sm={5}>
+
+                        <Image
+                            src={"/undraw_projections_re_1mrh.svg"}
+                            alt={"data visualization"}
+                            layout={"responsive"}
+                            width={850}
+                            height={350}
+                            priority
+                        />
+
                 </Grid>
             </Grid>
 
-            <Grid container direction="row" alignItems="center" justifyContent="space-evenly"
-                  sx={{my: {sm: 4}}}>
-
-                <Grid item xs={10} sm={6} md={4} sx={{mb: {xs: 2}}}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}
+                  sx={{
+                      mt: {sm: 2},
+                  }}>
+                <Grid item xs={10} sm={5} >
                     <Image
                         src={"/undraw_data_extraction_re_0rd3.svg"}
                         alt={"data visualization"}
@@ -54,21 +72,17 @@ const SectionIntro = () => {
                         height={450}
                         priority
                     />
+
                 </Grid>
 
-                <Grid item xs={10} sm={6} md={4} sx={{textAlign: "center"}}>
-                    <Typography component="h2" variant="h4" gutterBottom>
-                        {`Want more?`}
-                    </Typography>
-                    <Typography component="p">
-                        {`Submit your own spatial single-cell data
+                <Grid item xs={10} sm={5} sx={{mt: 2}}>
+                    <IntroNav
+                        title={`Want more?`}
+                        description={`Submit your own spatial single-cell data
                          and run spatial analysis without writing a single line of code!`}
-                    </Typography>
-                    <MuiNextLink href="/analysis">
-                        <Button variant="outlined" disableElevation sx={{my: 2}}>
-                            Analyze Data
-                        </Button>
-                    </MuiNextLink>
+                        href="/analysis"
+                        buttonText={"Analyze Data"}
+                    />
                 </Grid>
 
             </Grid>

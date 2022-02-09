@@ -6,7 +6,7 @@ import Link from "@mui/material/Link";
 import Image from "next/image"
 import GitHub from "@mui/icons-material/GitHub";
 import Box from "@mui/material/Box";
-import {Divider} from "@mui/material";
+import {Accordion, Divider, Icon} from "@mui/material";
 import {getPlaiceholder} from "plaiceholder";
 import Head from "next/head";
 
@@ -70,7 +70,7 @@ const AboutPage = ({ images }) => {
             <Head>
                 <title>Aquila | About</title>
             </Head>
-        <Container sx={{m: 4, maxWidth: "1000px"}}>
+        <Container sx={{maxWidth: "1000px"}}>
             <Title>{"Author"}</Title>
 
             <Stack direction="row" alignItems="center" spacing={2}>
@@ -100,7 +100,7 @@ const AboutPage = ({ images }) => {
                 "patient samples, and usually you need privacy information from patients to do the" +
                 "analysis. The security of remote server is not guaranteed. To ensure the best privacy, " +
                 "none of the data will be sent to the server before running any of the analysis." +
-                "The data sent to the server only contains localtion, expression and cell type information. "}</Content>
+                "The data sent to the server only contains location, expression and cell type information. "}</Content>
 
             <Title>{"I know how to code and want to analyze large dataset"}</Title>
             <Content>{"Allow me to shamelessly promote "}<a href="https://github.com/Mr-Milk/SpatialTis">SpatialTis</a>
@@ -119,7 +119,7 @@ const AboutPage = ({ images }) => {
             </Content>
             <Stack direction="column" justifyContent="center" alignItems="center" sx={{my: 4}}>
                 <Image {...images.structure} alt="Aquila structure"/>
-                <Typography variant={"caption"} sx={{mt: 1}}>{"Architecure of Aquila"}</Typography>
+                <Typography variant={"caption"} sx={{mt: 1}}>{"Architecture of Aquila"}</Typography>
             </Stack>
 
             <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
@@ -135,6 +135,9 @@ const AboutPage = ({ images }) => {
                     src="https://mui.com/static/logo.png"
                     text="MUI"
                 />
+            </Stack>
+
+            <Stack direction="row" spacing={4} justifyContent="center" alignItems="center" sx={{ my: 2 }}>
                 <TechItem
                     src="https://avatars.githubusercontent.com/u/32776943?s=200&v=4"
                     text="Actix"
@@ -145,7 +148,7 @@ const AboutPage = ({ images }) => {
                 />
                 <TechItem
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png"
-                    text="Postgre"
+                    text="Postgres"
                 />
             </Stack>
 
