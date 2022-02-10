@@ -29,6 +29,7 @@ import * as Comlink from "comlink";
 import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import ExpExample from "../../components/app/Analysis/ExpExample";
 
 
 function humanFileSize(bytes, si = false, dp = 1) {
@@ -77,6 +78,13 @@ const InfoSection = () => {
                 All your data will be kept on this computer, only
                 when you run the analysis will send data to server. None of the information from
                 ROI File will be sent.</Alert>
+
+            <Button
+                variant="outlined"
+                disableElevation
+                sx={{ mt: 2 }}
+                href="/example_data.zip"
+            >Download examples</Button>
         </Box>
     )
 }
@@ -279,7 +287,7 @@ const AnalysisPage = () => {
             <Stack alignItems="top" justifyContent="flex-start" spacing={4}>
 
                     <Stack direction="row" alignItems="center">
-                        <LooksOne sx={{ color: "secondary.main"}}/>
+                        <LooksOne sx={{mr: {sm: 1}, color: "secondary.main"}}/>
                         <FileExampleHelper
                             title={'ROI File Example'}
                             open={(openHelp === 'meta')}
@@ -343,9 +351,9 @@ const AnalysisPage = () => {
                         onClick={() => setOpenHelp("exp")}
                     >
                         <Typography sx={{mb: 2, maxWidth: "300px"}}>
-                            Each line should annotate the ROI that a cell belongs to
+                            Each column represents a marker, each line is a cell record
                         </Typography>
-                        <MetaExample/>
+                        <ExpExample/>
                     </FileExampleHelper>
 
                     <FileUploadRegion

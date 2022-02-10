@@ -11,7 +11,7 @@ const FileExampleHelper = ({title, open, onClick, onClose, sx, children,}) => {
             <IconButton
                 variant="contained"
                 size="small"
-                sx={sx}
+                sx={{...sx, mr: {sm: 1}}}
                 onClick={onClick}
             >
                 <HelpOutline/>
