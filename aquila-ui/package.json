@@ -30,7 +30,7 @@
     "echarts-gl": "^2.0.8",
     "echarts-stat": "^1.2.0",
     "favicons": "^6.2.2",
-    "javascript-time-ago": "^2.3.10",
+    "javascript-time-ago": "2.3.13",
     "mathjs": "^10.0.0",
     "mui-datatables": "^4.0.0",
     "natsort": "^2.0.3",
