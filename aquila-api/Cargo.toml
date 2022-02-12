@@ -28,7 +28,7 @@ itertools = "0.10.1"
 kiddo = "0.2.1"
 delaunator = "1.0.1"
 geo = "0.18.0"
-counter = "0.5.2"
+counter = "0.5.3"
 ordered-float = "2.8.0"
 ndarray = { version = "0.15.4", features =['rayon', 'serde'] }
 ndarray-stats = "0.5.0"
