@@ -5791,10 +5791,10 @@ react-sortable-tree-patch-react-17@^2.9.0:
     react-lifecycles-compat "^3.0.4"
     react-virtualized "^9.21.2"
 
-react-time-ago@^7.1.7:
-  version "7.1.7"
-  resolved "https://registry.yarnpkg.com/react-time-ago/-/react-time-ago-7.1.7.tgz#53aed5b1add1488e63f433c05b8eaf1d21b3e258"
-  integrity sha512-HOEPOYpYYAxPnAqfQ7sfUBvbRfuhm0NO77gAZSJ/nkrQdGWoA3p1iyTt0bKQthfhj1MXtf6S97OOVr/XaLkOBw==
+react-time-ago@7.1.9:
+  version "7.1.9"
+  resolved "https://registry.yarnpkg.com/react-time-ago/-/react-time-ago-7.1.9.tgz#df3999f1184b71ab09aaf1d05dda2a19b76e0bb8"
+  integrity sha512-jN4EsEgqm3a5eLJV0ZrRpom3iG+w4bullS2NHc2htIucGUIr2FbgHXjU0wIkuN9uWM87aFvIfkUDpS/ju7Mazg==
   dependencies:
     memoize-one "^6.0.0"
     prop-types "^15.7.2"
