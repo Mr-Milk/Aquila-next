@@ -1544,9 +1544,9 @@ dependencies = [
 
 [[package]]
 name = "nalgebra"
-version = "0.29.0"
+version = "0.30.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d506eb7e08d6329505faa8a3a00a5dcc6de9f76e0c77e4b75763ae3c770831ff"
+checksum = "4fb2d0de08694bed883320212c18ee3008576bfe8c306f4c3c4a58b4876998be"
 dependencies = [
  "approx 0.5.0",
  "matrixmultiply",
@@ -1554,7 +1554,7 @@ dependencies = [
  "num-complex",
  "num-rational",
  "num-traits 0.2.14",
- "simba 0.6.0",
+ "simba 0.7.1",
  "typenum",
 ]
 
@@ -1571,11 +1571,11 @@ dependencies = [
 
 [[package]]
 name = "nalgebra-sparse"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fc31dc7dee02ca02f95f151081ec3db58b6028cc1150e8078b0d6a784b89fbdd"
+checksum = "ff0fe967c37332d705e59a12a369c2e9906c42fe7627f3e7d02e874289f35ec3"
 dependencies = [
- "nalgebra 0.29.0",
+ "nalgebra 0.30.1",
  "num-traits 0.2.14",
 ]
 
@@ -2364,9 +2364,9 @@ dependencies = [
 
 [[package]]
 name = "simba"
-version = "0.6.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0b7840f121a46d63066ee7a99fc81dcabbc6105e437cae43528cea199b5a05f"
+checksum = "13a2609e876d4f77f6ab7ff5254fc39b4f1927ba8e6db3d18be7c32534d3725e"
 dependencies = [
  "approx 0.5.0",
  "num-complex",

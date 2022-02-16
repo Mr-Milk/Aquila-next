@@ -34,4 +34,4 @@ ndarray = { version = "0.15.4", features =['rayon', 'serde'] }
 ndarray-stats = "0.5.0"
 num-traits = "0.2.14"
 statrs = "0.15.0"
-nalgebra-sparse = "0.5.0"
+nalgebra-sparse = "0.6.0"
