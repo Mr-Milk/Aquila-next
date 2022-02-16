@@ -2966,10 +2966,10 @@ dexie-react-hooks@^1.1.1:
   resolved "https://registry.yarnpkg.com/dexie-react-hooks/-/dexie-react-hooks-1.1.1.tgz#ff405cc89e5d899ddbac5e40d593f83f9a74106a"
   integrity sha512-Cam5JP6PxHN564RvWEoe8cqLhosW0O4CAZ9XEVYeGHJBa6KEJlOpd9CUpV3kmU9dm2MrW97/lk7qkf1xpij7gA==
 
-dexie@3.2.1-beta.2:
-  version "3.2.1-beta.2"
-  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.2.1-beta.2.tgz#dc4bb28c29b6eec076dae5be105109cfe59f0836"
-  integrity sha512-+Yk9xLMog4Oxc4osLJHEJQAafkN5FWrv15bMEDbjIrRMff5x4Y5DKVd6Nu87tKWKvDXGV4g6Edad/Q1KqqKsag==
+dexie@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.2.1.tgz#ef21456d725e700c1ab7ac4307896e4fdabaf753"
+  integrity sha512-Y8oz3t2XC9hvjkP35B5I8rUkKKwM36GGRjWQCMjzIYScg7W+GHKDXobSYswkisW7CxL1/tKQtggMDsiWqDUc1g==
 
 diffie-hellman@^5.0.0:
   version "5.0.3"
