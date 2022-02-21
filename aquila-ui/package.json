@@ -23,7 +23,7 @@
     "clsx": "^1.1.1",
     "comlink": "^4.3.1",
     "danfo": "^0.2.34",
-    "dexie": "3.2.1-beta.2",
+    "dexie": "3.2.1",
     "dexie-react-hooks": "^1.1.1",
     "echarts": "^5.2.2",
     "echarts-for-react": "^3.0.2",
