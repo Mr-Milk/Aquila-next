@@ -8,7 +8,7 @@ The scripts are written in Python, the database use PostgreSQL.
 
 The API Server is written in Rust, including the analysis code. The spatial variable gene is called from python, so a specific python env must be satified.
 
-To run a dev build
+To run a dev build with HMR
 ```shell
 cd aquila-api
 cargo watch -x 'run --bin aquila-api' --workdir .
@@ -28,3 +28,8 @@ The UI part is implemented using Next.js, the analysis part is powered by indexe
 
 We also use WebWorker to run tasks parallel on the web.
 
+To run a dev build with HMR
+```shell
+cd aquila-ui
+yarn dev
+```
