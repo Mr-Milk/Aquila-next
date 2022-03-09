@@ -3056,10 +3056,10 @@ echarts-for-react@^3.0.2:
     fast-deep-equal "^3.1.3"
     size-sensor "^1.0.1"
 
-echarts-gl@^2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/echarts-gl/-/echarts-gl-2.0.8.tgz#81260be0891e5e30c1710311f8b764d65329b03c"
-  integrity sha512-ayFmjLxdF9pRpnh1Lz5aOgjnLqL3WIGu0t4Bt+oFwXGsViU2XcjCkHZARsZdv05lySow8eMD9JYZGXfLpuqYng==
+echarts-gl@2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/echarts-gl/-/echarts-gl-2.0.9.tgz#ee228a6c7520a6fb7bbb71ea94394f3637ade033"
+  integrity sha512-oKeMdkkkpJGWOzjgZUsF41DOh6cMsyrGGXimbjK2l6Xeq/dBQu4ShG2w2Dzrs/1bD27b2pLTGSaUzouY191gzA==
   dependencies:
     claygl "^1.2.1"
     zrender "^5.1.1"
