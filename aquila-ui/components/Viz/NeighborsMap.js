@@ -1,16 +1,15 @@
 // import ReactECharts from 'echarts-for-react';
 import Echarts from "./echarts-obj";
 import PropTypes from 'prop-types'
-import {ResponsiveSize, ResponsiveSymbolSize} from "components/Viz/ResponsiveSize";
 import {legendOpts, titleOpts} from "components/Viz/config";
 
 
-const CellMap = ({cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...leftProps}) => {
+const NeighborsMap = ({cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...leftProps}) => {
 
     const hasCellType = (ct !== undefined);
     const size = cx.length;
-    const canvasSize = ResponsiveSize(size);
-    const symbolSize = ResponsiveSymbolSize(size);
+    const canvasSize = 5;
+    const symbolSize = 5;
 
     const renderData = [];
     const categories = [];
@@ -67,8 +66,8 @@ const CellMap = ({cx, cy, ct, neighborsOne, neighborsTwo, showNeighbors, ...left
     return <Echarts option={options} style={canvasSize}/>
 }
 
-CellMap.propTypes = {
+NeighborsMap.propTypes = {
     cx: PropTypes.array,
 }
 
-export default CellMap;
+export default NeighborsMap;

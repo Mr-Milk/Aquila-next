@@ -5,12 +5,12 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 import {TabPanel} from "components/TabPanel";
-import {CellMapPanel, ExpPanel} from "components/app/share/ROIPanels";
+import {CellMapPanel3D, ExpPanel3D} from "components/app/share/ROIPanels3D";
 import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
 import ClientOnly from "../../ClientOnly";
 
 
-const ROIMaps = ({ roiID, roiMeta, recordData, cellData, getExpDataFn }) => {
+const ROIMaps3D = ({ roiID, roiMeta, recordData, cellData }) => {
 
     const [value, setValue] = useState(0);
     const handleChange = (e, v) => setValue(v);
@@ -25,14 +25,13 @@ const ROIMaps = ({ roiID, roiMeta, recordData, cellData, getExpDataFn }) => {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <CellMapPanel cellData={cellData} roiMeta={roiMeta}/>
+                <CellMapPanel3D cellData={cellData} roiMeta={roiMeta}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <ExpPanel
+                <ExpPanel3D
                     roiID={roiID}
                     cellData={cellData}
                     markers={recordData.markers}
-                    getExpDataFn={getExpDataFn}
                 />
             </TabPanel>
         </Box>
@@ -40,4 +39,4 @@ const ROIMaps = ({ roiID, roiMeta, recordData, cellData, getExpDataFn }) => {
     )
 }
 
-export default ROIMaps;
+export default ROIMaps3D;

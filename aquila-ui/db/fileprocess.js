@@ -2,6 +2,7 @@ import Papa from 'papaparse';
 import {v4 as uuid4} from 'uuid';
 import {db} from 'db/schema';
 import * as Comlink from "comlink";
+import cloneDeep from "loadsh/clonedeep";
 
 
 const getHeader = (file, preview = 10) => {
@@ -41,6 +42,7 @@ function roiRecord(file, dataID) {
                 chunk: (results) => {
                     results.data.map((d) => {
                         let roiName = Object.values(d).toString();
+                        // check if the roi exist
                         if (roiUUID.hasOwnProperty(roiName)) {
                             roiMapper[lineCount] = uuid
                             roiCellCount[roiUUID[roiName]] += 1
@@ -87,29 +89,27 @@ function roiRecord(file, dataID) {
 
 async function cellInfo(file, dataID, roiCellCount, roiMapper) {
 
-    const template = {
+    let records = {}
+    Object.keys(roiCellCount).map((k) => {
+        records[k] = {
         cell_x: [],
         cell_y: [],
         cell_type: [],
     }
-
-    let records = {}
-    Object.keys(roiCellCount).map((k) => {
-        records[k] = template
     })
-    console.log(records)
+    //console.log(records)
     let hasCellType = false
     let lineCount = 0
-    let cellX, cellY, cellT;
+    let cellXHeader, cellYHeader, cellTypeHeader;
 
     const header = await getHeader(file);
-    console.log(header)
+    //console.log(header)
     // parse the first 10 lines to check for cell type and header
-    cellX = header[0]
-    cellY = header[1]
+    cellXHeader = header[0]
+    cellYHeader = header[1]
     if (header.length > 2) {
         hasCellType = true
-        cellT = header[2]
+        cellTypeHeader = header[2]
     }
 
     return new Promise((resolve, reject) => {
@@ -122,9 +122,9 @@ async function cellInfo(file, dataID, roiCellCount, roiMapper) {
             chunk: (results) => {
                 results.data.map((d) => {
                     let roiID = roiMapper[lineCount]
-                    records[roiID].cell_x.push(d[cellX])
-                    records[roiID].cell_y.push(d[cellY])
-                    records[roiID].cell_type.push(hasCellType ? d[cellT] : "")
+                    records[roiID].cell_x.push(parseFloat(d[cellXHeader]))
+                    records[roiID].cell_y.push(parseFloat(d[cellYHeader]))
+                    records[roiID].cell_type.push(hasCellType ? d[cellTypeHeader] : "")
                     lineCount += 1
                 })
 
@@ -138,7 +138,7 @@ async function cellInfo(file, dataID, roiCellCount, roiMapper) {
                         })
                     }
                     // gc may not need, only hundreds of MB even for millions of data
-                    // delete records[roiID]
+                    delete records[roiID]
                 })
             },
             complete: () => {
@@ -168,7 +168,7 @@ async function expInfo(file, dataID, roiCellCount, roiMapper) {
     })
     const records = {}
     Object.keys(roiCellCount).map((k) => {
-        records[k] = template
+        records[k] = cloneDeep(template)
     })
 
     console.log("before parse exp file")
@@ -181,11 +181,13 @@ async function expInfo(file, dataID, roiCellCount, roiMapper) {
                 reject(e)
             },
             chunk: (results) => {
+                console.log("start parsing a chunk a exp file")
                 results.data.map((d) => {
                     let roiID = roiMapper[lineCount]
                     Object.entries(d).map(([k, v]) => {
-                        records[roiID][k].push(v)
+                        records[roiID][k].push(parseFloat(v))
                     })
+                    console.log("Finish getting a line of exp file")
                     Object.keys(records).map((roiID) => {
                         if (records[roiID][header[0]].length === roiCellCount[roiID]) {
                             db.CellExp.bulkAdd(
@@ -196,11 +198,13 @@ async function expInfo(file, dataID, roiCellCount, roiMapper) {
                                     expression: exp,
                                 }))
                             )
+                            delete records[roiID]
                         }
+
                     })
                     lineCount += 1
                 })
-                console.log("parse a chunk a exp file")
+                console.log("finish parse a chunk a exp file")
             },
             complete: () => {
                 Object.keys(records).map((roiID) => {

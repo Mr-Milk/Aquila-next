@@ -51,9 +51,12 @@ const LocalRecords = () => {
     const allID = useLiveQuery(() => db.DataRecords.orderBy('created_at').reverse().toArray())
 
     const deleteRecord = () => {
-        db.DataRecords.delete(deleteID.current)
-        deleteID.current = ""
         setOpen(false)
+        db.DataRecords.delete(deleteID.current)
+        db.ROIInfo.where({data_uuid: deleteID.current}).delete()
+        db.CellInfo.where({data_uuid: deleteID.current}).delete()
+        db.CellExp.where({data_uuid: deleteID.current}).delete()
+        deleteID.current = ""
     }
 
     return (

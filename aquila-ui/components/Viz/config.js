@@ -1,4 +1,4 @@
-export const color_pool = [
+export const GRAD_COLORS = [
     "#ECDBBD",
     "#E8C4A4",
     "#E5AC93",
@@ -15,7 +15,7 @@ export const color_pool = [
     "#000000",
 ];
 
-export const rdbu11 = [
+export const RDBU11 = [
     '#053061',
     '#2166ac',
     '#4393c3',
@@ -28,6 +28,32 @@ export const rdbu11 = [
     '#b2182b',
     '#67001f',
 ]
+
+export const CAT_COLORS = [
+    "#5470c6",
+    "#91cc75",
+    "#fac858",
+    "#ee6666",
+    "#73c0de",
+    "#3ba272",
+    "#fc8452",
+    "#9a60b4",
+    "#ea7ccc",
+    "#c1232b",
+    "#27727b",
+    "#fcce10",
+    "#e87c25",
+    "#b5c334",
+    "#fe8463",
+    "#9bca63",
+    "#fad860",
+    "#f3a43b",
+    "#60c0dd",
+    "#d7504b",
+    "#c6e579",
+    "#f4e001",
+    "#f0805a",
+    "#26c0c0"]
 
 export const titleOpts = (title) => ({
     title: {

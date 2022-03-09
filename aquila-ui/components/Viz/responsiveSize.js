@@ -1,4 +1,4 @@
-export const ResponsiveSize = (size) => {
+export const responsiveSize = (size) => {
     const side = 0.015 * size + 300;
     return {
         height: `${side}px`,
@@ -7,8 +7,10 @@ export const ResponsiveSize = (size) => {
 
 }
 
-export const ResponsiveSymbolSize = (size) => {
+export const responsiveSymbolSize = (size) => {
     if (size <= 1000) {
+        return 5
+    } else if (size <= 5000) {
         return 4
     } else if (size <= 10000) {
         return 3

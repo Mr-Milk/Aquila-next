@@ -31,10 +31,11 @@ const ROITable = ({ roiMeta, updateFn }) => {
                     options: {
                         sort: false,
                         filter: false,
-                        customBodyRender: (value) => {
+                        customBodyRender: (value, tableMeta) => {
+                            const currentROIMeta = tableMeta.rowData.slice(0, -1).join(" | ");
                             return (
                                 <ViewROIButton
-                                    onClick={() => updateFn(value)}
+                                    onClick={() => updateFn(value, currentROIMeta)}
                                     key={value}
                                 >
                                     View

@@ -1,38 +1,14 @@
-import axios from "axios";
-import {runCellDensity} from "data/post";
 import BarChart from "components/Viz/BarChart";
-import {useCallback, useEffect, useRef, useState} from "react";
-import Grid from "@mui/material/Grid";
+import {useCallback} from "react";
 import natsort from "natsort";
+import {getBBox} from "../../compute/geo";
+import OneItemCenter from "../../OneItemCenter";
 
 
-const CellDensityTab = ({ cellData, getBBOX }) => {
+const CellDensityTab = ({cellData}) => {
 
-    const [densityResult, setDensityResult] = useState({x:[], y:[]});
-
-    // const runAnalysis = useCallback((data) => {
-    //     if (data === undefined) {
-    //         return {}
-    //     } else {
-    //         const runBody = {
-    //             x: data.cell_x,
-    //             y: data.cell_y,
-    //             cell_type: data.cell_type,
-    //         };
-    //         axios.post(runCellDensity, runBody).then((res) => {
-    //             let result = res.data;
-    //             let k = Object.keys(result).sort(natsort());
-    //             let v = k.map((i) => result[i]);
-    //             densityResult.current = {x: k, y: v};
-    //             setShowViz(showViz + 1)
-    //         }).catch((e) => console.log(e));
-    //     }
-    // }, [showViz])
-
-    // do not remove this line, don't give a shit about the IDE
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        const bbox = getBBOX();
+    const getDensityResult = useCallback(() => {
+        const bbox = getBBox(cellData.cell_x, cellData.cell_y);
         const area = Math.abs((bbox.x2 - bbox.x1) * (bbox.y2 - bbox.y1))
         const counts = {};
         cellData.cell_type.forEach((i) => {
@@ -42,24 +18,21 @@ const CellDensityTab = ({ cellData, getBBOX }) => {
         let keys = Object.keys(counts).sort(natsort());
         keys.map((k) => {
             result.x.push(k)
-            result.y.push(counts[k]/area * 1000000)
+            result.y.push(counts[k] / area * 1000000)
         });
+        return result
+    }, [cellData])
 
-        setDensityResult(result)
-    }, [cellData, getBBOX]);
-
+    const result = getDensityResult();
+    if (!cellData) {return null}
     return (
-        <Grid container flexDirection="row" justifyContent="center">
-            <Grid item>
-                <BarChart
-                    x={densityResult.x}
-                    y={densityResult.y}
-                    width="450px"
-                    height="400px"
-                    title="Relative cell density"
-                />
-            </Grid>
-        </Grid>
+        <OneItemCenter>
+            <BarChart
+                x={result.x}
+                y={result.y}
+                title="Relative cell density"
+            />
+        </OneItemCenter>
     )
 }
 

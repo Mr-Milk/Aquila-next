@@ -1,7 +1,22 @@
 import {titleOpts} from "components/Viz/config";
 import Echarts from "./echarts-obj";
 
-const BarChart = ({x, y, width, height, title}) => {
+import * as echarts from 'echarts/core';
+import {CanvasRenderer} from 'echarts/renderers';
+import {BarChart as BChart} from 'echarts/charts';
+import {GridComponent, TitleComponent, TooltipComponent} from 'echarts/components';
+
+echarts.use(
+    [
+        BChart,
+        GridComponent,
+        TooltipComponent,
+        TitleComponent,
+        CanvasRenderer,
+    ]
+)
+
+const BarChart = ({x, y, title}) => {
 
     const options = {
         ...titleOpts(title),
@@ -21,7 +36,7 @@ const BarChart = ({x, y, width, height, title}) => {
             axisLabel: {
                 interval: 0,
                 rotate: 45,
-                fontSize: 10,
+                fontSize: 12,
             },
             nameRotate: 30,
             nameGap: 30,
@@ -38,9 +53,9 @@ const BarChart = ({x, y, width, height, title}) => {
     }
 
     return <Echarts
+        echarts={echarts}
         option={options}
-        opts={{locale: "EN"}}
-        style={{width: width, height: height}}
+        style={{minWidth: 500, height: 500}}
     />
 }
 

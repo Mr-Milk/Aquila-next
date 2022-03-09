@@ -1,6 +1,7 @@
 import MUIDataTable from "mui-datatables";
 import IconButton from "@mui/material/IconButton";
 import Launch from "@mui/icons-material/Launch";
+import ThreeDRotationIcon from '@mui/icons-material/ThreeDRotation';
 import LibraryBooksOutlined from "@mui/icons-material/LibraryBooksOutlined";
 import {useMemo} from "react";
 
@@ -20,6 +21,11 @@ const DataTable = ({data}) => {
     data.map((d) => {
         d.download = `/static/${d.data_uuid}`;
         d.published = `${d.journal}, ${d.year}`;
+        d.dimension = (d.is_3d ? `3D, ${d.cell_count}×${d.marker_count}` : `2D, ${d.cell_count}×${d.marker_count}`);
+        d.view = {
+            id: d.data_uuid,
+            is3D: d.is_3d
+        }
     })
 
     const columns = useMemo(() => [
@@ -29,8 +35,8 @@ const DataTable = ({data}) => {
         createColumns('disease', 'Disease'),
         createColumns('molecule', 'Molecule'),
         {
-            name: 'cell_count',
-            label: 'Data Size',
+            name: 'dimension',
+            label: 'Dimension',
             options: {
                 filter: false,
                 sort: true,
@@ -65,20 +71,21 @@ const DataTable = ({data}) => {
             },
         },
         {
-            name: "data_uuid",
+            name: "view",
             label: "Details",
             options: {
                 filter: false,
                 sort: false,
                 customBodyRender: (value) => {
+                    const link = value.is3D ? `/view3d/${value.id}` : `/view/${value.id}`
                     return (
                         <IconButton
                             color="primary"
-                            href={`/view/${value}`}
+                            href={link}
                             target="_blank"
                             rel="noreferrer noopener"
                         >
-                            <Launch/>
+                            { value.is3D ? <ThreeDRotationIcon/> : <Launch/>}
                         </IconButton>
                     );
                 },
@@ -87,7 +94,7 @@ const DataTable = ({data}) => {
     ], [])
 
     const hints = {
-        'cell_count': 'Number of cells/dots',
+        'dimension': 'Cell × Gene',
     }
 
     const options = {

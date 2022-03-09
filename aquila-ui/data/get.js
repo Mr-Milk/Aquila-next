@@ -14,11 +14,15 @@ export const fetcher = async url => {
 const root = process.env.NEXT_PUBLIC_API_URL;
 export const getDbStatsURL = `${root}/dbstats`;
 export const getDataIdURL = `${root}/data_ids`;
+export const get2dDataIdURL = `${root}/data_ids_2d`;
+export const get3dDataIdURL = `${root}/data_ids_3d`;
 export const getOneRecordURL = `${root}/record`;
 export const getRecordsURL = `${root}/records`;
 export const getOneROIURL = `${root}/roi`;
 export const getROIMetaURL = `${root}/rois`;
-export const getCellInfoURL = `${root}/cell_info`;
+export const getOneROIMetaURL = `${root}/rois_one`;
+export const getCellInfo2DURL = `${root}/cell_info`;
+export const getCellInfo3DURL = `${root}/cell_info_3d`;
 export const getCellExpURL = `${root}/cell_exp`;
 
 
@@ -44,7 +48,7 @@ const DataInfoFallback = {
         tissue: "",
         disease: "",
         molecule: "",
-        markers: [""],
+        markers: ["marker1", "marker2"],
         source_name: "",
         source_url: "",
         journal: "",
@@ -76,7 +80,7 @@ export const useDataInfoDB = (dataID) => {
         created_at: 123123,
         cell_count: 213123,
         marker_count: 13123,
-        markers: [""],
+        markers: ["marker1", "marker2"],
         has_cell_type: true,
         roi_count: 10,
     });
@@ -95,7 +99,7 @@ export const useDataInfoDB = (dataID) => {
         roi_count: record.roi_count,
         has_cell_type: record.has_cell_type,
         init_roi: roi.roi_id,
-        init_marker: record.markers[0]
+        // init_marker: record.markers[0]
     }
 }
 
@@ -125,12 +129,25 @@ export const useROIMetaDB = (dataID) => {
 const CellDataFallback = {
         cell_x: [0.0, 0.1],
         cell_y: [0.0, 0.1],
+        cell_z: [0.0, 0.1],
         cell_type: ['a', 'b']
     }
 
 
-export const useCellData = (roiID) => {
-    const { data, error } = useSWR(`${getCellInfoURL}/${roiID}`, fetcher, {
+export const useCellData2D = (roiID) => {
+    const { data, error } = useSWR(`${getCellInfo2DURL}/${roiID}`, fetcher, {
+        revalidateOnFocus: false
+    })
+
+    return {
+        data: !data ? CellDataFallback : data,
+        error: error,
+    }
+}
+
+
+export const useCellData3D = (roiID) => {
+    const { data, error } = useSWR(`${getCellInfo3DURL}/${roiID}`, fetcher, {
         revalidateOnFocus: false
     })
 
@@ -142,7 +159,6 @@ export const useCellData = (roiID) => {
 
 
 export const useCellDataDB = (roiID) => {
-    console.log(roiID)
     const data = useLiveQuery(() => db.CellInfo.where({"roi_id": roiID}).first(), [roiID], CellDataFallback)
     return data ? data : CellDataFallback;
 }
@@ -168,8 +184,11 @@ export const useExpData = (roiID, marker) => {
 }
 
 export const useExpDataDB = (roiID, marker) => {
-    return useLiveQuery(() => db.CellExp.where({roi_id: roiID, marker}).first(), [roiID, marker],
+    const data = useLiveQuery(() => db.CellExp.where('[roi_id+marker]').equals([roiID, marker]).first(), [roiID, marker],
         ExpFallback)
+    return {
+        data: data
+    }
 }
 
 

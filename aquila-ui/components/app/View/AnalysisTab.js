@@ -47,17 +47,11 @@ const TabTitle = ({label, disabled, disabledText, ...other}) => {
 }
 
 
-const bbox = (x, y) => {
-    return {x1: Math.min(...x), x2: Math.max(...x), y1: Math.min(...y), y2: Math.max(...y)}
-}
-
-
 const AnalysisTab = ({ roiID, recordData, cellData }) => {
 
     const hasCellType = recordData.has_cell_type;
 
     const neighborsData = useRef({});
-    const bboxData = useRef({});
     const [value, setValue] = useState(0);
     const [neighborsReady, setNeighborsStatus] = useState(false);
 
@@ -67,13 +61,10 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
         setNeighborsStatus(true)
     }
     const getNeighbors = useCallback(() => neighborsData.current, [])
-    const getBBOX = useCallback(() => bboxData.current, [])
 
-    useEffect(() => {
-        setNeighborsStatus(false)
-        bboxData.current = bbox(cellData.cell_x, cellData.cell_y)
-        console.log(bboxData.current)
-    }, [cellData.cell_x, cellData.cell_y, roiID])
+    // useEffect(() => {
+    //     setNeighborsStatus(false)
+    // }, [cellData.cell_x, cellData.cell_y, roiID])
 
     return (
         <Box id="analysis-box-outer-box" sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>
@@ -84,7 +75,7 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
                     value={value}
                     onChange={handleChange}
                     aria-label="Analysis tab"
-                    sx={{borderRight: 1, borderColor: 'divider'}}
+                    sx={{borderRight: 1, borderColor: 'divider', minWidth: "200px"}}
                 >
                     <TabTitle id="tab-b-0" label="Cell components" disabled={!hasCellType}
                               disabledText={noCellTypeHelp}/>
@@ -112,7 +103,7 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
                     <CellComponentTab cellData={cellData}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={1}>
-                    <CellDensityTab cellData={cellData} getBBOX={getBBOX}/>
+                    <CellDensityTab cellData={cellData}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={2}>
                     <CellDistributionTab cellData={cellData}/>
@@ -125,16 +116,15 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
                                       cellData={cellData}
                                       updateNeighbors={afterNeighbors}
                                       getNeighbors={getNeighbors}
-                                      getBBOX={getBBOX}
                     />
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={5}>
                     <CellCellInteractionTab roiID={roiID} cellData={cellData} neighborsData={neighborsData.current}/>
                 </TabPanel>
-                {/*<TabPanel roiID={roiID} value={value} index={6}>*/}
-                {/*    <Typography>Spatial co-expression page</Typography>*/}
-                {/*    <SpatialCoExpTab roiID={roiID} getNeighbors={getNeighbors} />*/}
-                {/*</TabPanel>*/}
+                {/*/!*<TabPanel roiID={roiID} value={value} index={6}>*!/*/}
+                {/*/!*    <Typography>Spatial co-expression page</Typography>*!/*/}
+                {/*/!*    <SpatialCoExpTab roiID={roiID} getNeighbors={getNeighbors} />*!/*/}
+                {/*/!*</TabPanel>*!/*/}
                 <TabPanel roiID={roiID} value={value} index={6}>
                     <SpatialAutocorrTab roiID={roiID}
                                         recordData={recordData}

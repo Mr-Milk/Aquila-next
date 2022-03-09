@@ -15,24 +15,15 @@ import ROITable from "components/DataTable/ROISelector";
 import {styled} from "@mui/styles";
 import AnalysisRecordTable from "components/DataTable/AnalysisRecordTable";
 import useSWR from "swr";
-import {useCellDataDB, useDataInfoDB, useROIMetaDB} from "../../data/get";
-import ROIMaps from "../../components/app/Analysis/ROIMaps";
+import {useCellDataDB, useDataInfoDB, useExpDataDB, useROIMetaDB} from "../../data/get";
+import ROIMaps from "../../components/app/share/ROIMaps";
 import AnalysisTab from "../../components/app/View/AnalysisTab";
+import ContentBox from "../../components/ContentBox";
+import RecordDetailsTable from "../../components/DataTable/RecordDetailsTable";
+import Stack from "@mui/material/Stack";
 
 
 const promptKey = "sharingPrompt";
-
-const ContentBox = styled('div')(
-    ({theme}) => ({
-        borderColor: theme.palette.divider,
-        borderStyle: "solid",
-        borderWidth: 1,
-        paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(2),
-        paddingLeft: theme.spacing(4),
-        paddingRight: theme.spacing(4),
-        height: theme.spacing(65),
-    }))
 
 
 const ShareNotWorkingPrompt = () => {
@@ -72,42 +63,44 @@ const ShareNotWorkingPrompt = () => {
 
 const PageContent = ({ id }) => {
 
+    console.log(id)
     const [currentROI, setROI] = useState("key");
-    const [marker, setMarker] = useState("key");
-    const changeMarker = (e, v) => setMarker(v);
+    const [currentROIMeta, setROIMeta] = useState("key");
+    const updateROI = (roiID, roiMeta) => {
+        setROI(roiID);
+        setROIMeta(roiMeta);
+    };
 
     const recordData = useDataInfoDB(id);
     const roiMeta = useROIMetaDB(id);
     const cellData = useCellDataDB(currentROI);
 
-    console.log(cellData)
-
     useEffect(() => {
         setROI(recordData.init_roi)
-        setMarker(recordData.init_marker)
-        }, [recordData.init_roi, recordData.init_marker])
+        let initROIMeta = []
+        Object.entries(JSON.parse(roiMeta[0]['meta'])).map((e) => {
+            if ((e[0] !== 'data_uuid') && (e[0] !== 'roi_id')) {
+                initROIMeta.push(e[1])
+            }
+        });
+        initROIMeta = initROIMeta.join(" | ")
+        setROIMeta(initROIMeta)
+        }, [recordData.init_roi, roiMeta])
 
     return (
         <Container maxWidth={"xl"} sx={{mt: 4, mb: 4}}>
-                <Grid container flexDirection="row" justifyContent="space-around" spacing={6}>
-                    <Grid item xs={12} md={4}>
-                        <ClientOnly>
-                            <ContentBox>
-                                <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Data Summary</Typography>
-                                <AnalysisRecordTable data={recordData}/>
-                            </ContentBox>
-                        </ClientOnly>
-                    </Grid>
-                    <Grid item xs={12} md={8}>
-                        <ClientOnly>
-                            <ContentBox>
-                                <ROITable roiMeta={roiMeta} updateFn={setROI}/>
-                            </ContentBox>
-                        </ClientOnly>
-
-                    </Grid>
-                </Grid>
-                <ROIMaps  roiID={currentROI} recordData={recordData} cellData={cellData} marker={marker} updateMarker={changeMarker}/>
+            <Stack direction="row" justifyContent="flex-start" spacing={4}>
+                    <ContentBox>
+                        <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Data Summary</Typography>
+                        <AnalysisRecordTable data={recordData}/>
+                    </ContentBox>
+                    <ContentBox>
+                        <ROITable roiMeta={roiMeta} updateFn={updateROI}/>
+                    </ContentBox>
+                </Stack>
+                <ROIMaps roiID={currentROI} roiMeta={currentROIMeta}
+                         recordData={recordData} cellData={cellData}
+                         getExpDataFn={useExpDataDB}/>
                 <AnalysisTab roiID={currentROI} recordData={recordData} cellData={cellData}/>
             </Container>
     )
@@ -117,8 +110,17 @@ const PageContent = ({ id }) => {
 
 const AnalysisResult = () => {
     const router = useRouter();
+    const [ready, setReady] = useState(false)
+    
+    useEffect(() => {
+        if (router.isReady) {
+            setReady(true)
+        }
+    }, [router.isReady])
+    console.log(router.query)
     const { id } = router.query;
 
+    if (!ready) return null
     return (
         <>
             <Head>
@@ -127,9 +129,7 @@ const AnalysisResult = () => {
             <ClientOnly>
                 <PageContent id={id}/>
             </ClientOnly>
-            <p>This is page from {id}</p>
             <ShareNotWorkingPrompt/>
-
         </>
     )
 }

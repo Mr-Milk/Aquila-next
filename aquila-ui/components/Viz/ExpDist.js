@@ -5,7 +5,7 @@ import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {LineChart} from 'echarts/charts';
 import { GridComponent,
-    LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent,
+    TitleComponent, ToolboxComponent, TooltipComponent,
     VisualMapComponent,
     VisualMapContinuousComponent,
 } from 'echarts/components';
@@ -43,24 +43,33 @@ function histogram(arr, binCnt) {
 }
 
 
-const Histogram = ({arr, title}) => {
+const ExpDist = ({arr, title}) => {
 
     const {x, y} = histogram(arr, 10);
 
     const options = {
         ...titleOpts(title),
         xAxis: {
+            name: 'Expression',
+            nameLocation: 'middle',
+            nameGap: 25,
             type: 'category',
             data: x,
             scale: true
         },
         yAxis: {
+            name: 'Cell Count',
+            nameLocation: 'end',
+            nameGap: 10,
+            nameTextStyle: {
+                align: 'right'
+            },
             type: 'value',
         },
         grid: {
             top: 30,
-            bottom: 0,
-            left: 0,
+            bottom: 25,
+            left: 15,
             containLabel: true
         },
         series: [
@@ -80,5 +89,5 @@ const Histogram = ({arr, title}) => {
 }
 
 
-export default Histogram;
+export default ExpDist;
 

@@ -5,8 +5,8 @@ export const db = new Dexie('aquilaAnalysisDatabase');
 db.version(1).stores({
     DataRecords: "id, created_at",  // data_id, created_time
     ROIInfo: "++, data_uuid", // data_id, roi_id, meta
-    CellInfo: "++, roi_id", // data_id, roi_id, cell_x, cell_y, cell_type
-    CellExp: "++, [roi_id+marker]" // roi_id, marker, expression
+    CellInfo: "++, data_uuid, roi_id", // data_id, roi_id, cell_x, cell_y, cell_type
+    CellExp: "++, data_uuid, [roi_id+marker]" // roi_id, marker, expression
 })
 
 

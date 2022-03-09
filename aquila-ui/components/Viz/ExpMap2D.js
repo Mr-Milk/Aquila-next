@@ -1,6 +1,5 @@
 import Echarts from "./echarts-obj";
-import {ResponsiveSize, ResponsiveSymbolSize} from "components/Viz/ResponsiveSize";
-import {color_pool, titleOpts} from "components/Viz/config";
+import {GRAD_COLORS, titleOpts} from "components/Viz/config";
 
 
 import * as echarts from 'echarts/core';
@@ -8,13 +7,14 @@ import {CanvasRenderer} from 'echarts/renderers';
 import {ScatterChart} from 'echarts/charts';
 import { GridComponent,
     LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent,
-    VisualMapComponent,
+    VisualMapComponent, DataZoomComponent,
     VisualMapContinuousComponent,
 } from 'echarts/components';
 
 echarts.use([
     CanvasRenderer,
     ScatterChart,
+    DataZoomComponent,
     GridComponent,
     LegendComponent,
     TitleComponent,
@@ -50,16 +50,13 @@ const AssignColor = (colors, arr, min, max) => {
     });
 };
 
-const ExpMap = ({cx, cy, exp, markerName, ...leftProps}) => {
+const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps}) => {
 
     const min_exp = Math.min(...exp);
     const max_exp = Math.max(...exp);
-    const size = cx.length;
-    const canvasSize = ResponsiveSize(size);
-    const symbolSize = ResponsiveSymbolSize(size);
 
-    const renderData = cx.map((x, i) => {
-        return [x, cy[i], exp[i]]
+    const renderData = exp.map((e, i) => {
+        return [cx[i], cy[i], e]
     });
 
     const options = {
@@ -72,14 +69,24 @@ const ExpMap = ({cx, cy, exp, markerName, ...leftProps}) => {
             left: 20,
             top: "middle",
             inRange: {
-                color: color_pool,
+                color: GRAD_COLORS,
             },
             text: [Math.round(max_exp), Math.round(min_exp)],
         },
+        dataZoom: [
+            {
+                type: 'inside',
+                xAxisIndex: [0]
+            },
+            {
+                type: 'inside',
+                yAxisIndex: [0],
+            },
+        ],
         grid: {
             top: 'middle',
-            width: 450,
-            height: 450,
+            width: canvasSize,
+            height: canvasSize,
             containLabel: true,
         },
         xAxis: {show: false},
@@ -87,17 +94,19 @@ const ExpMap = ({cx, cy, exp, markerName, ...leftProps}) => {
         series: [
             {
                 type: "scatter",
-                animation: false,
                 symbolSize: symbolSize,
                 data: renderData,
-                // links: [],
+                itemStyle: {
+                borderColor: '#555',
+                borderWidth: 0.5
+            },
             },
         ],
     };
 
     return (
-        <Echarts echarts={echarts} option={options} style={{height: 500, width: 500}}/>
+        <Echarts echarts={echarts} option={options} style={{height: canvasSize+100, width: canvasSize+100}}/>
     )
 }
 
-export default ExpMap;
+export default ExpMap2D;

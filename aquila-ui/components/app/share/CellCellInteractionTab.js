@@ -6,7 +6,13 @@ import {runCellInterations} from "data/post";
 import Heatmap from "components/Viz/Heatmap";
 import natsort from "natsort";
 import axios from "axios";
-import RunBotton from "./RunAnalysisButton";
+import RunButton from "./RunAnalysisButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import ParamWrap from "../../ParamWrap";
+import Ranger from "../../Ranger";
+import OneItemCenter from "../../OneItemCenter";
 
 const patternMap = {'0': 'Non significant', '1': 'Attract', '-1': 'Repeal'}
 
@@ -29,11 +35,11 @@ const processResult = (data) => {
 const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
 
     const pvalue = useRef(0.05);
-    const times = useRef(500);
     const result = useRef({type1: []});
     const labels = useRef([]);
 
     const [method, setMethod] = useState("pval");
+    const [times, setTimes] = useState(500);
     const [errorTimes, setErrorTimes] = useState(false);
     const [errorPvalue, setErrorPvalue] = useState(false);
     const [raiseRunError, setRaiseRunError] = useState(false);
@@ -78,7 +84,7 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
             const body = {
                 neighbors_map: neighborsData.map,
                 cell_type: cellData.cell_type,
-                times: parseInt(times.current),
+                times: parseInt(times),
                 pvalue: parseFloat(pvalue.current),
                 method: method
             }
@@ -91,32 +97,31 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
         }
     }
 
-    if (!cellData) {
-        return <></>
-    }
+    if (!cellData) {return null}
 
     return (
-        <>
-            <Grid container flexDirection="row" alignItems="center" justifyContent="flex-start" spacing={2}>
-                <Grid item>
-                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+            <Stack direction="row">
+                <Stack sx={{
+                    borderRight: 1, borderColor: "divider", pr: 2,
+                    minWidth: "280px",
+                    minHeight: "350px"
+                }} spacing={2}>
+                    <Typography variant="subtitle2">{"Spatial interation between cells"}</Typography>
+                    <Divider/>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
                         'pval': 'Pseudo p-value',
                         'zscore': 'zscore',
                     }}/>
-                </Grid>
-                <Grid item>
-                    <NumberInput
-                        label={"Times"}
-                        error={errorTimes}
-                        helperText="1-1000 Integer"
-                        onChange={checkTimes}
-                        defaultValue={times.current}
-                        description={"How many times to repeat permutation"}
-                        sx={{maxWidth: "80px"}}
-                    />
-                </Grid>
-                <Grid item>
-                    <NumberInput
+                        <RunButton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
+                    </Stack>
+<Divider/>
+                    <ParamWrap>
+                        <Ranger value={times} min={500} max={2000} step={100} onChange={(_,v)=> setTimes(v)}
+                        title={"Repeat"} description={"How many times to repeat permutation"}/>
+                    </ParamWrap>
+                    <ParamWrap>
+                        <NumberInput
                         label={"p value"}
                         error={errorPvalue}
                         helperText="Number between 0 to 1"
@@ -124,13 +129,9 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
                         onChange={checkPvalue}
                         sx={{maxWidth: "80px"}}
                     />
-                </Grid>
-                <Grid item>
-                    <RunBotton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
-                </Grid>
-            </Grid>
-            <Grid component={"div"} container flexDirection="row" justifyContent="center" alignItems="center">
-                <Grid component={"div"} item sx={{mt: 2}}>
+                    </ParamWrap>
+                </Stack>
+                <OneItemCenter>
                     {
                         showViz ? <Heatmap title="Cell interactions"
                                            data={result.current}
@@ -140,9 +141,8 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
                                            width={500}
                         /> : <></>
                     }
-                </Grid>
-            </Grid>
-        </>
+                </OneItemCenter>
+            </Stack>
     )
 
 }

@@ -1,15 +1,18 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import NumberInput, {inRangeFloat} from "../../NumberInput";
 import axios from "axios";
 import {runSpatialAutoCorr} from "../../../data/post";
-import Grid from "@mui/material/Grid";
 import Selector from "../../Selector";
-import RunBotton from "./RunAnalysisButton";
+import RunButton from "./RunAnalysisButton";
 import Typography from "@mui/material/Typography";
 import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import ParamWrap from "../../ParamWrap";
+import OneItemCenter from "../../OneItemCenter";
 
 
-const SpatialAutocorrTab = ({ roiID, recordData, cellData, getNeighbors, getExpData }) => {
+const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getExpData}) => {
 
     const pvalue = useRef(0.05);
     const neighborsData = getNeighbors();
@@ -21,6 +24,10 @@ const SpatialAutocorrTab = ({ roiID, recordData, cellData, getNeighbors, getExpD
 
     const [marker, setMarker] = useState(recordData.markers[0]);
     const {data: expData} = getExpData(roiID, marker);
+
+    useEffect(() => {
+        setResult(0);
+    }, [cellData]);
 
     const changeMarker = (e, v) => setMarker(v);
 
@@ -38,8 +45,9 @@ const SpatialAutocorrTab = ({ roiID, recordData, cellData, getNeighbors, getExpD
     }
 
     const handleRun = () => {
-        if (errorPvalue) { setRaiseRunError(true); }
-        else {
+        if (errorPvalue) {
+            setRaiseRunError(true);
+        } else {
             const body = {
                 neighbors_map: neighborsData.map,
                 expression: expData.expression,
@@ -48,33 +56,40 @@ const SpatialAutocorrTab = ({ roiID, recordData, cellData, getNeighbors, getExpD
             }
 
             axios.post(runSpatialAutoCorr, body).then((res) => {
-                    setResult(res.data);
-                }).catch((e) => console.log(e))
+                setResult(res.data);
+            }).catch((e) => console.log(e))
         }
     }
 
-    if (!cellData) {
-        return <></>
-    } else {
-        return (<>
-            <Grid container flexDirection="row" alignItems="center" justifyContent="flex-start" spacing={2}>
-                <Grid item>
+    if (!cellData) {return null}
+        return (
+            <Stack direction="row">
+                <Stack sx={{
+                    borderRight: 1, borderColor: "divider", pr: 2,
+                    minWidth: "200px",
+                    minHeight: "350px"
+                }} spacing={2}>
+                    <Typography variant="subtitle2">{"Correlation between expression and nearby spatial location"}</Typography>
+                    <Divider/>
                     <VirtualizedAutoComplete
-                    options={recordData.markers}
-                    label={'Select marker'}
-                    value={marker}
-                    onChange={changeMarker}
-                    sx={{width: "200px"}}
-                />
-                </Grid>
-                <Grid item>
-                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                        'geary_c': 'Geary\'s C',
-                        'moran_i': 'Moran\'s I',
-                    }}/>
-                </Grid>
-                <Grid item>
-                    <NumberInput
+                        options={recordData.markers}
+                        label={'Select marker'}
+                        value={marker}
+                        onChange={changeMarker}
+                        sx={{width: "200px"}}
+                    />
+                    <Divider/>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+                            'geary_c': 'Geary\'s C',
+                            'moran_i': 'Moran\'s I',
+                        }}/>
+                        <RunButton onClick={handleRun} onTipOpen={raiseRunError}
+                                   onTipClose={() => setRaiseRunError(false)}/>
+                    </Stack>
+                    <Divider/>
+                    <ParamWrap>
+                        <NumberInput
                             label={"p value"}
                             error={errorPvalue}
                             helperText="Number between 0 to 1"
@@ -82,24 +97,22 @@ const SpatialAutocorrTab = ({ roiID, recordData, cellData, getNeighbors, getExpD
                             onChange={checkPvalue}
                             sx={{maxWidth: "80px"}}
                         />
-                </Grid>
-                <Grid item>
-                    <RunBotton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
-                </Grid>
-            </Grid>
-            {(result !== 0) ?
-                <>
-                <Typography component="h3" sx={{mt: 2}}>
-                    Spatial Autocorrelation: {(result.pattern === 0) ? "✔️" : "❌"}
-                </Typography>
-                <Typography component="h3" sx={{mt: 2}}>
-                    Index value: {result.autocorr_value.toFixed(5)}
-                </Typography>
-                </>
-                : <></>}
-
-        </>)
-    }
+                    </ParamWrap>
+                </Stack>
+                <OneItemCenter>
+                    {(result !== 0) ?
+                        <>
+                            <Typography component="h3" sx={{mt: 2}}>
+                                Spatial Autocorrelation: {(result.pattern === 0) ? "✔️" : "❌"}
+                            </Typography>
+                            <Typography component="h3" sx={{mt: 2}}>
+                                Index value: {result.autocorr_value.toFixed(5)}
+                            </Typography>
+                        </>
+                        : <></>}
+                </OneItemCenter>
+            </Stack>
+        )
 
 }
 

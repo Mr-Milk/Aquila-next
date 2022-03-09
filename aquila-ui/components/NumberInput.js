@@ -2,6 +2,8 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Tooltip from "@mui/material/Tooltip";
+import Stack from "@mui/material/Stack";
+import HelperTips from "./HelperTips";
 
 
 export const isPosInt = (num) => {
@@ -31,11 +33,7 @@ export const inRangeInt = (num, lower, upper, edge) => {
     const inRange = edge ? ((parsed >= lower) && (parsed <= upper)) : ((parsed > lower) && (parsed < upper))
     if (isNaN(parsed)) {
         return false;
-    } else if (inRange) {
-        return true;
-    } else {
-        return false;
-    }
+    } else return inRange;
 }
 
 export const inRangeFloat = (num, lower, upper, edge) => {
@@ -44,11 +42,7 @@ export const inRangeFloat = (num, lower, upper, edge) => {
     const inRange = edge ? ((parsed >= lower) && (parsed <= upper)) : ((parsed > lower) && (parsed < upper))
     if (isNaN(parsed)) {
         return false;
-    } else if (inRange) {
-        return true;
-    } else {
-        return false;
-    }
+    } else return inRange;
 }
 
 
@@ -73,8 +67,7 @@ const NumberInput = ({label, error, onChange, helperText, description, defaultVa
 
     if (description !== undefined) {
         return (
-            <Grid container flexDirection="row" alignItems="flex-end">
-                <Grid item>
+            <Stack direction="row" alignItems="center" spacing={1}>
                     <BaseInput
                         label={label}
                         error={error}
@@ -83,13 +76,8 @@ const NumberInput = ({label, error, onChange, helperText, description, defaultVa
                         defaultValue={defaultValue}
                         {...other}
                     />
-                </Grid>
-                <Grid item>
-                    <Tooltip title={description}>
-                        <HelpOutlineIcon color="disabled"/>
-                    </Tooltip>
-                </Grid>
-            </Grid>
+                    <HelperTips text={description} style={{ marginTop: "0.5rem" }}/>
+            </Stack>
         )
     } else {
         return <BaseInput

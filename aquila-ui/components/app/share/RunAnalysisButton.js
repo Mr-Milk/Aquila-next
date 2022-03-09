@@ -3,7 +3,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 
-const RunBotton = ({ onClick, onTipOpen, onTipClose }) => {
+const RunButton = ({ onClick, onTipOpen, onTipClose }) => {
 
     return (
         <>
@@ -30,4 +30,4 @@ const RunBotton = ({ onClick, onTipOpen, onTipClose }) => {
     )
 }
 
-export default RunBotton;
+export default RunButton;

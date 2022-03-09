@@ -1,19 +1,19 @@
 import Pie from "components/Viz/Pie";
-import {Grid} from "@mui/material";
+import OneItemCenter from "../../OneItemCenter";
 
-const CellComponentTab = ({ cellData }) => {
+const CellComponentTab = ({cellData}) => {
+
+    if (!cellData) {return null}
 
     return (
-        <Grid container flexDirection="row" justifyContent="center">
-            <Grid item>
-                <Pie
-                    arr={cellData.cell_type}
-                    height="350px"
-                    width="350px"
-                    title="Cell components"
-                />
-            </Grid>
-        </Grid>
+        <OneItemCenter>
+            <Pie
+                arr={cellData.cell_type}
+                height="350px"
+                width="350px"
+                title="Cell components"
+            />
+        </OneItemCenter>
     )
 }
 

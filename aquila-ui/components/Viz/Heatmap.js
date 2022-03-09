@@ -1,17 +1,40 @@
-import {rdbu11, titleOpts} from "components/Viz/config";
+import {RDBU11, rdbu11, titleOpts} from "components/Viz/config";
 import Echarts from "./echarts-obj";
+
+import * as echarts from 'echarts/core';
+import {CanvasRenderer} from 'echarts/renderers';
+import {HeatmapChart} from 'echarts/charts';
+import { GridComponent,
+    TitleComponent, ToolboxComponent, TooltipComponent,
+    VisualMapComponent,
+} from 'echarts/components';
+
+echarts.use([
+    CanvasRenderer,
+    HeatmapChart,
+    GridComponent,
+    TitleComponent,
+    TooltipComponent,
+    ToolboxComponent,
+    VisualMapComponent,
+])
 
 const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
 
     const options = {
         ...titleOpts(title),
         grid: {
-            left: "5%",
+            show: false,
+            top: "10%",
+            left: "0%",
             right: "10%",
+            width: 'auto',
+            height: 'auto',
             containLabel: true,
         },
         xAxis: {
             type: 'category',
+            position: 'bottom',
             data: xlabel,
             splitNumber: 1,
             splitArea: {
@@ -25,7 +48,7 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
             },
             axisLabel: {
                 rotate: 30,
-                fontSize: 8,
+                fontSize: 12,
             },
             fontSize: 6,
         },
@@ -37,7 +60,7 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
                 show: true
             },
             axisLabel: {
-                fontSize: 8,
+                fontSize: 12,
             },
             axisTick: {
                 show: false
@@ -53,7 +76,7 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
             right: "right",
             top: "center",
             inRange: {
-                color: rdbu11,
+                color: RDBU11,
             },
             text: ['1', '-1'],
         },
@@ -66,8 +89,9 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
     }
 
     return <Echarts
+        echarts={echarts}
         option={options}
-        style={{width: width, height: height}}
+        style={{width: "600px", height: "550px"}}
     />
 }
 

@@ -1,9 +1,8 @@
 import axios from "axios";
 import {runCellDistribution} from "data/post";
-import Grid from "@mui/material/Grid";
 import Selector from "components/Selector";
-import {useRef, useState} from "react";
-import NumberInput, {inRangeFloat, inRangeInt, isPosFloat, isPosInt} from "components/NumberInput";
+import {useEffect, useRef, useState} from "react";
+import NumberInput, {inRangeFloat, isPosFloat, isPosInt} from "components/NumberInput";
 import Paper from "@mui/material/Paper";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -12,7 +11,13 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import natsort from "natsort";
-import RunBotton from "./RunAnalysisButton";
+import RunButton from "./RunAnalysisButton";
+import Ranger from "../../Ranger";
+import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import OneItemCenter from "../../OneItemCenter";
+import ParamWrap from "../../ParamWrap";
+import Typography from "@mui/material/Typography";
 
 
 const getRunBody = (cx, cy, ct, method, pvalue, r, resample, quad) => {
@@ -87,34 +92,27 @@ const ResultTable = ({data}) => {
 }
 
 
-const CellDistributionTab = ({ cellData }) => {
+const CellDistributionTab = ({cellData}) => {
 
     const r = useRef(10);
-    const times = useRef(500);
     const quad = useRef([10, 10]);
-    const rect = useRef([10, 10]);
     const pvalue = useRef(0.05);
     const result = useRef({cell_type: [], ix_value: [], pattern: []});
 
     const [method, setMethod] = useState("id");
-    const [errorTimes, setErrorTimes] = useState(false);
+    const [times, setTimes] = useState(500);
     const [errorR, setErrorR] = useState(false);
     const [errorQuad, setErrorQuad] = useState(false);
-    const [errorRect, setErrorRect] = useState(false);
     const [errorPvalue, setErrorPvalue] = useState(false);
     const [raiseRunError, setRaiseRunError] = useState(false);
     const [showResult, setShowResult] = useState(0);
 
+    useEffect(() => {
+        setShowResult(0);
+    }, [cellData]);
+
     const handleMethodSelect = (e) => setMethod(e.target.value);
 
-    const checkTimes = (e) => {
-        if (!inRangeInt(e.target.value, 1, 1000)) {
-            setErrorTimes(true)
-        } else {
-            setErrorTimes(false);
-            times.current = e.target.value;
-        }
-    };
     const checkR = (e) => {
         if (!isPosFloat(e.target.value)) {
             setErrorR(true);
@@ -144,7 +142,7 @@ const CellDistributionTab = ({ cellData }) => {
     }
 
     const handleRun = () => {
-        if ((method === "id") && (errorR || errorTimes)) {
+        if ((method === "id") && (errorR)) {
             setRaiseRunError(true)
         } else if ((method === "morisita") && errorQuad) {
             setRaiseRunError(true)
@@ -155,9 +153,10 @@ const CellDistributionTab = ({ cellData }) => {
                 method,
                 pvalue.current,
                 r.current,
-                times.current,
+                times,
                 quad.current,
             );
+            console.log(body)
             axios.post(runCellDistribution, body).then((res) => {
                 result.current = res.data;
                 setShowResult(showResult + 1)
@@ -165,70 +164,68 @@ const CellDistributionTab = ({ cellData }) => {
         }
     }
 
-    if (cellData === undefined) {
-        return <></>
-    } else {
-        return (
-            <>
-                <Grid container flexDirection="row" alignItems="center" justifyContent="flex-start" spacing={2}>
-                    <Grid item>
-                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                            'id': 'Index of Dispersion (Random sampling)',
-                            'morisita': 'Morisita Index (Quadratic statistic)',
-                            'clark-evans': 'Clark-Evans Index (Nearest Neighbors based)',
-                        }} sx={{maxWidth: '150px'}}/>
-                    </Grid>
-                    <Grid item style={{display: method === 'id' ? 'block' : 'none'}}>
-                        <NumberInput
-                            label={"Radius"}
-                            error={errorR}
-                            helperText="Positive number"
-                            onChange={checkR}
-                            sx={{maxWidth: "80px"}}
-                        />
-                    </Grid>
-                    <Grid item style={{display: method === 'id' ? 'block' : 'none'}}>
-                        <NumberInput
-                            label={"Repeat"}
-                            error={errorTimes}
-                            helperText="1-1000 Integer"
-                            onChange={checkTimes}
-                            sx={{maxWidth: "80px"}}
-                        />
-                    </Grid>
+    if (cellData === undefined) { return null }
+    return (
+        <Stack direction="row">
+            <Stack sx={{
+                borderRight: 1, borderColor: "divider", pr: 2,
+                minWidth: "280px",
+                minHeight: "350px"
+            }}
+                   spacing={2}>
+                <Typography variant="subtitle2">{"Profiling the distribution pattern of cells"}</Typography>
+                <Divider/>
+                <Stack direction="row" alignItems="center" spacing={2}>
 
-                    <Grid item style={{display: method === 'morisita' ? 'block' : 'none'}}>
-                        <NumberInput
-                            label={"Quadrat"}
-                            error={errorQuad}
-                            helperText="eg. 10,10"
-                            useNumber={false}
-                            onChange={checkQuad}
-                            sx={{maxWidth: "80px"}}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <NumberInput
-                            label={"p value"}
-                            error={errorPvalue}
-                            helperText="Number between 0 to 1"
-                            defaultValue={pvalue.current}
-                            onChange={checkPvalue}
-                            sx={{maxWidth: "80px"}}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <RunBotton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
-                    </Grid>
-                </Grid>
-                <Grid component={"div"} container flexDirection="row" justifyContent="center" alignItems="center">
-                    <Grid component={"div"} item sx={{mt: 2}}>
-                        <ResultTable data={result.current}/>
-                    </Grid>
-                </Grid>
-            </>
-        )
-    }
+                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+                        'id': 'Index of Dispersion (Random sampling)',
+                        'morisita': 'Morisita Index (Quadratic statistic)',
+                        'clark-evans': 'Clark-Evans Index (Nearest Neighbors based)',
+                    }} sx={{maxWidth: '150px'}}/>
+                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
+                               onTipClose={() => setRaiseRunError(false)}/>
+
+                </Stack>
+                <Divider/>
+                <ParamWrap show={method === 'id'}>
+                    <Ranger value={times} min={100} max={2000} step={100}
+                            title={"Repeat Times"} onChange={(e, v) => setTimes(v)}/>
+                </ParamWrap>
+                <ParamWrap show={method === 'id'}>
+                    <NumberInput
+                        label={"Radius"}
+                        error={errorR}
+                        helperText="Positive number"
+                        onChange={checkR}
+                        sx={{maxWidth: "80px"}}
+                    />
+                </ParamWrap>
+                <ParamWrap show={method === 'morisita'}>
+                    <NumberInput
+                        label={"Quadrilateral"}
+                        error={errorQuad}
+                        helperText="eg. 10,10"
+                        description={"Two side of the quadrilateral use to cut the ROI into pieces. (Example: 10,10)"}
+                        useNumber={false}
+                        onChange={checkQuad}
+                        sx={{maxWidth: "120px"}}
+                    />
+                </ParamWrap>
+                <NumberInput
+                    label={"p value"}
+                    error={errorPvalue}
+                    helperText="Number between 0 to 1"
+                    defaultValue={pvalue.current}
+                    onChange={checkPvalue}
+                    sx={{maxWidth: "80px"}}
+                />
+                <Divider/>
+            </Stack>
+            <OneItemCenter>
+                <ResultTable data={result.current}/>
+            </OneItemCenter>
+        </Stack>
+    )
 }
 
 export default CellDistributionTab;

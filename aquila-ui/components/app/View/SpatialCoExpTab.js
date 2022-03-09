@@ -2,7 +2,7 @@ import {useRef, useState} from "react";
 import Grid from "@mui/material/Grid";
 import Selector from "../../Selector";
 import NumberInput, {inRangeFloat} from "../../NumberInput";
-import RunBotton from "../share/RunAnalysisButton";
+import RunButton from "../share/RunAnalysisButton";
 import axios from "axios";
 import {runSpatialCoexpDB} from "data/post";
 import Graph from "../../Viz/Graph";
@@ -71,7 +71,7 @@ const SpatialCoExpTab = ({ roiID, getNeighbors }) => {
                         />
             </Grid>
             <Grid item>
-                <RunBotton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
+                <RunButton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
             </Grid>
             <Grid component={"div"} container flexDirection="row" justifyContent="center" alignItems="center">
                 <Grid component={"div"} item sx={{mt: 2}}>
