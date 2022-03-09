@@ -46,7 +46,7 @@ pub fn cell_density(p: Vec<(f64, f64)>, types: Vec<String>) -> HashMap<String, f
 
     type_counter.into_iter()
         .for_each(|(k, v)| {
-            values.push((*v as f64) / area);
+            values.push((v as f64) / area);
             uni_types.push(k);
     });
     let values = Array::from_vec(values);
