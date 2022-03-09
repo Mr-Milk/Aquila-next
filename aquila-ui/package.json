@@ -19,7 +19,7 @@
     "@mui/styles": "^5.2.3",
     "@next/bundle-analyzer": "^12.0.7",
     "@plaiceholder/next": "^2.2.0",
-    "axios": "^0.24.0",
+    "axios": "0.26.0",
     "clsx": "^1.1.1",
     "comlink": "^4.3.1",
     "danfo": "^0.2.34",
