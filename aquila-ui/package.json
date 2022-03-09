@@ -18,7 +18,7 @@
     "@mui/material": "^5.2.3",
     "@mui/styles": "^5.2.3",
     "@next/bundle-analyzer": "12.1.0",
-    "@plaiceholder/next": "^2.2.0",
+    "@plaiceholder/next": "2.3.0",
     "axios": "0.26.0",
     "clsx": "^1.1.1",
     "comlink": "^4.3.1",
