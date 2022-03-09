@@ -23,6 +23,19 @@ impl ROIInfo {
         Ok(rois)
     }
 
+    pub async fn data_roi_info_one(data_id: String, pool: &PgPool) -> Result<ROIInfo> {
+        let roi: ROIInfo = sqlx::query_as(
+            r#"
+            SELECT * FROM roi_info WHERE data_uuid = $1;
+            "#,
+        )
+            .bind(data_id)
+            .fetch_one(pool)
+            .await?;
+
+        Ok(roi)
+    }
+
     pub async fn one_roi_info(roi_id: String, pool: &PgPool) -> Result<ROIInfo> {
         let roi: ROIInfo = sqlx::query_as(
             r#"

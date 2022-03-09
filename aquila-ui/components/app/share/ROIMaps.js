@@ -10,26 +10,14 @@ import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
 import ClientOnly from "../../ClientOnly";
 
 
-const ROIMaps = ({ marker, roiID, recordData, cellData, updateMarker }) => {
+const ROIMaps = ({ roiID, roiMeta, recordData, cellData }) => {
 
     const [value, setValue] = useState(0);
     const handleChange = (e, v) => setValue(v);
 
-    const {data: expData} = useExpData(roiID, marker);
-
     return (
         <>
         <Box sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>
-            <ClientOnly>
-                <VirtualizedAutoComplete
-                options={recordData.markers}
-                label={'Select marker'}
-                value={marker}
-                onChange={updateMarker}
-                sx={{width: "200px", mb: 2, mt: 2, ml: 4}}
-            />
-            </ClientOnly>
-
             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="Cell Map"/>
@@ -37,13 +25,14 @@ const ROIMaps = ({ marker, roiID, recordData, cellData, updateMarker }) => {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <CellMapPanel cellData={cellData}/>
+                <CellMapPanel cellData={cellData} roiMeta={roiMeta}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <ExpPanel
+                    roiID={roiID}
                     cellData={cellData}
-                    expData={expData}
-                    marker={marker}
+                    markers={recordData.markers}
+                    getExpDataFn={useExpData}
                 />
             </TabPanel>
         </Box>

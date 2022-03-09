@@ -1,6 +1,23 @@
 import {titleOpts} from "components/Viz/config";
 import Echarts from "./echarts-obj";
 
+import * as echarts from 'echarts/core';
+import {CanvasRenderer} from 'echarts/renderers';
+import {LineChart} from 'echarts/charts';
+import { GridComponent,
+    LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent,
+    VisualMapComponent,
+    VisualMapContinuousComponent,
+} from 'echarts/components';
+
+echarts.use([
+    CanvasRenderer,
+    GridComponent,
+    LineChart,
+    TitleComponent,
+    TooltipComponent,
+])
+
 // histogram([100, 101, 102, 230, 304, 305, 400], 3) === [3, 1, 3];
 function histogram(arr, binCnt) {
     binCnt = binCnt || 4;
@@ -40,6 +57,12 @@ const Histogram = ({arr, title}) => {
         yAxis: {
             type: 'value',
         },
+        grid: {
+            top: 30,
+            bottom: 0,
+            left: 0,
+            containLabel: true
+        },
         series: [
             {
                 data: y,
@@ -50,8 +73,9 @@ const Histogram = ({arr, title}) => {
     }
 
     return <Echarts
+        echarts={echarts}
         option={options}
-        style={{width: '350px', height: '250px'}}
+        style={{width: '300px', height: '180px'}}
     />
 }
 

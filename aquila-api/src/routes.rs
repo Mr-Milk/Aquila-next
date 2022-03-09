@@ -5,8 +5,14 @@ use log::info;
 use sqlx::PgPool;
 use serde::{Deserialize, Serialize};
 use crate::utils::{json_response, error_response};
-use crate::db::{DataRecords, ROIInfo, CellInfo, CellExp, CellExpAll};
-use crate::analysis::{create_points, points2bbox, points_neighbors_triangulation, points_neighbors_kdtree, cell_density, ix_dispersion_parallel, morisita_parallel, clark_evans_parallel, build_array2, pair2_spearman, pair2_pearson, moran_i, geary_c, leibovici_entropy, shannon_entropy, cell2cell_interaction};
+use crate::db::{DataRecords, ROIInfo, CellInfo, CellExp, CellInfo3D};
+use crate::analysis::{create_points,
+                      points2bbox,
+                      points_neighbors_triangulation,
+                      points_neighbors_kdtree,
+                      cell_density,
+                      ix_dispersion_parallel,
+                      morisita_parallel, clark_evans_parallel, moran_i, geary_c, leibovici_entropy, shannon_entropy, cell2cell_interaction};
 
 #[get("/dbstats")]
 async fn dbstats(db_pool: web::Data<PgPool>) -> impl Responder {
@@ -22,6 +28,24 @@ async fn data_ids(db_pool: web::Data<PgPool>) -> impl Responder {
     let result = DataRecords::all_data_ids(db_pool.get_ref()).await;
     match result {
         Ok(data_ids) => json_response(data_ids),
+        Err(e) => error_response(e),
+    }
+}
+
+#[get("/data_ids_2d")]
+async fn data_ids_2d(db_pool: web::Data<PgPool>) -> impl Responder {
+    let result = DataRecords::data_ids_2d(db_pool.get_ref()).await;
+    match result {
+        Ok(data_ids_2d) => json_response(data_ids_2d),
+        Err(e) => error_response(e),
+    }
+}
+
+#[get("/data_ids_3d")]
+async fn data_ids_3d(db_pool: web::Data<PgPool>) -> impl Responder {
+    let result = DataRecords::data_ids_3d(db_pool.get_ref()).await;
+    match result {
+        Ok(data_ids_3d) => json_response(data_ids_3d),
         Err(e) => error_response(e),
     }
 }
@@ -53,6 +77,15 @@ async fn rois_info(data_id: web::Path<String>, db_pool: web::Data<PgPool>) -> im
     }
 }
 
+#[get("/rois_one/{data_id}")]
+async fn rois_info_one(data_id: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
+    let result = ROIInfo::data_roi_info_one(data_id.into_inner(), db_pool.get_ref()).await;
+    match result {
+        Ok(info) => json_response(info),
+        Err(e) => error_response(e),
+    }
+}
+
 #[get("/roi/{roi_id}")]
 async fn one_roi_info(roi_id: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
     let result = ROIInfo::one_roi_info(roi_id.into_inner(), db_pool.get_ref()).await;
@@ -71,10 +104,9 @@ async fn cell_info(roi_id: web::Path<String>, db_pool: web::Data<PgPool>) -> imp
     }
 }
 
-#[get("/cell_exp/{roi_id}")]
-async fn cell_exp_all(query: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
-    let query = query.into_inner();
-    let result = CellExpAll::get_roi_exp_all(query,db_pool.get_ref()).await;
+#[get("/cell_info_3d/{roi_id}")]
+async fn cell_info_3d(roi_id: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
+    let result = CellInfo3D::get_cell_info(roi_id.into_inner(), db_pool.get_ref()).await;
     match result {
         Ok(info) => json_response(info),
         Err(e) => error_response(e),
@@ -217,92 +249,92 @@ async fn run_cell_distribution(params: web::Json<RequestCellDistribution>) -> im
     })
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct RequestSpatialCorr {
-    neighbors_pairs1: Vec<usize>,
-    neighbors_pairs2: Vec<usize>,
-    exp_matrix: Vec<Vec<f64>>,
-    markers: Vec<String>,
-    threshold: f64,
-    method: String,
-}
+// #[derive(Serialize, Deserialize)]
+// pub struct RequestSpatialCorr {
+//     neighbors_pairs1: Vec<usize>,
+//     neighbors_pairs2: Vec<usize>,
+//     exp_matrix: Vec<Vec<f64>>,
+//     markers: Vec<String>,
+//     threshold: f64,
+//     method: String,
+// }
+//
+// #[derive(Serialize, Deserialize)]
+// pub struct SpatialCorrResult {
+//     marker1: Vec<String>,
+//     marker2: Vec<String>,
+//     corr_value: Vec<f64>,
+// }
+//
+// #[derive(Deserialize)]
+// struct Info {
+//     roi_id: String,
+//     neighbors_pairs1: Vec<usize>,
+//     neighbors_pairs2: Vec<usize>,
+//     threshold: f64,
+//     method: String,
+// }
 
-#[derive(Serialize, Deserialize)]
-pub struct SpatialCorrResult {
-    marker1: Vec<String>,
-    marker2: Vec<String>,
-    corr_value: Vec<f64>,
-}
+// fn run_coexp(data: RequestSpatialCorr) -> SpatialCorrResult {
+//     let arr1 = build_array2(&data.exp_matrix, data.neighbors_pairs1);
+//     let arr2 = build_array2(&data.exp_matrix, data.neighbors_pairs2);
+//     info!("Build array correctly");
+//     let markers_combs: Vec<(usize, usize)> = (0..data.markers.len()).combinations_with_replacement(2)
+//         .into_iter()
+//         .map(|i| (i[0], i[1]))
+//         .collect();
+//     let result = match data.method.as_str() {
+//         "spearman" => { pair2_spearman(arr1.view(), arr2.view()) }
+//         _ => { pair2_pearson(arr1.view(), arr2.view()) }
+//     };
+//     info!("Run corr correctly");
+//     let mut marker1 = vec![];
+//     let mut marker2 = vec![];
+//     let mut corr_value = vec![];
+//     for ((m1, m2), v) in markers_combs.into_iter().zip(result.into_iter()) {
+//         if v > data.threshold {
+//             marker1.push(data.markers[m1].clone());
+//             marker2.push(data.markers[m2].clone());
+//             corr_value.push(v);
+//         }
+//     }
+//     SpatialCorrResult {
+//         marker1,
+//         marker2,
+//         corr_value,
+//     }
+// }
 
-#[derive(Deserialize)]
-struct Info {
-    roi_id: String,
-    neighbors_pairs1: Vec<usize>,
-    neighbors_pairs2: Vec<usize>,
-    threshold: f64,
-    method: String,
-}
+// #[post("/db_spatial_coexp")]
+// async fn get_roi_coexp(query: web::Json<Info>, db_pool: web::Data<PgPool>) -> impl Responder {
+//     info!("Enter processsing func");
+//     let query = query.into_inner();
+//     info!("Before parsing to expall");
+//     let exp_all = CellExpAll::get_roi_exp_all(query.roi_id,db_pool.get_ref()).await;
+//     match exp_all {
+//         Ok(info) => {
+//             info!("Get CellExpAll correctly");
+//             let result = run_coexp(RequestSpatialCorr{
+//                 neighbors_pairs1: query.neighbors_pairs1,
+//                 neighbors_pairs2: query.neighbors_pairs2,
+//                 exp_matrix: info.exp_matrix,
+//                 markers: info.markers,
+//                 threshold: query.threshold,
+//                 method: query.method,
+//             });
+//             info!("Get Final result correctly");
+//             json_response(result)
+//         },
+//         Err(e) => error_response(e),
+//     }
+// }
 
-fn run_coexp(data: RequestSpatialCorr) -> SpatialCorrResult {
-    let arr1 = build_array2(&data.exp_matrix, data.neighbors_pairs1);
-    let arr2 = build_array2(&data.exp_matrix, data.neighbors_pairs2);
-    info!("Build array correctly");
-    let markers_combs: Vec<(usize, usize)> = (0..data.markers.len()).combinations_with_replacement(2)
-        .into_iter()
-        .map(|i| (i[0], i[1]))
-        .collect();
-    let result = match data.method.as_str() {
-        "spearman" => { pair2_spearman(arr1.view(), arr2.view()) }
-        _ => { pair2_pearson(arr1.view(), arr2.view()) }
-    };
-    info!("Run corr correctly");
-    let mut marker1 = vec![];
-    let mut marker2 = vec![];
-    let mut corr_value = vec![];
-    for ((m1, m2), v) in markers_combs.into_iter().zip(result.into_iter()) {
-        if v > data.threshold {
-            marker1.push(data.markers[m1].clone());
-            marker2.push(data.markers[m2].clone());
-            corr_value.push(v);
-        }
-    }
-    SpatialCorrResult {
-        marker1,
-        marker2,
-        corr_value,
-    }
-}
-
-#[post("/db_spatial_coexp")]
-async fn get_roi_coexp(query: web::Json<Info>, db_pool: web::Data<PgPool>) -> impl Responder {
-    info!("Enter processsing func");
-    let query = query.into_inner();
-    info!("Before parsing to expall");
-    let exp_all = CellExpAll::get_roi_exp_all(query.roi_id,db_pool.get_ref()).await;
-    match exp_all {
-        Ok(info) => {
-            info!("Get CellExpAll correctly");
-            let result = run_coexp(RequestSpatialCorr{
-                neighbors_pairs1: query.neighbors_pairs1,
-                neighbors_pairs2: query.neighbors_pairs2,
-                exp_matrix: info.exp_matrix,
-                markers: info.markers,
-                threshold: query.threshold,
-                method: query.method,
-            });
-            info!("Get Final result correctly");
-            json_response(result)
-        },
-        Err(e) => error_response(e),
-    }
-}
-
-#[post("/spatial_coexp")]
-async fn run_spatial_coexp(params: web::Json<RequestSpatialCorr>) -> impl Responder {
-    let data = params.into_inner();
-    let result = run_coexp(data);
-    json_response(result)
-}
+// #[post("/spatial_coexp")]
+// async fn run_spatial_coexp(params: web::Json<RequestSpatialCorr>) -> impl Responder {
+//     let data = params.into_inner();
+//     let result = run_coexp(data);
+//     json_response(result)
+// }
 
 #[derive(Serialize, Deserialize)]
 pub struct RequestSpatialAutoCorr {
@@ -455,18 +487,22 @@ async fn run_cell_interactions(params: web::Json<RequestCCI>) -> impl Responder 
 pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(dbstats);
     cfg.service(data_ids);
+    cfg.service(data_ids_2d);
+    cfg.service(data_ids_3d);
     cfg.service(records);
     cfg.service(one_record);
     cfg.service(rois_info);
+    cfg.service(rois_info_one);
     cfg.service(one_roi_info);
     cfg.service(cell_info);
+    cfg.service(cell_info_3d);
     cfg.service(cell_exp);
     // cfg.service(cell_exp_all);
-    cfg.service(get_roi_coexp);
+    // cfg.service(get_roi_coexp);
     cfg.service(run_neighbors_search);
     cfg.service(run_cell_density);
     cfg.service(run_cell_distribution);
-    cfg.service(run_spatial_coexp);
+    // cfg.service(run_spatial_coexp);
     cfg.service(run_spatial_autocorr);
     cfg.service(run_spatial_entropy);
     cfg.service(run_entropy);
