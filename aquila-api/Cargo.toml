@@ -13,7 +13,7 @@ actix-cors = "0.5.4"
 config = "0.10.1"
 serde = "1.0.136"
 serde_json = "1.0.79"
-sqlx = { version = "0.4", features = [ "runtime-actix-native-tls", "postgres", "macros", "json", "uuid"] }
+sqlx = { version = "0.5", features = [ "runtime-actix-native-tls", "postgres", "macros", "json", "uuid"] }
 uuid = { version = "0.8", features = ["serde"] }
 dotenv = "0.15.0"
 anyhow = "1.0.56"
