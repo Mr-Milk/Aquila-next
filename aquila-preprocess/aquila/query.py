@@ -1,8 +1,16 @@
-from crossref.restful import Etiquette, Works
+from collections import namedtuple
 from pathlib import Path
+
+from crossref.restful import Etiquette, Works
 from dotenv import dotenv_values
 
-from .scheme import DoiInfo
+DoiInfo = namedtuple('DoiInfo', [
+    'doi',
+    'source_name',
+    'source_url',
+    'year',
+    'journal',
+])
 
 info = Etiquette("aquila", contact_email="yb97643@um.edu.mo")
 
@@ -30,10 +38,6 @@ def get_doi_info(doi: str):
         source_name=result["title"][0],
         year=int(year),
     )
-
-
-def get_data_id():
-    pass
 
 
 def get_config():

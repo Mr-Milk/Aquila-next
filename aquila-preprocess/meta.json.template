@@ -6,5 +6,7 @@
   "disease": "",
   "doi": "",
   "is_single_cell": true,
-  "has_cell_type": true
+  "has_cell_type": true,
+  "description": "",
+  "obscure": ""
 }
