@@ -2,7 +2,7 @@ import Papa from 'papaparse';
 import {v4 as uuid4} from 'uuid';
 import {db} from 'db/schema';
 import * as Comlink from "comlink";
-import cloneDeep from "loadsh/clonedeep";
+import cloneDeep from "loadsh/cloneDeep";
 
 
 const getHeader = (file, preview = 10) => {
