@@ -61,58 +61,61 @@ const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getExpDa
         }
     }
 
-    if (!cellData) {return null}
-        return (
-            <Stack direction="row">
-                <Stack sx={{
-                    borderRight: 1, borderColor: "divider", pr: 2,
-                    minWidth: "200px",
-                    minHeight: "350px"
-                }} spacing={2}>
-                    <Typography variant="subtitle2">{"Correlation between expression and nearby spatial location"}</Typography>
-                    <Divider/>
-                    <VirtualizedAutoComplete
-                        options={recordData.markers}
-                        label={'Select marker'}
-                        value={marker}
-                        onChange={changeMarker}
-                        sx={{width: "200px"}}
-                    />
-                    <Divider/>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                            'geary_c': 'Geary\'s C',
-                            'moran_i': 'Moran\'s I',
-                        }}/>
-                        <RunButton onClick={handleRun} onTipOpen={raiseRunError}
-                                   onTipClose={() => setRaiseRunError(false)}/>
-                    </Stack>
-                    <Divider/>
-                    <ParamWrap>
-                        <NumberInput
-                            label={"p value"}
-                            error={errorPvalue}
-                            helperText="Number between 0 to 1"
-                            defaultValue={pvalue.current}
-                            onChange={checkPvalue}
-                            sx={{maxWidth: "80px"}}
-                        />
-                    </ParamWrap>
+    if (!cellData) {
+        return null
+    }
+    return (
+        <Stack direction="row">
+            <Stack sx={{
+                borderRight: 1, borderColor: "divider", pr: 2,
+                minWidth: "200px",
+                minHeight: "350px"
+            }} spacing={2}>
+                <Typography
+                    variant="subtitle2">{"Correlation between expression and nearby spatial location"}</Typography>
+                <Divider/>
+                <VirtualizedAutoComplete
+                    options={recordData.markers}
+                    label={'Select marker'}
+                    value={marker}
+                    onChange={changeMarker}
+                    sx={{width: "200px"}}
+                />
+                <Divider/>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+                        'geary_c': 'Geary\'s C',
+                        'moran_i': 'Moran\'s I',
+                    }}/>
+                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
+                               onTipClose={() => setRaiseRunError(false)}/>
                 </Stack>
-                <OneItemCenter>
-                    {(result !== 0) ?
-                        <>
-                            <Typography component="h3" sx={{mt: 2}}>
-                                Spatial Autocorrelation: {(result.pattern === 0) ? "✔️" : "❌"}
-                            </Typography>
-                            <Typography component="h3" sx={{mt: 2}}>
-                                Index value: {result.autocorr_value.toFixed(5)}
-                            </Typography>
-                        </>
-                        : <></>}
-                </OneItemCenter>
+                <Divider/>
+                <ParamWrap>
+                    <NumberInput
+                        label={"p value"}
+                        error={errorPvalue}
+                        helperText="Number between 0 to 1"
+                        defaultValue={pvalue.current}
+                        onChange={checkPvalue}
+                        sx={{maxWidth: "80px"}}
+                    />
+                </ParamWrap>
             </Stack>
-        )
+            <OneItemCenter>
+                {(result !== 0) ?
+                    <>
+                        <Typography component="h3" sx={{mt: 2}}>
+                            Spatial Autocorrelation: {(result.pattern === 0) ? "✔️" : "❌"}
+                        </Typography>
+                        <Typography component="h3" sx={{mt: 2}}>
+                            Index value: {result.autocorr_value.toFixed(5)}
+                        </Typography>
+                    </>
+                    : <></>}
+            </OneItemCenter>
+        </Stack>
+    )
 
 }
 

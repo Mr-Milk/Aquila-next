@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import NumberInput, {inRangeFloat} from "../../NumberInput";
 import axios from "axios";
-import Grid from "@mui/material/Grid";
 import Selector from "../../Selector";
 import RunButton from "./RunAnalysisButton";
 import Typography from "@mui/material/Typography";
@@ -13,7 +12,7 @@ import ParamWrap from "../../ParamWrap";
 import OneItemCenter from "../../OneItemCenter";
 
 
-const SVGeneTab = ({ roiID, recordData, cellData, getExpData }) => {
+const SVGeneTab = ({roiID, recordData, cellData, getExpData}) => {
 
     const pvalue = useRef(0.05);
 
@@ -45,8 +44,9 @@ const SVGeneTab = ({ roiID, recordData, cellData, getExpData }) => {
     }
 
     const handleRun = () => {
-        if (errorPvalue) { setRaiseRunError(true); }
-        else {
+        if (errorPvalue) {
+            setRaiseRunError(true);
+        } else {
             const body = {
                 x: cellData.cell_x,
                 y: cellData.cell_y,
@@ -63,53 +63,56 @@ const SVGeneTab = ({ roiID, recordData, cellData, getExpData }) => {
         }
     }
 
-    if (!cellData) {return null}
-        return (
-                        <Stack direction="row">
-                <Stack sx={{
-                    borderRight: 1, borderColor: "divider", pr: 2,
-                    minWidth: "200px",
-                    minHeight: "350px"
-                }} spacing={2}>
-                    <Typography variant="subtitle2">{"Whether gene expression is dependent on spatial location"}</Typography>
-                    <Divider/>
-                    <VirtualizedAutoComplete
-                        options={recordData.markers}
-                        label={'Select marker'}
-                        value={marker}
-                        onChange={changeMarker}
-                        sx={{width: "200px"}}
-                    />
-                    <Divider/>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+    if (!cellData) {
+        return null
+    }
+    return (
+        <Stack direction="row">
+            <Stack sx={{
+                borderRight: 1, borderColor: "divider", pr: 2,
+                minWidth: "200px",
+                minHeight: "350px"
+            }} spacing={2}>
+                <Typography
+                    variant="subtitle2">{"Whether gene expression is dependent on spatial location"}</Typography>
+                <Divider/>
+                <VirtualizedAutoComplete
+                    options={recordData.markers}
+                    label={'Select marker'}
+                    value={marker}
+                    onChange={changeMarker}
+                    sx={{width: "200px"}}
+                />
+                <Divider/>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
                         'spatialde': 'SpatialDE',
                     }}/>
-                        <RunButton onClick={handleRun} onTipOpen={raiseRunError}
-                                   onTipClose={() => setRaiseRunError(false)}/>
-                    </Stack>
-                    <Divider/>
-                    <ParamWrap>
-                        <NumberInput
-                            label={"p value"}
-                            error={errorPvalue}
-                            helperText="Number between 0 to 1"
-                            defaultValue={pvalue.current}
-                            onChange={checkPvalue}
-                            sx={{maxWidth: "80px"}}
-                        />
-                    </ParamWrap>
+                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
+                               onTipClose={() => setRaiseRunError(false)}/>
                 </Stack>
-                <OneItemCenter>
-                    {(result !== 0) ?
-                <>
-                <Typography component="h3" sx={{mt: 2}}>
-                    Spatial Variable: {result ? "✔️" : "❌"}
-                </Typography>
-                </>
-                : <></>}
-                </OneItemCenter>
-            </Stack>)
+                <Divider/>
+                <ParamWrap>
+                    <NumberInput
+                        label={"p value"}
+                        error={errorPvalue}
+                        helperText="Number between 0 to 1"
+                        defaultValue={pvalue.current}
+                        onChange={checkPvalue}
+                        sx={{maxWidth: "80px"}}
+                    />
+                </ParamWrap>
+            </Stack>
+            <OneItemCenter>
+                {(result !== 0) ?
+                    <>
+                        <Typography component="h3" sx={{mt: 2}}>
+                            Spatial Variable: {result ? "✔️" : "❌"}
+                        </Typography>
+                    </>
+                    : <></>}
+            </OneItemCenter>
+        </Stack>)
 
 }
 

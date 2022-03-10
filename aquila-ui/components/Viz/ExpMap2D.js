@@ -5,9 +5,14 @@ import {GRAD_COLORS, titleOpts} from "components/Viz/config";
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {ScatterChart} from 'echarts/charts';
-import { GridComponent,
-    LegendComponent, TitleComponent, ToolboxComponent, TooltipComponent,
-    VisualMapComponent, DataZoomComponent,
+import {
+    DataZoomComponent,
+    GridComponent,
+    LegendComponent,
+    TitleComponent,
+    ToolboxComponent,
+    TooltipComponent,
+    VisualMapComponent,
     VisualMapContinuousComponent,
 } from 'echarts/components';
 
@@ -97,15 +102,15 @@ const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps
                 symbolSize: symbolSize,
                 data: renderData,
                 itemStyle: {
-                borderColor: '#555',
-                borderWidth: 0.5
-            },
+                    borderColor: '#555',
+                    borderWidth: 0.5
+                },
             },
         ],
     };
 
     return (
-        <Echarts echarts={echarts} option={options} style={{height: canvasSize+100, width: canvasSize+100}}/>
+        <Echarts echarts={echarts} option={options} style={{height: canvasSize + 100, width: canvasSize + 100}}/>
     )
 }
 

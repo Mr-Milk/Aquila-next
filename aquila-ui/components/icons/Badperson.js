@@ -1,4 +1,4 @@
-const Badperson = ({ width, height }) => {
+const Badperson = ({width, height}) => {
     return (
         <svg t="1642937975313" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
              p-id="9963" width={width} height={height}>

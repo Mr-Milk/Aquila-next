@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useRef, useState} from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -47,7 +47,7 @@ const TabTitle = ({label, disabled, disabledText, ...other}) => {
 }
 
 
-const AnalysisTab = ({ roiID, recordData, cellData }) => {
+const AnalysisTab = ({roiID, recordData, cellData}) => {
 
     const hasCellType = recordData.has_cell_type;
 
@@ -135,9 +135,9 @@ const AnalysisTab = ({ roiID, recordData, cellData }) => {
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={7}>
                     <SVGeneTab roiID={roiID}
-                                        recordData={recordData}
-                                        cellData={cellData}
-                                        getExpData={useExpData}
+                               recordData={recordData}
+                               cellData={cellData}
+                               getExpData={useExpData}
                     />
                 </TabPanel>
             </Box>

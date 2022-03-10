@@ -3,7 +3,9 @@ import OneItemCenter from "../../OneItemCenter";
 
 const CellComponentTab = ({cellData}) => {
 
-    if (!cellData) {return null}
+    if (!cellData) {
+        return null
+    }
 
     return (
         <OneItemCenter>

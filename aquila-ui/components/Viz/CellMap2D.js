@@ -31,7 +31,9 @@ echarts.use([
 const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
 
     let hasCellType = (ct !== undefined);
-    if (hasCellType && (ct.length === 0)) { hasCellType = false }
+    if (hasCellType && (ct.length === 0)) {
+        hasCellType = false
+    }
     const categories = hasCellType ? [...new Set(ct)] : ['unknown'];
     const pieces = categories.map((c, i) => {
         return {
@@ -102,7 +104,7 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
     }
 
     return <Echarts
-        echarts={echarts} option={option} style={{height: canvasSize+100, width: canvasSize+100}}/>
+        echarts={echarts} option={option} style={{height: canvasSize + 100, width: canvasSize + 100}}/>
 }
 
 export default CellMap2D;

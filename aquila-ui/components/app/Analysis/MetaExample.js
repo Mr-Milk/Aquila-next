@@ -25,12 +25,12 @@ const rows = [
 
 const MetaExample = () => {
     return (
-        <TableContainer component={Paper} sx={{ boxShadow: 0, maxWidth: "350px" }}>
+        <TableContainer component={Paper} sx={{boxShadow: 0, maxWidth: "350px"}}>
             <Table size="small">
-                <TableHead sx={{ backgroundColor: 'primary.main', }}>
-                    <TableCell sx={{ color: 'common.white' }}>Patient</TableCell>
-                    <TableCell sx={{ color: 'common.white' }}>Organ</TableCell>
-                    <TableCell sx={{ color: 'common.white' }}>ROI</TableCell>
+                <TableHead sx={{backgroundColor: 'primary.main',}}>
+                    <TableCell sx={{color: 'common.white'}}>Patient</TableCell>
+                    <TableCell sx={{color: 'common.white'}}>Organ</TableCell>
+                    <TableCell sx={{color: 'common.white'}}>ROI</TableCell>
                 </TableHead>
                 <TableBody>
                     {rows.map((row, i) => (

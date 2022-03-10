@@ -8,8 +8,12 @@ const rotatePoint = (px, py, origin, angle) => {
     let rad = angle * (Math.PI / 180);
     let [ox, oy] = origin;
 
-    let xOffSet = px.map((x) => {return x - ox})
-    let yOffSet = py.map((y) => {return y - oy})
+    let xOffSet = px.map((x) => {
+        return x - ox
+    })
+    let yOffSet = py.map((y) => {
+        return y - oy
+    })
 
     let sinRad = Math.sin(rad);
     let cosRad = Math.cos(rad);
@@ -27,18 +31,18 @@ const rotatePoint = (px, py, origin, angle) => {
 }
 
 
-const GraphGL = ({ title, cx, cy, p1, p2, rotate }) => {
+const GraphGL = ({title, cx, cy, p1, p2, rotate}) => {
 
     if (rotate !== 0) {
         [cx, cy] = rotatePoint(cx, cy, [0, 0], rotate)
     }
 
     const nodes = cx.map((x, i) => {
-        return { x: x, y: cy[i] }
+        return {x: x, y: cy[i]}
     })
 
     const edges = p1.map((p, i) => {
-        return { source: p, target: p2[i] }
+        return {source: p, target: p2[i]}
     })
 
     const option = {

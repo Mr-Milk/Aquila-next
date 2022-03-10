@@ -1,7 +1,4 @@
 import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import Tooltip from "@mui/material/Tooltip";
 import Stack from "@mui/material/Stack";
 import HelperTips from "./HelperTips";
 
@@ -68,15 +65,15 @@ const NumberInput = ({label, error, onChange, helperText, description, defaultVa
     if (description !== undefined) {
         return (
             <Stack direction="row" alignItems="center" spacing={1}>
-                    <BaseInput
-                        label={label}
-                        error={error}
-                        helperText={error && helperText}
-                        onChange={onChange}
-                        defaultValue={defaultValue}
-                        {...other}
-                    />
-                    <HelperTips text={description} style={{ marginTop: "0.5rem" }}/>
+                <BaseInput
+                    label={label}
+                    error={error}
+                    helperText={error && helperText}
+                    onChange={onChange}
+                    defaultValue={defaultValue}
+                    {...other}
+                />
+                <HelperTips text={description} style={{marginTop: "0.5rem"}}/>
             </Stack>
         )
     } else {

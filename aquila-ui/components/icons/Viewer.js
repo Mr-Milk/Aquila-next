@@ -1,4 +1,4 @@
-const Viewer = ({ width, height }) => {
+const Viewer = ({width, height}) => {
     return (
         <svg t="1642933408105" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
              p-id="31539" width={width} height={height}>

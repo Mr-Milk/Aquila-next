@@ -85,7 +85,7 @@ const DataTable = ({data}) => {
                             target="_blank"
                             rel="noreferrer noopener"
                         >
-                            { value.is3D ? <ThreeDRotationIcon/> : <Launch/>}
+                            {value.is3D ? <ThreeDRotationIcon/> : <Launch/>}
                         </IconButton>
                     );
                 },

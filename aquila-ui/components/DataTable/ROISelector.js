@@ -13,7 +13,7 @@ const ViewROIButton = styled('span')(({theme}) => ({
 }))
 
 
-const ROITable = ({ roiMeta, updateFn }) => {
+const ROITable = ({roiMeta, updateFn}) => {
 
     const renderData = [];
     roiMeta.map((d) => {

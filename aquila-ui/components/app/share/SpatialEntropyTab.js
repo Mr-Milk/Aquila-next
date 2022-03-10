@@ -62,7 +62,9 @@ const SpatialEntropyTab = ({cellData}) => {
         }
     }
 
-    if (!cellData) {return null}
+    if (!cellData) {
+        return null
+    }
     return (
         <Stack direction="row">
             <Stack sx={{

@@ -8,15 +8,15 @@ import Badperson from "../icons/Badperson";
 import Stack from "@mui/material/Stack";
 
 
-const StatsCard = ({ data, title, children }) => {
+const StatsCard = ({data, title, children}) => {
     return (
         <Stack alignItems="center">
-            { children }
-            <Typography variant="h4" sx={{ mt: 1 }}>
-                { data }
+            {children}
+            <Typography variant="h4" sx={{mt: 1}}>
+                {data}
             </Typography>
-            <Typography sx={{ fontWeight: 500, opacity: 0.8 }}>
-                { title }
+            <Typography sx={{fontWeight: 500, opacity: 0.8}}>
+                {title}
             </Typography>
         </Stack>
     )
@@ -25,11 +25,11 @@ const StatsCard = ({ data, title, children }) => {
 
 const StatsIntro = () => {
 
-    const { data } = useDBStats();
+    const {data} = useDBStats();
 
     return (
         <Grid container flexDirection="row" alignItems="center" justifyContent="space-between" sx={{
-            my: 6, px: { xs: 4, sm: 6, md: 24 }
+            my: 6, px: {xs: 4, sm: 6, md: 24}
         }}>
             <Grid item>
                 <StatsCard title={"Data"} data={data.data_count}>

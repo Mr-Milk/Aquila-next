@@ -2,7 +2,7 @@ import Echarts from "./echarts-obj";
 import {titleOpts} from "./config";
 
 
-const Graph = ({ title, nodes1, nodes2, edgeV, width, height }) => {
+const Graph = ({title, nodes1, nodes2, edgeV, width, height}) => {
 
     const renderData = [...new Set([...nodes1, ...nodes2])].map((n, i) => {
         return {
@@ -17,8 +17,8 @@ const Graph = ({ title, nodes1, nodes2, edgeV, width, height }) => {
             target: nodes2[i],
             value: edgeV[i],
             lineStyle: {
-                    width: 5,
-                }
+                width: 5,
+            }
         }
     })
 

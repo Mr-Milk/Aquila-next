@@ -1,4 +1,4 @@
-const Lung = ({ width, height }) => {
+const Lung = ({width, height}) => {
     return (
         <svg t="1642937681114" className="icon" viewBox="0 0 1204 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
              p-id="84171" width={width} height={height}>

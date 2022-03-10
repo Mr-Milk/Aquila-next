@@ -22,12 +22,12 @@ const rows = [
 
 const CellInfoExample = () => {
     return (
-        <TableContainer component={Paper} sx={{ boxShadow: 0, maxWidth: "350px" }}>
+        <TableContainer component={Paper} sx={{boxShadow: 0, maxWidth: "350px"}}>
             <Table size="small">
-                <TableHead sx={{ backgroundColor: 'primary.main', }}>
-                    <TableCell sx={{ color: 'common.white' }}>Cell X</TableCell>
-                    <TableCell sx={{ color: 'common.white' }}>Cell Y</TableCell>
-                    <TableCell sx={{ color: 'common.white' }}>Cell Type</TableCell>
+                <TableHead sx={{backgroundColor: 'primary.main',}}>
+                    <TableCell sx={{color: 'common.white'}}>Cell X</TableCell>
+                    <TableCell sx={{color: 'common.white'}}>Cell Y</TableCell>
+                    <TableCell sx={{color: 'common.white'}}>Cell Type</TableCell>
                 </TableHead>
                 <TableBody>
                     {rows.map((row, i) => (

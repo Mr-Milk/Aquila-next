@@ -1,5 +1,4 @@
 import {useEffect, useMemo, useRef, useState} from "react";
-import Grid from "@mui/material/Grid";
 import Selector from "components/Selector";
 import NumberInput, {inRangeFloat, inRangeInt} from "components/NumberInput";
 import {runCellInterations} from "data/post";
@@ -97,31 +96,34 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
         }
     }
 
-    if (!cellData) {return null}
+    if (!cellData) {
+        return null
+    }
 
     return (
-            <Stack direction="row">
-                <Stack sx={{
-                    borderRight: 1, borderColor: "divider", pr: 2,
-                    minWidth: "280px",
-                    minHeight: "350px"
-                }} spacing={2}>
-                    <Typography variant="subtitle2">{"Spatial interation between cells"}</Typography>
-                    <Divider/>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+        <Stack direction="row">
+            <Stack sx={{
+                borderRight: 1, borderColor: "divider", pr: 2,
+                minWidth: "280px",
+                minHeight: "350px"
+            }} spacing={2}>
+                <Typography variant="subtitle2">{"Spatial interation between cells"}</Typography>
+                <Divider/>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
                         'pval': 'Pseudo p-value',
                         'zscore': 'zscore',
                     }}/>
-                        <RunButton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
-                    </Stack>
-<Divider/>
-                    <ParamWrap>
-                        <Ranger value={times} min={500} max={2000} step={100} onChange={(_,v)=> setTimes(v)}
-                        title={"Repeat"} description={"How many times to repeat permutation"}/>
-                    </ParamWrap>
-                    <ParamWrap>
-                        <NumberInput
+                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
+                               onTipClose={() => setRaiseRunError(false)}/>
+                </Stack>
+                <Divider/>
+                <ParamWrap>
+                    <Ranger value={times} min={500} max={2000} step={100} onChange={(_, v) => setTimes(v)}
+                            title={"Repeat"} description={"How many times to repeat permutation"}/>
+                </ParamWrap>
+                <ParamWrap>
+                    <NumberInput
                         label={"p value"}
                         error={errorPvalue}
                         helperText="Number between 0 to 1"
@@ -129,20 +131,20 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
                         onChange={checkPvalue}
                         sx={{maxWidth: "80px"}}
                     />
-                    </ParamWrap>
-                </Stack>
-                <OneItemCenter>
-                    {
-                        showViz ? <Heatmap title="Cell interactions"
-                                           data={result.current}
-                                           xlabel={labels.current}
-                                           ylabel={labels.current}
-                                           height={500}
-                                           width={500}
-                        /> : <></>
-                    }
-                </OneItemCenter>
+                </ParamWrap>
             </Stack>
+            <OneItemCenter>
+                {
+                    showViz ? <Heatmap title="Cell interactions"
+                                       data={result.current}
+                                       xlabel={labels.current}
+                                       ylabel={labels.current}
+                                       height={500}
+                                       width={500}
+                    /> : <></>
+                }
+            </OneItemCenter>
+        </Stack>
     )
 
 }

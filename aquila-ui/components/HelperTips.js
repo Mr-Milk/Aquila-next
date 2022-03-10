@@ -6,7 +6,7 @@ const HelperTips = ({text, style}) => {
     return <Tooltip title={
         <Typography variant="subtitle2">{text}</Typography>
     }>
-        <HelpOutlineIcon color="secondary" style={style} sx={{ fontSize: 16 }}/>
+        <HelpOutlineIcon color="secondary" style={style} sx={{fontSize: 16}}/>
     </Tooltip>
 }
 

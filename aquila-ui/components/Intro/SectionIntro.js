@@ -6,7 +6,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 
 
-
 const WrapBox = ({children}) => {
     return <Box sx={{maxHeight: "500px", maxWidth: "500px", textAlign: "center"}}>
         {children}
@@ -47,14 +46,14 @@ const SectionIntro = () => {
 
                 <Grid item xs={10} sm={5}>
 
-                        <Image
-                            src={"/undraw_projections_re_1mrh.svg"}
-                            alt={"data visualization"}
-                            layout={"responsive"}
-                            width={850}
-                            height={350}
-                            priority
-                        />
+                    <Image
+                        src={"/undraw_projections_re_1mrh.svg"}
+                        alt={"data visualization"}
+                        layout={"responsive"}
+                        width={850}
+                        height={350}
+                        priority
+                    />
 
                 </Grid>
             </Grid>
@@ -63,7 +62,7 @@ const SectionIntro = () => {
                   sx={{
                       mt: {sm: 2},
                   }}>
-                <Grid item xs={10} sm={5} >
+                <Grid item xs={10} sm={5}>
                     <Image
                         src={"/undraw_data_extraction_re_0rd3.svg"}
                         alt={"data visualization"}

@@ -24,7 +24,9 @@ const CellDensityTab = ({cellData}) => {
     }, [cellData])
 
     const result = getDensityResult();
-    if (!cellData) {return null}
+    if (!cellData) {
+        return null
+    }
     return (
         <OneItemCenter>
             <BarChart

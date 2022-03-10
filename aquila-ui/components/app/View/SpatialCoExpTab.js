@@ -8,7 +8,7 @@ import {runSpatialCoexpDB} from "data/post";
 import Graph from "../../Viz/Graph";
 
 
-const SpatialCoExpTab = ({ roiID, getNeighbors }) => {
+const SpatialCoExpTab = ({roiID, getNeighbors}) => {
 
     const neighborsData = getNeighbors();
 
@@ -60,15 +60,15 @@ const SpatialCoExpTab = ({ roiID, getNeighbors }) => {
             </Grid>
             <Grid item>
                 <NumberInput
-                            label={"Threshold"}
-                            error={errorThresh}
-                            helperText="Number between 0 to 1"
-                            defaultValue={thresh.current}
-                            onChange={checkThresh}
-                            description={"A number that specify the threshold of correlation, if you specify" +
-                                "0.9, pairs in (-1, -0.9) and (0.9, 1) with be saved."}
-                            sx={{maxWidth: "80px"}}
-                        />
+                    label={"Threshold"}
+                    error={errorThresh}
+                    helperText="Number between 0 to 1"
+                    defaultValue={thresh.current}
+                    onChange={checkThresh}
+                    description={"A number that specify the threshold of correlation, if you specify" +
+                        "0.9, pairs in (-1, -0.9) and (0.9, 1) with be saved."}
+                    sx={{maxWidth: "80px"}}
+                />
             </Grid>
             <Grid item>
                 <RunButton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
@@ -77,8 +77,8 @@ const SpatialCoExpTab = ({ roiID, getNeighbors }) => {
                 <Grid component={"div"} item sx={{mt: 2}}>
                     {
                         showViz ? <Graph title="Spatial Co-expression"
-                                           height={500}
-                                           width={500}
+                                         height={500}
+                                         width={500}
                         /> : <></>
                     }
                 </Grid>

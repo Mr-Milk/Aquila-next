@@ -2,7 +2,8 @@ import {GRAD_COLORS, titleOpts} from "./config";
 import Echarts from "./echarts-obj";
 import 'echarts-gl';
 import * as echarts from "echarts/core";
-import { GridComponent, VisualMapComponent } from 'echarts/components';
+import {GridComponent, VisualMapComponent} from 'echarts/components';
+
 echarts.use([GridComponent, VisualMapComponent]);
 
 

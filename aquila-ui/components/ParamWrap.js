@@ -1,16 +1,18 @@
 import Divider from "@mui/material/Divider";
 
-const ParamWrap = ({ show, children }) => {
+const ParamWrap = ({show, children}) => {
 
-    if (show === undefined) { show = true }
+    if (show === undefined) {
+        show = true
+    }
     const display = show ? 'block' : 'none';
 
     return (
         <>
-            <div style={{ display }}>
-                { children }
+            <div style={{display}}>
+                {children}
             </div>
-            <Divider style={{ display }}/>
+            <Divider style={{display}}/>
         </>
     )
 }

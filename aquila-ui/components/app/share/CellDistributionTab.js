@@ -164,7 +164,9 @@ const CellDistributionTab = ({cellData}) => {
         }
     }
 
-    if (cellData === undefined) { return null }
+    if (cellData === undefined) {
+        return null
+    }
     return (
         <Stack direction="row">
             <Stack sx={{

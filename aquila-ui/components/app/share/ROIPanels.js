@@ -1,9 +1,7 @@
-import Grid from "@mui/material/Grid";
 import ExpDist from "../../Viz/ExpDist";
 import ExpMap2D from "../../Viz/ExpMap2D";
 import CellMap2D from "../../Viz/CellMap2D";
 import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
-import {useExpData} from "../../../data/get";
 import {useMemo, useState} from "react";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
@@ -52,13 +50,13 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
 
             <OneItemCenter>
                 <ExpMap2D
-                        cx={cellData.cell_x}
-                        cy={cellData.cell_y}
-                        exp={expData.expression}
-                        markerName={marker}
-                        symbolSize={symbolSize}
-                        canvasSize={canvasSize}
-                    />
+                    cx={cellData.cell_x}
+                    cy={cellData.cell_y}
+                    exp={expData.expression}
+                    markerName={marker}
+                    symbolSize={symbolSize}
+                    canvasSize={canvasSize}
+                />
             </OneItemCenter>
         </Stack>
     )
@@ -95,13 +93,13 @@ export const CellMapPanel = ({cellData, roiMeta}) => {
             </Stack>
 
             <OneItemCenter>
-                                    <CellMap2D
-                        cx={cellData.cell_x}
-                        cy={cellData.cell_y}
-                        ct={cellData.cell_type}
-                        symbolSize={symbolSize}
-                        canvasSize={canvasSize}
-                    />
+                <CellMap2D
+                    cx={cellData.cell_x}
+                    cy={cellData.cell_y}
+                    ct={cellData.cell_type}
+                    symbolSize={symbolSize}
+                    canvasSize={canvasSize}
+                />
             </OneItemCenter>
 
         </Stack>

@@ -3,7 +3,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
 
-const RunButton = ({ onClick, onTipOpen, onTipClose }) => {
+const RunButton = ({onClick, onTipOpen, onTipClose}) => {
 
     return (
         <>

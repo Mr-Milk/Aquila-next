@@ -1,6 +1,6 @@
 import {Container} from "@mui/material";
 
-const ContentBox = ({ children }) => {
+const ContentBox = ({children}) => {
     return <Container sx={{
         border: 1,
         borderColor: "divider",

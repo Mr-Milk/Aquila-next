@@ -1,11 +1,14 @@
-import {RDBU11, rdbu11, titleOpts} from "components/Viz/config";
+import {RDBU11, titleOpts} from "components/Viz/config";
 import Echarts from "./echarts-obj";
 
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {HeatmapChart} from 'echarts/charts';
-import { GridComponent,
-    TitleComponent, ToolboxComponent, TooltipComponent,
+import {
+    GridComponent,
+    TitleComponent,
+    ToolboxComponent,
+    TooltipComponent,
     VisualMapComponent,
 } from 'echarts/components';
 

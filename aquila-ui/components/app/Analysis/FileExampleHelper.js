@@ -19,7 +19,7 @@ const FileExampleHelper = ({title, open, onClick, onClose, sx, children,}) => {
 
             <Dialog open={open} onClose={onClose}>
                 <DialogTitle>{title}</DialogTitle>
-                <DialogContent sx={{ mb: 2 }}>
+                <DialogContent sx={{mb: 2}}>
                     {children}
                 </DialogContent>
             </Dialog>

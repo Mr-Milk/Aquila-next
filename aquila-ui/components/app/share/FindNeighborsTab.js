@@ -1,5 +1,4 @@
 import {runCellNeighbors} from "data/post";
-import NeighborsMap from "components/Viz/NeighborsMap";
 import {useCallback, useEffect, useRef, useState} from "react";
 import Selector from "components/Selector";
 import NumberInput, {isPosInt} from "components/NumberInput";
@@ -13,7 +12,6 @@ import OneItemCenter from "../../OneItemCenter";
 import Ranger from "../../Ranger";
 import GraphGL from "../../Viz/GraphGL";
 import {getBBox} from "../../compute/geo";
-import natsort from "natsort";
 
 
 const getRunBody = (cx, cy, ct, method, r, k) => {
@@ -78,7 +76,9 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors}) => {
         const bbox = getBBox(cellData.cell_x, cellData.cell_y);
         const oy = bbox.y2;
         const ox = bbox.x2;
-        return cellData.cell_x.map((x) => {return - x + ox} )
+        return cellData.cell_x.map((x) => {
+            return -x + ox
+        })
     }, [cellData])
     const cell_x = plotX();
 
@@ -122,57 +122,60 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors}) => {
     }
     const neighborsData = getNeighbors();
 
-    if (!cellData) {return null}
+    if (!cellData) {
+        return null
+    }
 
 
     return (
-            <Stack direction="row">
-                <Stack sx={{
-                    borderRight: 1, borderColor: "divider", pr: 2,
-                    minWidth: "280px",
-                    minHeight: "350px"
-                }} spacing={2}>
-                    <Typography variant="subtitle2">{"Find the neighbors for cells"}</Typography>
-                    <Divider/>
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                        <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                            'kd-tree-2': 'KD Tree (KNN)',
-                            'kd-tree-1': 'KD Tree (Radius)',
-                            'kd-tree-3': 'KD Tree (Radius + KNN)',
-                            'delaunay': 'Delaunay Triangulation',
-                        }}/>
-                        <RunButton onClick={handleRun} onTipOpen={raiseRunError}
-                                   onTipClose={() => setRaiseRunError(false)}/>
-                    </Stack>
-                    <Divider/>
-                    <ParamWrap show={(method === 'kd-tree-1') || (method === 'kd-tree-3')}>
-                        <NumberInput
-                            label={"Search Radius"}
-                            error={errorR}
-                            helperText="Positive Integer"
-                            onChange={checkR}
-                            defaultValue={r.current}
-                            description={"Cells that intersect with the radius range of the center cell will be consider as neighbors"}
-                            sx={{maxWidth: "120px"}}
-                        />
-                    </ParamWrap>
-                    <ParamWrap show={(method === 'kd-tree-2') || (method === 'kd-tree-3')}>
-                        <Ranger value={k} min={1} max={15} step={1} onChange={(_, v) => setK(v)} title={"Number of neighbors (K)"} />
-                    </ParamWrap>
+        <Stack direction="row">
+            <Stack sx={{
+                borderRight: 1, borderColor: "divider", pr: 2,
+                minWidth: "280px",
+                minHeight: "350px"
+            }} spacing={2}>
+                <Typography variant="subtitle2">{"Find the neighbors for cells"}</Typography>
+                <Divider/>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
+                        'kd-tree-2': 'KD Tree (KNN)',
+                        'kd-tree-1': 'KD Tree (Radius)',
+                        'kd-tree-3': 'KD Tree (Radius + KNN)',
+                        'delaunay': 'Delaunay Triangulation',
+                    }}/>
+                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
+                               onTipClose={() => setRaiseRunError(false)}/>
                 </Stack>
-                <OneItemCenter>
-                        {
-                            showViz ? <GraphGL
-                                title={"Cell Neighobrs"}
-                                cx={cell_x}
-                                cy={cellData.cell_y}
-                                p1={neighborsData.p1}
-                                p2={neighborsData.p2}
-                                rotate={180}
-                            /> : <></>
-                        }
-                    </OneItemCenter>
+                <Divider/>
+                <ParamWrap show={(method === 'kd-tree-1') || (method === 'kd-tree-3')}>
+                    <NumberInput
+                        label={"Search Radius"}
+                        error={errorR}
+                        helperText="Positive Integer"
+                        onChange={checkR}
+                        defaultValue={r.current}
+                        description={"Cells that intersect with the radius range of the center cell will be consider as neighbors"}
+                        sx={{maxWidth: "120px"}}
+                    />
+                </ParamWrap>
+                <ParamWrap show={(method === 'kd-tree-2') || (method === 'kd-tree-3')}>
+                    <Ranger value={k} min={1} max={15} step={1} onChange={(_, v) => setK(v)}
+                            title={"Number of neighbors (K)"}/>
+                </ParamWrap>
             </Stack>
+            <OneItemCenter>
+                {
+                    showViz ? <GraphGL
+                        title={"Cell Neighobrs"}
+                        cx={cell_x}
+                        cy={cellData.cell_y}
+                        p1={neighborsData.p1}
+                        p2={neighborsData.p2}
+                        rotate={180}
+                    /> : <></>
+                }
+            </OneItemCenter>
+        </Stack>
     )
 }
 

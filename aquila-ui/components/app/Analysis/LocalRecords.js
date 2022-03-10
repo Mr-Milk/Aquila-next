@@ -19,26 +19,26 @@ import Box from "@mui/material/Box";
 const Record = ({record, onClick}) => {
     return (
         <>
-        <Chip label={record.id} sx={{mr: 1}}/>
-        <Paper elevation={0} component="span" sx={{ display: "inline-block", my: 1}}>
+            <Chip label={record.id} sx={{mr: 1}}/>
+            <Paper elevation={0} component="span" sx={{display: "inline-block", my: 1}}>
 
-            <TimeAgo date={record.created_at}/>
-            <IconButton
-                size="small"
-                target="_blank"
-                rel="noreferrer"
-                href={`/analysis/${record.id}`}
-                sx={{color: "#2D6D4B"}}
-            >
-                <OpenInNew/>
-            </IconButton>
-            <IconButton
-                size="small"
-                sx={{color: "#CB4042"}}
-                onClick={onClick}>
-                <Delete/>
-            </IconButton>
-        </Paper>
+                <TimeAgo date={record.created_at}/>
+                <IconButton
+                    size="small"
+                    target="_blank"
+                    rel="noreferrer"
+                    href={`/analysis/${record.id}`}
+                    sx={{color: "#2D6D4B"}}
+                >
+                    <OpenInNew/>
+                </IconButton>
+                <IconButton
+                    size="small"
+                    sx={{color: "#CB4042"}}
+                    onClick={onClick}>
+                    <Delete/>
+                </IconButton>
+            </Paper>
         </>
     )
 }
@@ -60,7 +60,7 @@ const LocalRecords = () => {
     }
 
     return (
-        <Box component="div" sx={{ my: 2 }}>
+        <Box component="div" sx={{my: 2}}>
             {(allID?.length > 0) ? allID.map((record) =>
 
                 <div key={record.id}>

@@ -1,6 +1,6 @@
 import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
-import { VisualMapComponent } from 'echarts/components';
+import {VisualMapComponent} from 'echarts/components';
 import 'echarts-gl';
 import {CAT_COLORS, titleOpts} from "./config";
 
@@ -8,10 +8,12 @@ echarts.use([
     VisualMapComponent
 ])
 
-const CellMap3D = ({ cx, cy, cz, ct, symbolSize, canvasSize }) => {
+const CellMap3D = ({cx, cy, cz, ct, symbolSize, canvasSize}) => {
 
     let hasCellType = (ct !== undefined);
-    if (hasCellType && (ct.length === 0)) { hasCellType = false }
+    if (hasCellType && (ct.length === 0)) {
+        hasCellType = false
+    }
     const categories = hasCellType ? [...new Set(ct)] : ['unknown'];
     const pieces = categories.map((c, i) => {
         return {
@@ -71,7 +73,7 @@ const CellMap3D = ({ cx, cy, cz, ct, symbolSize, canvasSize }) => {
 
     }
 
-    return <Echarts echarts={echarts} option={options} style={{ height: canvasSize, width: canvasSize }}/>
+    return <Echarts echarts={echarts} option={options} style={{height: canvasSize, width: canvasSize}}/>
 }
 
 export default CellMap3D;
