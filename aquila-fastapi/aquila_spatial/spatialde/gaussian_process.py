@@ -133,7 +133,7 @@ def fit_detailed(
 
     Args:
         adata: The annotated data matrix.
-        genes: List of genes to base the analysis on. Defaults to all genes.
+        genes: List of genes to base the aquila_spatial on. Defaults to all genes.
         normalized: Whether the data are already normalized to an approximately Gaussian likelihood.
             If ``False``, they will be normalized using the workflow from Svensson et al, 2018.
         spatial_key: Key in ``adata.obsm`` where the spatial coordinates are stored.
@@ -241,7 +241,7 @@ def fit_fast(
 
     Args:
         adata: The annotated data matrix.
-        genes: List of genes to base the analysis on. Defaults to all genes.
+        genes: List of genes to base the aquila_spatial on. Defaults to all genes.
         normalized: Whether the data are already normalized to an approximately Gaussian likelihood.
             If ``False``, they will be normalized using the workflow from Svensson et al, 2018.
         spatial_key: Key in ``adata.obsm`` where the spatial coordinates are stored.

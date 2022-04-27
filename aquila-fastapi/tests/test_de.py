@@ -1,5 +1,5 @@
 import numpy as np
-from svgene import run_somde
+from aquila_spatial import run_somde
 
 
 N = 10000

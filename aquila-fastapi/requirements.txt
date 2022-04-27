@@ -5,5 +5,7 @@ scipy
 gpflow
 patsy
 NaiveDE
+python-igraph
+pointpats
 fastapi[full]
 uvicorn

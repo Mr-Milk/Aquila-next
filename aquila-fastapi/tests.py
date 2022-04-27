@@ -1,7 +1,7 @@
 from time import time
 
 import numpy as np
-from svgene import run_somde, run_spatialde
+from aquila_spatial import run_somde, run_spatialde
 
 N = 10000
 EXP = np.random.randn(N).tolist()
