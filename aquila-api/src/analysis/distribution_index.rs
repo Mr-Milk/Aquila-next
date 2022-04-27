@@ -1,9 +1,12 @@
 use std::collections::HashMap;
+
 use itertools::Itertools;
 use kiddo::distance::squared_euclidean;
 use ndarray::Array1;
 use rand::{Rng, thread_rng};
 use rayon::prelude::*;
+use crate::analysis::custom_type::{BBox, Point2D};
+
 use crate::analysis::geo_ops::points2bbox;
 use crate::analysis::neighbors_search::kdtree_builder;
 use crate::analysis::stats::{chisquare2pvalue, zscore2pvalue};
@@ -25,38 +28,42 @@ impl QuadStats {
         }
     }
 
-    pub fn grid_counts(&mut self,
-                       points: Vec<(f64, f64)>,
-                       bbox: Option<(f64, f64, f64, f64)>,
-                       quad: Option<(usize, usize)>,
-                       rect_side: Option<(f64, f64)>,
+    pub fn grid_counts(
+        &mut self,
+        points: Vec<Point2D>,
+        bbox: Option<BBox>,
+        quad: Option<(usize, usize)>,
+        rect_side: Option<(f64, f64)>,
     ) -> HashMap<usize, usize>
     {
         let points_bbox = points2bbox(points.to_owned());
         let bbox = match bbox {
             Some(data) => {
-                if (data.0 <= points_bbox.0) &
-                    (data.1 <= points_bbox.1) &
-                    (data.2 >= points_bbox.2) &
-                    (data.3 >= points_bbox.3) {
+                if (data.0 <= points_bbox.0)
+                    & (data.1 <= points_bbox.1)
+                    & (data.2 >= points_bbox.2)
+                    & (data.3 >= points_bbox.3)
+                {
                     data
                 } else {
                     println!("Provided bbox failed to cover all the points! Use the minimum bounding box");
                     points_bbox
                 }
             }
-            _ => points_bbox
+            _ => points_bbox,
         }; // if bbox is not provide, calculate it for user
 
         let width = bbox.2 - bbox.0;
         let height = bbox.3 - bbox.1;
 
-        match quad { // match to quad first
+        match quad {
+            // match to quad first
             Some(data) => {
                 self.nx = data.0;
                 self.ny = data.1;
             }
-            _ => { // if quad is None, match rect_side
+            _ => {
+                // if quad is None, match rect_side
                 match rect_side {
                     Some(rect) => {
                         let nx = (width / rect.0).floor() as usize;
@@ -68,7 +75,8 @@ impl QuadStats {
                             self.ny = ny;
                         }
                     }
-                    _ => { // if both quad and rect_side is failed, set quad to (10, 10)
+                    _ => {
+                        // if both quad and rect_side is failed, set quad to (10, 10)
                         self.nx = 10;
                         self.ny = 10;
                     }
@@ -76,7 +84,9 @@ impl QuadStats {
             }
         }
 
-        if (self.nx == 0) | (self.ny == 0) { panic!("quadratic cannot perform with 0 rectangles") }
+        if (self.nx == 0) | (self.ny == 0) {
+            panic!("quadratic cannot perform with 0 rectangles")
+        }
 
         let nx_f: f64 = self.nx as f64;
         let ny_f: f64 = self.ny as f64;
@@ -95,10 +105,14 @@ impl QuadStats {
         let mut dict_id_count: HashMap<usize, usize> = dict_id.iter().map(|i| (*i, 0)).collect();
 
         for point in points {
-            let mut index_x = ((point.0 - bbox.0) / wx).floor() as usize;
-            let mut index_y = ((point.1 - bbox.1) / hy).floor() as usize;
-            if index_x == self.nx { index_x -= 1 };
-            if index_y == self.ny { index_y -= 1 };
+            let mut index_x = ((point[0] - bbox.0) / wx).floor() as usize;
+            let mut index_y = ((point[1] - bbox.1) / hy).floor() as usize;
+            if index_x == self.nx {
+                index_x -= 1
+            };
+            if index_y == self.ny {
+                index_y -= 1
+            };
             let id_ = index_y * self.nx + index_x;
             let id_count = dict_id_count.get_mut(&id_).unwrap();
             *id_count += 1;
@@ -119,12 +133,13 @@ fn get_pattern(v: f64, p_value: f64, pval: f64) -> usize {
     pattern
 }
 
-pub fn ix_dispersion(points: Vec<(f64, f64)>,
-                     bbox: (f64, f64, f64, f64),
-                     r: f64,
-                     resample: usize,
-                     pval: f64,
-                     min_cells: usize,
+pub fn ix_dispersion(
+    points: Vec<Point2D>,
+    bbox: BBox,
+    r: f64,
+    resample: usize,
+    pval: f64,
+    min_cells: usize,
 ) -> (f64, f64, usize) // return (index_value, p_value, pattern)
 {
     let n = points.len();
@@ -154,8 +169,8 @@ pub fn ix_dispersion(points: Vec<(f64, f64)>,
     };
 }
 
-pub fn morisita_ix(points: Vec<(f64, f64)>,
-                   bbox: (f64, f64, f64, f64),
+pub fn morisita_ix(points: Vec<Point2D>,
+    bbox: BBox,
                    quad: Option<(usize, usize)>,
                    rect_side: Option<(f64, f64)>,
                    pval: f64,
@@ -181,8 +196,8 @@ pub fn morisita_ix(points: Vec<(f64, f64)>,
 }
 
 
-pub fn clark_evans_ix(points: Vec<(f64, f64)>,
-                      bbox: (f64, f64, f64, f64),
+pub fn clark_evans_ix(points: Vec<Point2D>,
+    bbox: BBox,
                       pval: f64,
                       min_cells: usize, )
                       -> (f64, f64, usize) {
@@ -194,9 +209,9 @@ pub fn clark_evans_ix(points: Vec<(f64, f64)>,
 
         let area = (bbox.2 - bbox.0) * (bbox.3 - bbox.1);
         let r: Array1<f64> = points.iter().map(|p| {
-            let nearest = tree.nearest(&[p.0, p.1], 2, &squared_euclidean).unwrap();
+            let nearest = tree.nearest(p, 2, &squared_euclidean).unwrap();
             let np = points[*nearest[1].1];
-            squared_euclidean(&[np.0, np.1], &[p.0, p.1])
+            squared_euclidean(&np, &p)
         }).collect();
         let intensity = n as f64 / area;
         let nnd_mean = r.mean().unwrap();
@@ -214,7 +229,7 @@ pub fn clark_evans_ix(points: Vec<(f64, f64)>,
     };
 }
 
-pub fn ix_dispersion_parallel(points_collections: Vec<Vec<(f64, f64)>>,
+pub fn ix_dispersion_parallel(points_collections: Vec<Vec<Point2D>>,
                               bbox: (f64, f64, f64, f64),
                               r: f64,
                               resample: usize,
@@ -224,7 +239,7 @@ pub fn ix_dispersion_parallel(points_collections: Vec<Vec<(f64, f64)>>,
     points_collections.into_par_iter().map(|p| ix_dispersion(p, bbox, r, resample, pval, min_cells)).collect()
 }
 
-pub fn morisita_parallel(points_collections: Vec<Vec<(f64, f64)>>,
+pub fn morisita_parallel(points_collections: Vec<Vec<Point2D>>,
                          bbox: (f64, f64, f64, f64),
                          quad: Option<(usize, usize)>,
                          rect_side: Option<(f64, f64)>,
@@ -234,7 +249,7 @@ pub fn morisita_parallel(points_collections: Vec<Vec<(f64, f64)>>,
     points_collections.into_par_iter().map(|p| morisita_ix(p, bbox, quad, rect_side, pval, min_cells)).collect()
 }
 
-pub fn clark_evans_parallel(points_collections: Vec<Vec<(f64, f64)>>,
+pub fn clark_evans_parallel(points_collections: Vec<Vec<Point2D>>,
                             bbox: (f64, f64, f64, f64),
                             pval: f64,
                             min_cells: usize, ) -> Vec<(f64, f64, usize)>

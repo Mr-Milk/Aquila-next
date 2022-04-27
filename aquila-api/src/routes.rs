@@ -1,18 +1,19 @@
 use std::collections::HashMap;
-use actix_web::{web, get, post, HttpResponse, Responder};
+use std::detect::__is_feature_detected::sha;
+use std::sync::Arc;
+
+use actix_web::{get, HttpResponse, post, Responder, web};
+use actix_web::web::Json;
 use itertools::{Itertools, izip};
-use log::info;
-use sqlx::PgPool;
+use kiddo::distance::squared_euclidean;
+use ndarray::{Array, Array2, ArrayView2};
 use serde::{Deserialize, Serialize};
-use crate::utils::{json_response, error_response};
-use crate::db::{DataRecords, ROIInfo, CellInfo, CellExp, CellInfo3D};
-use crate::analysis::{create_points,
-                      points2bbox,
-                      points_neighbors_triangulation,
-                      points_neighbors_kdtree,
-                      cell_density,
-                      ix_dispersion_parallel,
-                      morisita_parallel, clark_evans_parallel, moran_i, geary_c, leibovici_entropy, shannon_entropy, cell2cell_interaction};
+use rayon::prelude::*;
+use sqlx::PgPool;
+
+use crate::analysis::{cell_interaction, clark_evans_parallel, kdtree_builder, get_neighbors, build_spatial_weight, ix_dispersion_parallel, leibovici_entropy, morisita_parallel, points2bbox, points_neighbors_triangulation, shannon_entropy, Point2D, pair2_spearman, pair2_pearson, moran_i_index, geary_c_index};
+use crate::db::{CellExp, CellInfo, CellInfo3D, DataRecords, ROIInfo};
+use crate::utils::{error_response, json_response};
 
 #[get("/dbstats")]
 async fn dbstats(db_pool: web::Data<PgPool>) -> impl Responder {
@@ -116,7 +117,23 @@ async fn cell_info_3d(roi_id: web::Path<String>, db_pool: web::Data<PgPool>) -> 
 #[get("/cell_exp/{roi_id}/{marker}")]
 async fn cell_exp(query: web::Path<(String, String)>, db_pool: web::Data<PgPool>) -> impl Responder {
     let query = query.into_inner();
-    let result = CellExp::get_roi_exp(query.0, query.1,db_pool.get_ref()).await;
+    let result = CellExp::get_roi_exp(query.0, query.1, db_pool.get_ref()).await;
+    match result {
+        Ok(info) => json_response(info),
+        Err(e) => error_response(e),
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct QueryExp {
+    roi_id: String,
+    markers: Vec<String>,
+}
+
+#[post("/cell_exp")]
+async fn cell_exp_batch(params: Json<QueryExp>, db_pool: web::Data<PgPool>) -> impl Responder {
+    let params = params.into_inner();
+    let result = CellExp::get_roi_exp_batch(params.roi_id, params.markers, db_pool.get_ref()).await;
     match result {
         Ok(info) => json_response(info),
         Err(e) => error_response(e),
@@ -127,6 +144,7 @@ async fn cell_exp(query: web::Path<(String, String)>, db_pool: web::Data<PgPool>
 pub struct RequestROINeighbors {
     x: Vec<f64>,
     y: Vec<f64>,
+    z: Option<Vec<f64>>,
     method: String,
     r: f64,
     k: usize,
@@ -136,58 +154,78 @@ pub struct RequestROINeighbors {
 pub struct Neighbors {
     p1: Vec<usize>,
     p2: Vec<usize>,
-    // np1: Vec<usize>,
-    // np2: Vec<usize>,
-    map: HashMap<usize, Vec<usize>>
+    weights: Vec<f64>,
+    map: HashMap<usize, Vec<usize>>,
+}
+
+
+fn create_neighbors_response<const K: usize>(neighbors: Vec<Vec<usize>>, pts: Vec<[f64; K]>) -> Neighbors
+{
+    let mut p1: Vec<usize> = vec![];
+    let mut p2: Vec<usize> = vec![];
+    let mut weights: Vec<f64> = vec![];
+    let mut neighbors_map: HashMap<usize, Vec<usize>> = HashMap::new();
+
+    for (i1, data) in neighbors.into_iter().enumerate() {
+        for i2 in data.iter() {
+            if i1 < *i2 {
+                p1.push(i1);
+                p2.push(*i2);
+                weights.push(
+                    squared_euclidean(&pts[i1], &pts[*i2]).sqrt()
+                )
+            }
+        }
+
+        neighbors_map.insert(i1, data);
+    }
+
+    Neighbors {
+        p1,
+        p2,
+        weights,
+        map: neighbors_map,
+    }
 }
 
 #[post("/cell_neighbors")]
 async fn run_neighbors_search(params: web::Json<RequestROINeighbors>) -> impl Responder {
     let data = params.into_inner();
-    let points = create_points(&data.x, &data.y);
-    let neighbors_data: HashMap<usize, Vec<usize>> = match data.method.as_str() {
+    let response = match data.method.as_str() {
         "kd-tree" => {
-            points_neighbors_kdtree(points, data.r, data.k)
+            match data.z {
+                Some(z) => {
+                    let points = data.x.iter()
+                        .zip(data.y.iter())
+                        .zip(z.iter())
+                        .map(|((x, y), z)| [*x, *y, *z])
+                        .collect();
+                    let tree = kdtree_builder(&points);
+                    let neighbors = get_neighbors(tree, points.clone(), data.r, data.k);
+                    create_neighbors_response(neighbors, points)
+                }
+                None => {
+                    let points = data.x.iter()
+                        .zip(data.y.iter())
+                        .map(|(x, y)| [*x, *y])
+                        .collect();
+                    let tree = kdtree_builder(&points);
+                    let neighbors = get_neighbors(tree, points.clone(), data.r, data.k);
+                    create_neighbors_response(neighbors, points)
+                }
+            }
         }
         _ => {
-            points_neighbors_triangulation(points)
+            let points: Vec<[f64; 2]> = data.x.iter()
+                .zip(data.y.iter())
+                .map(|(x, y)| [*x, *y])
+                .collect();
+            let neighbors = points_neighbors_triangulation(points.clone());
+            create_neighbors_response(neighbors, points)
         }
     };
 
-    let mut p1: Vec<usize> = vec![];
-    let mut p2: Vec<usize> = vec![];
-    for (i, data) in neighbors_data.iter() {
-        for d in data {
-            p1.push(*i);
-            p2.push(*d);
-        }
-    }
-
-    json_response(Neighbors{
-        p1,
-        p2,
-        map: neighbors_data
-    })
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct RequestCellDensity {
-    x: Vec<f64>,
-    y: Vec<f64>,
-    cell_type: Vec<String>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct CellDensityResult {
-    data: HashMap<String, f64>,
-}
-
-#[post("/cell_density")]
-async fn run_cell_density(params: web::Json<RequestCellDensity>) -> impl Responder {
-    let data = params.into_inner();
-    let points = create_points(&data.x, &data.y);
-    let result = cell_density(points, data.cell_type);
-    json_response(result)
+    json_response(response)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -214,15 +252,18 @@ pub struct CellDistributionResult {
 async fn run_cell_distribution(params: web::Json<RequestCellDistribution>) -> impl Responder {
     const MIN_CELLS: usize = 10;
     let data = params.into_inner();
-    let points = create_points(&data.x, &data.y);
+    let points = data.x.iter()
+        .zip(data.y.iter())
+        .map(|(x, y)| [*x, *y])
+        .collect();
     let bbox = points2bbox(points);
 
-    let mut types_groups: HashMap<String, Vec<(f64, f64)>> = HashMap::new();
+    let mut types_groups: HashMap<String, Vec<Point2D>> = HashMap::new();
     for (p1, p2, t) in izip!(data.x, data.y, data.cell_type) {
         let ps = types_groups.entry(t).or_insert(vec![]);
-        (*ps).push((p1, p2));
+        (*ps).push([p1, p2]);
     }
-    let mut points_collections: Vec<Vec<(f64, f64)>> = vec![];
+    let mut points_collections: Vec<Vec<Point2D>> = vec![];
     let mut cell_type: Vec<String> = vec![];
     for (k, v) in types_groups {
         cell_type.push(k);
@@ -230,8 +271,8 @@ async fn run_cell_distribution(params: web::Json<RequestCellDistribution>) -> im
     }
     let result = match data.method.as_str() {
         "id" => { ix_dispersion_parallel(points_collections, bbox, data.r, data.resample, data.pvalue, MIN_CELLS) }
-        "morisita" => { morisita_parallel(points_collections, bbox, Some(data.quad), None, data.pvalue, MIN_CELLS)}
-        _ => { clark_evans_parallel(points_collections, bbox, data.pvalue, MIN_CELLS)}
+        "morisita" => { morisita_parallel(points_collections, bbox, Some(data.quad), None, data.pvalue, MIN_CELLS) }
+        _ => { clark_evans_parallel(points_collections, bbox, data.pvalue, MIN_CELLS) }
     };
     let mut ix_value = vec![];
     let mut pvalue = vec![];
@@ -245,140 +286,170 @@ async fn run_cell_distribution(params: web::Json<RequestCellDistribution>) -> im
         ix_value,
         pvalue,
         pattern,
-        cell_type
+        cell_type,
     })
 }
 
-// #[derive(Serialize, Deserialize)]
-// pub struct RequestSpatialCorr {
-//     neighbors_pairs1: Vec<usize>,
-//     neighbors_pairs2: Vec<usize>,
-//     exp_matrix: Vec<Vec<f64>>,
-//     markers: Vec<String>,
-//     threshold: f64,
-//     method: String,
-// }
-//
-// #[derive(Serialize, Deserialize)]
-// pub struct SpatialCorrResult {
-//     marker1: Vec<String>,
-//     marker2: Vec<String>,
-//     corr_value: Vec<f64>,
-// }
-//
-// #[derive(Deserialize)]
-// struct Info {
-//     roi_id: String,
-//     neighbors_pairs1: Vec<usize>,
-//     neighbors_pairs2: Vec<usize>,
-//     threshold: f64,
-//     method: String,
-// }
+#[derive(Serialize, Deserialize)]
+pub struct ExpVector {
+    marker: String,
+    exp: Vec<f64>,
+}
 
-// fn run_coexp(data: RequestSpatialCorr) -> SpatialCorrResult {
-//     let arr1 = build_array2(&data.exp_matrix, data.neighbors_pairs1);
-//     let arr2 = build_array2(&data.exp_matrix, data.neighbors_pairs2);
-//     info!("Build array correctly");
-//     let markers_combs: Vec<(usize, usize)> = (0..data.markers.len()).combinations_with_replacement(2)
-//         .into_iter()
-//         .map(|i| (i[0], i[1]))
-//         .collect();
-//     let result = match data.method.as_str() {
-//         "spearman" => { pair2_spearman(arr1.view(), arr2.view()) }
-//         _ => { pair2_pearson(arr1.view(), arr2.view()) }
-//     };
-//     info!("Run corr correctly");
-//     let mut marker1 = vec![];
-//     let mut marker2 = vec![];
-//     let mut corr_value = vec![];
-//     for ((m1, m2), v) in markers_combs.into_iter().zip(result.into_iter()) {
-//         if v > data.threshold {
-//             marker1.push(data.markers[m1].clone());
-//             marker2.push(data.markers[m2].clone());
-//             corr_value.push(v);
-//         }
-//     }
-//     SpatialCorrResult {
-//         marker1,
-//         marker2,
-//         corr_value,
-//     }
-// }
+#[derive(Serialize, Deserialize)]
+pub struct RequestSpatialCorr {
+    p1: Vec<usize>,
+    p2: Vec<usize>,
+    exp_matrix: Vec<ExpVector>,
+    method: String,
+}
 
-// #[post("/db_spatial_coexp")]
-// async fn get_roi_coexp(query: web::Json<Info>, db_pool: web::Data<PgPool>) -> impl Responder {
-//     info!("Enter processsing func");
-//     let query = query.into_inner();
-//     info!("Before parsing to expall");
-//     let exp_all = CellExpAll::get_roi_exp_all(query.roi_id,db_pool.get_ref()).await;
-//     match exp_all {
-//         Ok(info) => {
-//             info!("Get CellExpAll correctly");
-//             let result = run_coexp(RequestSpatialCorr{
-//                 neighbors_pairs1: query.neighbors_pairs1,
-//                 neighbors_pairs2: query.neighbors_pairs2,
-//                 exp_matrix: info.exp_matrix,
-//                 markers: info.markers,
-//                 threshold: query.threshold,
-//                 method: query.method,
-//             });
-//             info!("Get Final result correctly");
-//             json_response(result)
-//         },
-//         Err(e) => error_response(e),
-//     }
-// }
+#[derive(Serialize, Deserialize)]
+pub struct RequestCorr {
+    exp_matrix: Vec<ExpVector>,
+    method: String,
+}
 
-// #[post("/spatial_coexp")]
-// async fn run_spatial_coexp(params: web::Json<RequestSpatialCorr>) -> impl Responder {
-//     let data = params.into_inner();
-//     let result = run_coexp(data);
-//     json_response(result)
-// }
+#[derive(Serialize, Deserialize)]
+pub struct CorrResult {
+    marker1: String,
+    marker2: String,
+    value: f64,
+}
+
+fn build_array(exp: &Vec<ExpVector>, indices: &Vec<usize>) -> (Array2<f64>, Vec<String>)
+{
+    let mut arr: Vec<f64> = vec![];
+    let mut markers: Vec<String> = vec![];
+
+    for v in exp.iter() {
+        markers.push(v.marker.clone());
+        for i in indices {
+            arr.push(*(v.exp).get(*i).unwrap())
+        }
+    }
+
+    (Array2::from_shape_vec((exp.len(), indices.len()), arr).unwrap(), markers)
+}
+
+
+fn coexp(arr1: ArrayView2<f64>, arr2: ArrayView2<f64>, method: &str, markers: Vec<String>) -> Vec<CorrResult> {
+    let result = match method {
+        "spearman" => { pair2_spearman(arr1, arr2) }
+        _ => { pair2_pearson(arr1, arr2) }
+    };
+
+    (0..markers.len()).combinations_with_replacement(2)
+        .into_iter().zip(
+        result.iter()
+    )
+        .map(|(combs, v)| CorrResult {
+            marker1: markers[combs[0]].clone(),
+            marker2: markers[combs[1]].clone(),
+            value: *v,
+        }).collect()
+}
+
+fn spatial_coexp(data: RequestSpatialCorr) -> Vec<CorrResult> {
+    let (arr1, markers1) = build_array(&data.exp_matrix, &data.p1);
+    let (arr2, _) = build_array(&data.exp_matrix, &data.p2);
+
+    coexp(arr1.view(), arr2.view(), data.method.as_str(), markers1)
+}
+
+
+fn build_exp_array(exp: &Vec<ExpVector>) -> (Array2<f64>, Vec<String>)
+{
+    let mut arr = vec![];
+    let mut markers: Vec<String> = vec![];
+    for v in exp {
+        arr.extend_from_slice(&v.exp[..]);
+        markers.push(v.marker.clone());
+    }
+
+    (Array2::from_shape_vec((exp.len(), exp[0].exp.len()), arr).unwrap(),
+        markers)
+}
+
+fn regular_coexp(data: RequestCorr) -> Vec<CorrResult> {
+    let (arr, markers) = build_exp_array(&data.exp_matrix);
+    coexp(arr.view(), arr.view(), data.method.as_str(), markers)
+}
+
+#[post("/spatial_coexp")]
+async fn run_spatial_coexp(params: web::Json<RequestSpatialCorr>) -> impl Responder {
+    let data = params.into_inner();
+    let result = spatial_coexp(data);
+    json_response(result)
+}
+
+#[post("/coexp")]
+async fn run_coexp(params: web::Json<RequestCorr>) -> impl Responder {
+    let data = params.into_inner();
+    let result = regular_coexp(data);
+    json_response(result)
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct RequestSpatialAutoCorr {
     neighbors_map: HashMap<usize, Vec<usize>>,
-    expression: Vec<f64>,
+    exp_matrix: Vec<ExpVector>,
     pvalue: f64,
     method: String,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct SpatialAutoCorrResult {
+    marker: String,
     pattern: f64,
-    autocorr_value: f64,
+    value: f64,
     pvalue: f64,
 }
 
 #[post("/spatial_autocorr")]
 async fn run_spatial_autocorr(params: web::Json<RequestSpatialAutoCorr>) -> impl Responder {
     let data = params.into_inner();
-    let result = match data.method.as_str() {
+    let pval = data.pvalue;
+    let w = build_spatial_weight(data.neighbors_map);
+    let response: Vec<SpatialAutoCorrResult> = match data.method.as_str() {
         "moran_i" => {
-            moran_i(data.neighbors_map, data.expression, data.pvalue)
+            data.exp_matrix.into_par_iter().map(|e| {
+                let acorr = moran_i_index(Array::from_vec(e.exp).view(), &w, true, pval);
+                SpatialAutoCorrResult {
+                    marker: e.marker,
+                    pattern: acorr.0,
+                    value: acorr.1,
+                    pvalue: acorr.2
+                }
+            }).collect()
         }
-        _ => { geary_c(data.neighbors_map, data.expression, data.pvalue ) }
+        _ => {
+            data.exp_matrix.into_par_iter().map(|e| {
+                let acorr = geary_c_index(Array::from_vec(e.exp).view(), &w, pval);
+                SpatialAutoCorrResult {
+                    marker: e.marker,
+                    pattern: acorr.0,
+                    value: acorr.1,
+                    pvalue: acorr.2
+                }
+            }).collect()
+        }
     };
-    json_response( SpatialAutoCorrResult {
-        pattern: result.0,
-        autocorr_value: result.1,
-        pvalue: result.2,
-    })
+    json_response(response)
 }
 
 
 #[derive(Serialize, Deserialize)]
 pub struct RequestSpatialEntropy {
-    cell_x: Vec<f64>,
-    cell_y: Vec<f64>,
-    cell_type: Vec<String>,
-    d: f64
+    x: Vec<f64>,
+    y: Vec<f64>,
+    types: Vec<String>,
+    d: f64,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct RequestEntropy {
-    cell_type: Vec<String>,
+    types: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -407,22 +478,21 @@ fn create_num_types(types: Vec<String>) -> Vec<usize> {
 #[post("/spatial_entropy")]
 async fn run_spatial_entropy(params: web::Json<RequestSpatialEntropy>) -> impl Responder {
     let data = params.into_inner();
-    let points: Vec<(f64, f64)> = data.cell_x.into_iter()
-        .zip(data.cell_y.into_iter())
-        .map(|(x,y)| {
-            (x , y)
-    }).collect();
-    let types = create_num_types(data.cell_type);
-    let entropy = leibovici_entropy(points, types, data.d, false);
-    json_response( EntropyResult{ entropy })
+    let points = data.x.iter()
+        .zip(data.y.iter())
+        .map(|(x, y)| [*x, *y])
+        .collect();
+    let types = data.types.iter().map(|t| t.as_str()).collect();
+    let entropy = leibovici_entropy(points, types, data.d);
+    json_response(EntropyResult { entropy })
 }
 
 #[post("/entropy")]
 async fn run_entropy(params: web::Json<RequestEntropy>) -> impl Responder {
     let data = params.into_inner();
-    let types = create_num_types(data.cell_type);
+    let types = create_num_types(data.types);
     let entropy = shannon_entropy(types);
-    json_response( EntropyResult{ entropy })
+    json_response(EntropyResult { entropy })
 }
 
 
@@ -454,13 +524,12 @@ async fn run_cell_interactions(params: web::Json<RequestCCI>) -> impl Responder 
         labels.push(k);
         neighbors_data.push(v);
     }
-    let results = cell2cell_interaction(types,
-                                        neighbors_data,
-                                        labels,
-                                        data.times,
-                                        data.pvalue,
-                                        data.method,
-                                        true);
+    let results = cell_interaction(types,
+                                   neighbors_data,
+                                   labels,
+                                   data.times,
+                                   data.pvalue,
+                                   data.method, );
     let mut type1 = vec![];
     let mut type2 = vec![];
     let mut score = vec![];
@@ -472,16 +541,13 @@ async fn run_cell_interactions(params: web::Json<RequestCCI>) -> impl Responder 
         pattern.push(r.2)
     }
 
-    json_response(CCIResult{
+    json_response(CCIResult {
         type1,
         type2,
         score,
         pattern,
     })
-
 }
-
-
 
 
 pub fn init(cfg: &mut web::ServiceConfig) {
@@ -497,12 +563,13 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(cell_info);
     cfg.service(cell_info_3d);
     cfg.service(cell_exp);
+    cfg.service(cell_exp_batch);
     // cfg.service(cell_exp_all);
     // cfg.service(get_roi_coexp);
     cfg.service(run_neighbors_search);
-    cfg.service(run_cell_density);
     cfg.service(run_cell_distribution);
-    // cfg.service(run_spatial_coexp);
+    cfg.service(run_spatial_coexp);
+    cfg.service(run_coexp);
     cfg.service(run_spatial_autocorr);
     cfg.service(run_spatial_entropy);
     cfg.service(run_entropy);

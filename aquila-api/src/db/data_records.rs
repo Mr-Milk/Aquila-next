@@ -2,7 +2,6 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, PgPool};
 
-
 #[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct DataRecord {
     data_uuid: String,
@@ -52,34 +51,67 @@ pub struct DataRecords {
 }
 
 #[derive(Serialize, Deserialize, FromRow, Debug)]
+pub struct TypeCount {
+    field: String,
+    count: i64
+}
+
+#[derive(Serialize, Deserialize, FromRow, Debug)]
 pub struct DBStats {
     data_count: i64,
     tissue_count: i64,
     disease_count: i64,
+    technology_count: i64,
+    total_cell: i64,
+    tissue_distinct: Vec<TypeCount>,
+    disease_distinct: Vec<TypeCount>,
+    technology_distinct: Vec<TypeCount>
 }
 
 impl DataRecords {
     pub async fn dbstats(pool: &PgPool) -> Result<DBStats> {
         let data = sqlx::query!(
-            r#"
-            SELECT COUNT(data_uuid) as "count!" FROM data_records;
-            "#
-        ).fetch_one(pool).await?;
-        let tissue = sqlx::query!(
-            r#"
-            SELECT COUNT(DISTINCT tissue) as "count!" FROM data_records;
-            "#
-        ).fetch_one(pool).await?;
-        let disease = sqlx::query!(
-            r#"
-            SELECT COUNT(DISTINCT disease) as "count!" FROM data_records;
-            "#
+            r#"SELECT COUNT(data_uuid) as "count!" FROM data_records;"#
         ).fetch_one(pool).await?;
 
-        let stats = DBStats{
+        let tissue = sqlx::query!(
+            r#"SELECT COUNT(DISTINCT organ) as "count!" FROM data_records;"#
+        ).fetch_one(pool).await?;
+
+        let tissue_distinct: Vec<TypeCount> = sqlx::query_as(
+            r#"SELECT organ as "field", COUNT(organ) as "count" FROM data_records GROUP BY organ;"#
+        ).fetch_all(pool).await?;
+
+        let disease = sqlx::query!(
+            r#"SELECT COUNT(DISTINCT disease) as "count!" FROM data_records;"#
+        ).fetch_one(pool).await?;
+
+        let disease_distinct: Vec<TypeCount> = sqlx::query_as(
+            r#"SELECT disease as "field", COUNT(disease) as "count" FROM data_records GROUP BY disease;"#
+        ).fetch_all(pool).await?;
+
+        let technology = sqlx::query!(
+            r#"SELECT COUNT(DISTINCT technology) as "count!" FROM data_records;"#
+        ).fetch_one(pool).await?;
+
+        let technology_distinct: Vec<TypeCount> = sqlx::query_as(
+            r#"SELECT technology as "field", COUNT(technology) as "count" FROM data_records GROUP BY technology;"#
+        ).fetch_all(pool).await?;
+
+        let total_cell = sqlx::query!(
+            r#"SELECT SUM(cell_count) as "sum!" FROM data_records;"#
+        ).fetch_one(pool).await?;
+
+
+        let stats = DBStats {
             data_count: data.count,
             tissue_count: tissue.count,
             disease_count: disease.count,
+            technology_count: technology.count,
+            total_cell: total_cell.sum,
+            tissue_distinct,
+            disease_distinct,
+            technology_distinct,
         };
 
         Ok(stats)
@@ -160,5 +192,4 @@ impl DataRecords {
 
         Ok(record)
     }
-
 }

@@ -1,10 +1,9 @@
-use std::collections::HashMap;
-
 use counter::Counter;
 use itertools::Itertools;
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
 use ordered_float::OrderedFloat;
+use std::collections::HashMap;
 
 fn arr_mean_stack(arr: ArrayView2<f64>) -> (Array2<f64>, Array1<f64>) {
     let arr_mean: Array1<f64> = arr.mean_axis(Axis(1)).unwrap();

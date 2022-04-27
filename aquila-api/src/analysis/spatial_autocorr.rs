@@ -1,10 +1,11 @@
 use std::collections::HashMap;
+
 use itertools::min;
 use nalgebra_sparse::CsrMatrix;
 use nalgebra_sparse::ops::Op;
 use nalgebra_sparse::ops::serial::{spadd_csr_prealloc, spadd_pattern};
-use ndarray::prelude::*;
 use ndarray::Array;
+use ndarray::prelude::*;
 
 use crate::analysis::zscore2pvalue;
 
@@ -92,7 +93,7 @@ impl SpatialWeight {
     }
 }
 
-pub fn moran_i_index(x: ArrayView1<f64>, w: SpatialWeight, two_tailed: bool, pval: f64) -> (f64, f64, f64)
+pub fn moran_i_index(x: ArrayView1<f64>, w: &SpatialWeight, two_tailed: bool, pval: f64) -> (f64, f64, f64)
 {
     let n: f64 = x.len() as f64;
     let s0 = w.w_sum;
@@ -120,7 +121,7 @@ pub fn moran_i_index(x: ArrayView1<f64>, w: SpatialWeight, two_tailed: bool, pva
     (pattern, i_value, p_norm)
 }
 
-pub fn geary_c_index(x: ArrayView1<f64>, w: SpatialWeight, pval: f64) -> (f64, f64, f64) {
+pub fn geary_c_index(x: ArrayView1<f64>, w: &SpatialWeight, pval: f64) -> (f64, f64, f64) {
     let n: f64 = x.len() as f64;
     let s1 = w.s1;
     let s2 = w.s2;
@@ -161,7 +162,7 @@ pub fn geary_c_index(x: ArrayView1<f64>, w: SpatialWeight, pval: f64) -> (f64, f
 }
 
 
-fn build_spatial_weight(neighbors: HashMap<usize, Vec<usize>>) -> SpatialWeight {
+pub fn build_spatial_weight(neighbors: HashMap<usize, Vec<usize>>) -> SpatialWeight {
     let mut neighbors_data: Vec<Vec<usize>> = vec![];
     let mut labels: Vec<usize> = vec![];
 
@@ -173,12 +174,12 @@ fn build_spatial_weight(neighbors: HashMap<usize, Vec<usize>>) -> SpatialWeight 
     SpatialWeight::from_neighbors(neighbors_data, labels)
 }
 
-pub fn moran_i(neighbors: HashMap<usize, Vec<usize>>, x: Vec<f64>, pval: f64) -> (f64, f64, f64) {
-    let w = build_spatial_weight(neighbors);
-    moran_i_index(Array::from_vec(x).view(), w, true, pval)
-}
-
-pub fn geary_c(neighbors: HashMap<usize, Vec<usize>>, x: Vec<f64>, pval: f64) -> (f64, f64, f64) {
-    let w = build_spatial_weight(neighbors);
-    geary_c_index(Array::from_vec(x).view(), w, pval)
-}
+// pub fn moran_i(neighbors: HashMap<usize, Vec<usize>>, x: Vec<f64>, pval: f64) -> (f64, f64, f64) {
+//     let w = build_spatial_weight(neighbors);
+//     moran_i_index(Array::from_vec(x).view(), w, true, pval)
+// }
+//
+// pub fn geary_c(neighbors: HashMap<usize, Vec<usize>>, x: Vec<f64>, pval: f64) -> (f64, f64, f64) {
+//     let w = build_spatial_weight(neighbors);
+//     geary_c_index(Array::from_vec(x).view(), w, pval)
+// }
