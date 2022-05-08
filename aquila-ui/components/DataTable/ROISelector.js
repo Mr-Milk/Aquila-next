@@ -1,16 +1,7 @@
-import MUIDataTable from "mui-datatables";
-import {styled} from "@mui/material/styles";
+import {DataGrid, GridToolbar} from '@mui/x-data-grid';
 import {useCallback, useMemo} from "react";
-
-
-const ViewROIButton = styled('span')(({theme}) => ({
-    color: theme.palette.primary.main,
-    cursor: "pointer",
-    '&:hover': {
-        color: theme.palette.primary.light
-    },
-    textDecoration: "none"
-}))
+import Button from "@mui/material/Button";
+import {parseROIDisplay} from "../humanize";
 
 
 const ROITable = ({roiMeta, updateFn}) => {
@@ -21,73 +12,54 @@ const ROITable = ({roiMeta, updateFn}) => {
     });
 
     const getColumns = useCallback((data) => {
+        let roiCol = []
         const columns = [];
         const header = (data === undefined) ? ['roi_id'] : Object.keys(JSON.parse(data[0]['meta']));
         header.map((h) => {
             if (h === "roi_id") {
-                columns.push({
-                    name: 'roi_id',
-                    label: 'View ROI',
-                    options: {
-                        sort: false,
-                        filter: false,
-                        customBodyRender: (value, tableMeta) => {
-                            const currentROIMeta = tableMeta.rowData.slice(0, -1).join(" | ");
-                            return (
-                                <ViewROIButton
-                                    onClick={() => updateFn(value, currentROIMeta)}
-                                    key={value}
-                                >
-                                    View
-                                </ViewROIButton>
-                            );
-                        }
-                    }
+                roiCol.push({
+                    field: 'roi_id',
+                    headerName: 'View ROI',
+                    renderCell: (params) => {
+                        const currentROIMeta = parseROIDisplay(params.row)
+                        return (
+                            <Button
+                                size="small"
+                                onClick={() => updateFn(params.value, currentROIMeta)} // update ROI_ID, ROI_META
+                            >View</Button>
+                        )
+                    },
                 })
             } else if (h === "data_uuid") {
             } else {
                 columns.push({
-                    name: h,
-                    label: h.replace(/^\w/, (c) => c.toUpperCase()),
-                    options: {
-                        sort: true,
-                        filter: true,
-                    }
+                    field: h,
+                    headerName: h.replace(/^\w/, (c) => c.toUpperCase()),
                 });
             }
         });
-        return columns;
+        return [...roiCol, ...columns];
     }, [updateFn]);
 
     const columns = useMemo(() => getColumns(roiMeta), [roiMeta, getColumns]);
 
-    const options = {
-        selectableRowsHideCheckboxes: true,
-        viewColumns: false,
-        print: false,
-        elevation: 0,
-        download: false,
-        responsive: "standard",
-        setTableProps: () => {
-            return {
-                // material ui v4 only
-                size: 'small',
-            };
-        },
-    };
 
-    if (typeof window !== "undefined") {
-        return (
-            <MUIDataTable
-                title="Select ROI"
-                data={renderData}
-                columns={columns}
-                options={options}
-            />
-        );
-    } else {
-        return <></>
-    }
+    return <DataGrid
+
+        density="compact"
+        sx={{
+            border: 'none',
+            height: '400px'
+        }}
+        rows={renderData}
+        columns={columns}
+        getRowId={(row) => row.roi_id}
+        pageSize={10}
+        rowsPerPageOptions={[10, 20, 50]}
+        components={{
+            Toolbar: GridToolbar,
+        }}
+    />
 
 }
 

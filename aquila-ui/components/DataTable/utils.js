@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import TableRow from "@mui/material/TableRow";
 
 export const TitleCol = (props) => {
-    return <TableCell>
+    return <TableCell sx={{width: "160px"}}>
         <Typography sx={{fontWeight: "medium"}} variant={"body2"}>
             {props.children}
         </Typography>

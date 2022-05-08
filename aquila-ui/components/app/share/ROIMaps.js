@@ -3,11 +3,11 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import {TabPanel} from "components/TabPanel";
+import {TabPanel} from "components/Layout/TabPanel";
 import {CellMapPanel, ExpPanel} from "components/app/share/ROIPanels";
 
 
-const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn}) => {
+const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn, bbox}) => {
 
     const [value, setValue] = useState(0);
     const handleChange = (e, v) => setValue(v);
@@ -22,7 +22,7 @@ const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn}) => {
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                    <CellMapPanel cellData={cellData} roiMeta={roiMeta}/>
+                    <CellMapPanel cellData={cellData} roiMeta={roiMeta} bbox={bbox}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <ExpPanel

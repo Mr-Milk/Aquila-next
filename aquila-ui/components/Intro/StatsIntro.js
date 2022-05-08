@@ -23,9 +23,7 @@ const StatsCard = ({data, title, children}) => {
 }
 
 
-const StatsIntro = () => {
-
-    const {data} = useDBStats();
+const StatsIntro = ({data}) => {
 
     return (
         <Grid container flexDirection="row" alignItems="center" justifyContent="space-between" sx={{

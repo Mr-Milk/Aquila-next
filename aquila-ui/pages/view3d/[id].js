@@ -12,9 +12,10 @@ import Typography from "@mui/material/Typography";
 import RecordDetailsTable from "../../components/DataTable/RecordDetailsTable";
 import ROITable from "../../components/DataTable/ROISelector";
 import ROIMaps3D from "../../components/app/View/ROIMaps3D";
-import {useState} from "react";
-import ContentBox from "../../components/ContentBox";
+import {useEffect, useState} from "react";
+import ContentBox from "../../components/Layout/ContentBox";
 import Stack from "@mui/material/Stack";
+import {getBBox, getBBox3D} from "../../components/compute/geo";
 
 
 const ViewerPage3D = ({id, initROI, initROIMeta, recordData}) => {
@@ -26,8 +27,13 @@ const ViewerPage3D = ({id, initROI, initROIMeta, recordData}) => {
         setROIMeta(roiMeta);
     };
     // const {data: recordData} = useDataInfo(id);
+    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20, z1: 10, z2: 10})
     const {data: roiMeta} = useROIMeta(id);
     const {data: cellData} = useCellData3D(currentROI);
+
+    useEffect(() => {
+        setBBox(getBBox3D(cellData.cell_x, cellData.cell_y, cellData.cell_z))
+    }, [cellData.cell_x, cellData.cell_y, cellData.cell_z])
 
     return (<>
         <Head>
@@ -40,10 +46,14 @@ const ViewerPage3D = ({id, initROI, initROIMeta, recordData}) => {
                     <RecordDetailsTable dataID={id}/>
                 </ContentBox>
                 <ContentBox>
+                    <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Select ROI</Typography>
                     <ROITable roiMeta={roiMeta} updateFn={updateROI}/>
                 </ContentBox>
             </Stack>
-            <ROIMaps3D roiID={currentROI} roiMeta={currentROIMeta} recordData={recordData} cellData={cellData}/>
+            <ROIMaps3D roiID={currentROI} roiMeta={currentROIMeta}
+                       recordData={recordData} cellData={cellData}
+                       bbox={bbox}
+            />
         </Container>
     </>)
 }

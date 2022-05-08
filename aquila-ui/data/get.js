@@ -61,20 +61,21 @@ const DataInfoFallback = {
         created_at: 123
     }
 
-export const useDataInfo = (dataID) => {
+export const useDataInfo = (dataID, fallback= DataInfoFallback) => {
+
     const { data, error } = useSWR(`${getOneRecordURL}/${dataID}`, fetcher)
 
     return {
-        data: !data ? DataInfoFallback : data,
+        data: !data ? fallback : data,
         error: error,
     }
 }
 
 
 export const useDataInfoDB = (dataID) => {
-    console.log(dataID)
+
     if (!dataID) { dataID = "non-existing-keys"}
-    console.log(dataID)
+
     const record = useLiveQuery(() => db.DataRecords.get(dataID), [dataID], {
         id: "key",
         created_at: 123123,
@@ -130,7 +131,7 @@ const CellDataFallback = {
         cell_x: [0.0, 0.1],
         cell_y: [0.0, 0.1],
         cell_z: [0.0, 0.1],
-        cell_type: ['a', 'b']
+        cell_type: ['unknown', 'unknown']
     }
 
 
@@ -189,6 +190,24 @@ export const useExpDataDB = (roiID, marker) => {
     return {
         data: data
     }
+}
+
+
+export const getCellExpBatch = async (roiID, markers) => {
+    let res = await axios.post(getCellExpURL, {
+        roi_id: roiID,
+        markers
+    })
+
+    return res.data
+}
+
+
+export const getCellExpBatchDB = async (roiID, markers) => {
+
+    let queryRange = markers.map((m) => [roiID, m])
+
+    return await Promise.all(markers.map((m) => db.CellExp.where('[roi_id+marker]').equals([roiID, m]).first()))
 }
 
 

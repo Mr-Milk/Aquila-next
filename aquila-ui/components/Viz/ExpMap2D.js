@@ -1,5 +1,8 @@
+import max from "loadsh/max"
+import min from "loadsh/min"
+
 import Echarts from "./echarts-obj";
-import {GRAD_COLORS, titleOpts} from "components/Viz/config";
+import {GRAD_COLORS, titleOpts, toolboxOpts} from "components/Viz/config";
 
 
 import * as echarts from 'echarts/core';
@@ -57,21 +60,30 @@ const AssignColor = (colors, arr, min, max) => {
 
 const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps}) => {
 
-    const min_exp = Math.min(...exp);
-    const max_exp = Math.max(...exp);
+    const min_exp = min(exp);
+    const max_exp = max(exp);
 
     const renderData = exp.map((e, i) => {
         return [cx[i], cy[i], e]
     });
 
     const options = {
-        ...titleOpts(`Expression of ${markerName}`),
+        ...toolboxOpts,
+        title: {
+            text: `Expression of ${markerName}`,
+            left: "25%",
+            top: "0%",
+            textStyle: {
+                fontSize: 14,
+            },
+        },
         visualMap: {
             min: min_exp,
             max: max_exp,
             precision: 3,
             calculable: false,
-            left: 20,
+            left: '85%',
+            right: 0,
             top: "middle",
             inRange: {
                 color: GRAD_COLORS,
@@ -89,13 +101,16 @@ const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps
             },
         ],
         grid: {
+            show: false,
             top: 'middle',
             width: canvasSize,
             height: canvasSize,
             containLabel: true,
+            left: '0%',
+            right: '15%',
         },
-        xAxis: {show: false},
-        yAxis: {show: false},
+        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
         series: [
             {
                 type: "scatter",
@@ -103,14 +118,14 @@ const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps
                 data: renderData,
                 itemStyle: {
                     borderColor: '#555',
-                    borderWidth: 0.5
+                    borderWidth: (symbolSize < 3) ? 0 : 0.5,
                 },
             },
         ],
     };
 
     return (
-        <Echarts echarts={echarts} option={options} style={{height: canvasSize + 100, width: canvasSize + 100}}/>
+        <Echarts echarts={echarts} option={options} style={{height: canvasSize + 50, width: canvasSize + 100}}/>
     )
 }
 

@@ -1,4 +1,4 @@
-import {RDBU11, titleOpts} from "components/Viz/config";
+import {Greens, RDBU11, titleOpts, toolboxOpts} from "components/Viz/config";
 import Echarts from "./echarts-obj";
 
 import * as echarts from 'echarts/core';
@@ -22,14 +22,27 @@ echarts.use([
     VisualMapComponent,
 ])
 
-const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
+const cmap = {
+    "RdBu": RDBU11,
+    "Greens": Greens
+}
+
+const Heatmap = ({data, xlabel, ylabel, title, legendText, min, max, colors = "RdBu", width, height}) => {
+
+    if (legendText === undefined) {
+        let intMax = Number.isInteger(max)
+        let intMin = Number.isInteger(min)
+        legendText = [intMax ? max : max.toFixed(2), intMin ? min : min.toFixed(2)]
+    }
 
     const options = {
         ...titleOpts(title),
+        ...toolboxOpts,
         grid: {
             show: false,
-            top: "10%",
-            left: "0%",
+            top: "5%",
+            bottom: "5%",
+            left: "5%",
             right: "10%",
             width: 'auto',
             height: 'auto',
@@ -38,7 +51,7 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
         xAxis: {
             type: 'category',
             position: 'bottom',
-            data: xlabel,
+            //data: xlabel,
             splitNumber: 1,
             splitArea: {
                 show: true
@@ -57,7 +70,7 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
         },
         yAxis: {
             type: 'category',
-            data: ylabel,
+            //data: ylabel,
             splitNumber: 1,
             splitArea: {
                 show: true
@@ -73,15 +86,15 @@ const Heatmap = ({data, xlabel, ylabel, title, width, height}) => {
             },
         },
         visualMap: {
-            min: -1.0,
-            max: 1.0,
+            min: min,
+            max: max,
             precision: 3,
             right: "right",
             top: "center",
             inRange: {
-                color: RDBU11,
+                color: cmap[colors],
             },
-            text: ['1', '-1'],
+            text: legendText,
         },
         series: [
             {

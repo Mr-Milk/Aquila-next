@@ -1,17 +1,14 @@
 import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
 
-const ParamWrap = ({show, children}) => {
-
-    if (show === undefined) {
-        show = true
-    }
+const ParamWrap = ({show = true, children}) => {
     const display = show ? 'block' : 'none';
 
     return (
         <>
-            <div style={{display}}>
+            <Box component={"div"} sx={{py: 2}} style={{display}}>
                 {children}
-            </div>
+            </Box>
             <Divider style={{display}}/>
         </>
     )

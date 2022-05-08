@@ -117,19 +117,14 @@ const DataTable = ({data}) => {
             }
         }
     }
-    if (typeof window !== "undefined") {
-        return (
-            <MUIDataTable
-                title="All Data"
-                data={data}
-                columns={columns}
-                options={options}
-            />
-        );
-    } else {
-        return <></>
-    }
-
+    return (
+        <MUIDataTable
+            title="All Data"
+            data={data}
+            columns={columns}
+            options={options}
+        />
+    );
 }
 
 export default DataTable;

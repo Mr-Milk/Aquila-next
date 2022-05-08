@@ -1,230 +1,265 @@
 import axios from "axios";
 import {runCellDistribution} from "data/post";
-import Selector from "components/Selector";
+import Selector from "components/InputComponents/Selector";
 import {useEffect, useRef, useState} from "react";
-import NumberInput, {inRangeFloat, isPosFloat, isPosInt} from "components/NumberInput";
-import Paper from "@mui/material/Paper";
-import TableContainer from "@mui/material/TableContainer";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import natsort from "natsort";
-import RunButton from "./RunAnalysisButton";
-import Ranger from "../../Ranger";
+import NumericField from "components/InputComponents/NumberInput";
+import Ranger from "../../InputComponents/Ranger";
 import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import OneItemCenter from "../../OneItemCenter";
-import ParamWrap from "../../ParamWrap";
-import Typography from "@mui/material/Typography";
+import OneItemCenter from "../../Layout/OneItemCenter";
+import ParamWrap from "../../InputComponents/ParamWrap";
+import {Controller, useForm} from "react-hook-form";
+import {number, object} from "yup";
+import {yupResolver} from '@hookform/resolvers/yup';
+import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
+import SubmitButton from "../../InputComponents/SubmitButton";
+import Tree from "../../Viz/Tree";
+import LeftPanel from "../../Layout/LeftPanel";
+import {getDefaultR} from "../../compute/geo";
 
 
-const getRunBody = (cx, cy, ct, method, pvalue, r, resample, quad) => {
+const getRunBody = (cellData, userData) => {
     return {
-        x: cx,
-        y: cy,
-        cell_type: ct,
-        method: method,
-        pvalue: parseFloat(pvalue),
-        r: parseFloat(r),
-        resample: parseFloat(resample),
-        quad: quad,
+        x: cellData.cell_x,
+        y: cellData.cell_y,
+        cell_type: cellData.cell_type,
+        method: userData.method,
+        pvalue: userData.pValue,
+        r: userData.radius,
+        resample: userData.times,
+        quad: [userData.quad1, userData.quad2],
+    }
+}
+
+const remakeData = (data) => {
+
+    const noCellPattern = []
+    const randomPattern = []
+    const evenPattern = []
+    const clusterPattern = []
+
+    data.cell_type.forEach((ct, i) => {
+        let pattern = data.pattern[i];
+        let value = data.ix_value[i];
+        let result = {name: ct, value};
+        switch (pattern) {
+            case 1:
+                randomPattern.push(result)
+                break
+            case 2:
+                evenPattern.push(result)
+                break
+            case 3:
+                clusterPattern.push(result)
+                break
+            default:
+                noCellPattern.push(result)
+                break
+        }
+    })
+
+    return {
+        name: 'Distribution',
+        children: [
+            {
+                name: 'NA',
+                children: noCellPattern
+            }, {
+                name: 'Random',
+                children: randomPattern
+            },
+            {
+                name: 'Uniform',
+                children: evenPattern
+            },
+            {
+                name: 'Aggregate',
+                children: clusterPattern
+            }
+        ]
     }
 }
 
 
-const patternMap = {
-    0: 'No cell',
-    1: 'Randomly distributed',
-    2: 'Evenly distributed',
-    3: 'Cluster'
+const methods = [
+    {value: 'id', label: 'Index of Dispersion'},
+    {value: 'morisita', label: 'Morisita Index'},
+    {value: 'clark-evans', label: 'Clark-Evans Index'}
+]
+
+const defaultValues = {
+    method: "id",
+    radius: 10,
+    times: 500,
+    quad1: 10,
+    quad2: 10,
+    pValue: 0.05,
 }
 
-const displayIxValue = (v) => {
-    if (v > 0) {
-        return v.toFixed(2)
-    } else {
-        return "-"
-    }
-}
+const schema = object({
+    pValue: number().positive().lessThan(1),
+    radius: number().positive(),
+    quad1: number().positive().integer().lessThan(30),
+    quad2: number().positive().integer().lessThan(30),
+})
 
 
-const ResultTable = ({data}) => {
+const CellDistributionTab = ({cellData, bbox}) => {
 
-    const size = data.cell_type.length;
-
-    if (size === 0) {
-        return <></>
-    } else {
-        const rebakeData = [...Array(size).keys()].map((i) => ({
-            cell_type: data.cell_type[i],
-            pattern: patternMap[data.pattern[i]],
-            ix: displayIxValue(data.ix_value[i])
-        })).sort(natsort())
-        return (
-            <TableContainer component={Paper} sx={{minWidth: 400, boxShadow: 0, maxHeight: 400}}>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Cell Type</TableCell>
-                            <TableCell>Pattern</TableCell>
-                            <TableCell>Index Value</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            rebakeData.map((item, i) => (
-                                <TableRow key={i}>
-                                    <TableCell>{item.cell_type}</TableCell>
-                                    <TableCell>{item.pattern}</TableCell>
-                                    <TableCell>{item.ix}</TableCell>
-                                </TableRow>
-                            ))
-                        }
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        )
-    }
-
-
-}
-
-
-const CellDistributionTab = ({cellData}) => {
-
-    const r = useRef(10);
-    const quad = useRef([10, 10]);
-    const pvalue = useRef(0.05);
-    const result = useRef({cell_type: [], ix_value: [], pattern: []});
-
-    const [method, setMethod] = useState("id");
-    const [times, setTimes] = useState(500);
-    const [errorR, setErrorR] = useState(false);
-    const [errorQuad, setErrorQuad] = useState(false);
-    const [errorPvalue, setErrorPvalue] = useState(false);
-    const [raiseRunError, setRaiseRunError] = useState(false);
     const [showResult, setShowResult] = useState(0);
+    const [runStatus, setRunStatus] = useState(false);
+    const {handleSubmit, formState: {errors, isValid}, watch, control} = useForm({
+        defaultValues: {
+            ...defaultValues,
+            radius: getDefaultR(bbox)
+        },
+        resolver: yupResolver(schema)
+    });
+    const watchMethod = watch('method');
+
+    const result = useRef({cell_type: [], ix_value: [], pattern: []});
 
     useEffect(() => {
         setShowResult(0);
     }, [cellData]);
 
-    const handleMethodSelect = (e) => setMethod(e.target.value);
-
-    const checkR = (e) => {
-        if (!isPosFloat(e.target.value)) {
-            setErrorR(true);
-        } else {
-            setErrorR(false);
-            r.current = e.target.value;
-        }
-    }
-    const checkQuad = (e) => {
-        const quads = e.target.value.toString().split(",").map((i) => parseInt(i));
-        console.log(quads);
-        if ((quads.length === 2) && isPosInt(quads[0]) && isPosInt(quads[1])) {
-            setErrorQuad(false);
-            quad.current = quads;
-        } else {
-            setErrorQuad(true);
-        }
-    }
-
-    const checkPvalue = (e) => {
-        if (inRangeFloat(e.target.value, 0.0, 1.0, false)) {
-            setErrorPvalue(false);
-            pvalue.current = e.target.value;
-        } else {
-            setErrorPvalue(true);
-        }
-    }
-
-    const handleRun = () => {
-        if ((method === "id") && (errorR)) {
-            setRaiseRunError(true)
-        } else if ((method === "morisita") && errorQuad) {
-            setRaiseRunError(true)
-        } else {
-            const body = getRunBody(cellData.cell_x,
-                cellData.cell_y,
-                cellData.cell_type,
-                method,
-                pvalue.current,
-                r.current,
-                times,
-                quad.current,
-            );
-            console.log(body)
-            axios.post(runCellDistribution, body).then((res) => {
-                result.current = res.data;
-                setShowResult(showResult + 1)
-            }).catch((e) => console.log(e))
-        }
+    const handleRun = (data) => {
+        setRunStatus(true)
+        const body = getRunBody(cellData, data);
+        console.log(body)
+        axios.post(runCellDistribution, body).then((res) => {
+            result.current = res.data;
+            setShowResult(showResult + 1)
+            setRunStatus(false)
+        }).catch((e) => {
+            console.log(e)
+            setRunStatus(false)
+        })
     }
 
     if (cellData === undefined) {
         return null
     }
     return (
-        <Stack direction="row">
-            <Stack sx={{
-                borderRight: 1, borderColor: "divider", pr: 2,
-                minWidth: "280px",
-                minHeight: "350px"
-            }}
-                   spacing={2}>
-                <Typography variant="subtitle2">{"Profiling the distribution pattern of cells"}</Typography>
-                <Divider/>
-                <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" sx={{height: '100%'}}>
+            <form onSubmit={handleSubmit(handleRun)}>
+                <LeftPanel>
 
-                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                        'id': 'Index of Dispersion (Random sampling)',
-                        'morisita': 'Morisita Index (Quadratic statistic)',
-                        'clark-evans': 'Clark-Evans Index (Nearest Neighbors based)',
-                    }} sx={{maxWidth: '150px'}}/>
-                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
-                               onTipClose={() => setRaiseRunError(false)}/>
 
-                </Stack>
-                <Divider/>
-                <ParamWrap show={method === 'id'}>
-                    <Ranger value={times} min={100} max={2000} step={100}
-                            title={"Repeat Times"} onChange={(e, v) => setTimes(v)}/>
-                </ParamWrap>
-                <ParamWrap show={method === 'id'}>
-                    <NumberInput
-                        label={"Radius"}
-                        error={errorR}
-                        helperText="Positive number"
-                        onChange={checkR}
-                        sx={{maxWidth: "80px"}}
-                    />
-                </ParamWrap>
-                <ParamWrap show={method === 'morisita'}>
-                    <NumberInput
-                        label={"Quadrilateral"}
-                        error={errorQuad}
-                        helperText="eg. 10,10"
-                        description={"Two side of the quadrilateral use to cut the ROI into pieces. (Example: 10,10)"}
-                        useNumber={false}
-                        onChange={checkQuad}
-                        sx={{maxWidth: "120px"}}
-                    />
-                </ParamWrap>
-                <NumberInput
-                    label={"p value"}
-                    error={errorPvalue}
-                    helperText="Number between 0 to 1"
-                    defaultValue={pvalue.current}
-                    onChange={checkPvalue}
-                    sx={{maxWidth: "80px"}}
-                />
-                <Divider/>
-            </Stack>
+                    {/*<Typography variant="subtitle2">{"Profiling the distribution pattern of cells"}</Typography>*/}
+                    {/*<Divider/>*/}
+                    <SectionTitleWrap title={"Profiling the distribution pattern of cells"}/>
+                    <ParamWrap>
+                        <Controller
+                            name="method"
+                            control={control}
+                            render={({field}) => {
+                                return (
+                                    <Selector
+                                        title={"Method"}
+                                        options={methods}
+                                        description={
+                                            <>
+                                                <li>Index of dispersion: Random Sampling</li>
+                                                <li>Morisita of index: Quadratic statistic</li>
+                                                <li>Clark-Evans Index: Nearest Neighbors based</li>
+                                            </>
+                                        }
+                                        {...field}/>
+                                )
+                            }}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap show={watchMethod === 'id'}>
+                        <Controller
+                            name="times"
+                            control={control}
+                            render={({field}) => (
+                                <Ranger
+                                    {...field}
+                                    min={100} max={2000} step={100}
+                                    title={"Repeat Times"}
+                                    description={"Number of time to perform sampling"}
+                                    onChange={(_, value) => field.onChange(value)}
+                                />
+                            )}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap show={watchMethod === 'id'}>
+                        <Controller
+                            name="radius"
+                            control={control}
+                            render={({field}) => (
+                                <NumericField
+                                    title={"Radius"}
+                                    error={!(errors.radius === undefined)}
+                                    // placeholder="Sample Radius"
+                                    helperText={"Positive Integer"}
+                                    description={"The sampling radius"}
+                                    {...field}
+                                />
+                            )}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap show={watchMethod === 'morisita'}>
+                        <Stack direction="row" spacing={2}>
+                            <Controller
+                                name="quad1"
+                                control={control}
+                                render={({field}) => (
+                                    <NumericField
+                                        title={"Row Quadrats"}
+                                        error={!(errors.quad1 === undefined)}
+                                        // placeholder="Row Rectangle"
+                                        helperText={"Positive Integer less than 30"}
+                                        description={"Number of rectangles in each row"}
+                                        {...field}
+                                    />
+                                )}
+                            />
+                            <Controller
+                                name="quad2"
+                                control={control}
+                                render={({field}) => (
+                                    <NumericField
+                                        title={"Column Quadrats"}
+                                        error={!(errors.quad2 === undefined)}
+                                        // placeholder="Quadratic side 2"
+                                        helperText={"Positive Integer less than 30"}
+                                        description={"Number of rectangles in each column"}
+                                        {...field}
+                                    />
+                                )}
+                            />
+                        </Stack>
+                    </ParamWrap>
+
+                    <ParamWrap>
+                        <Controller
+                            name="pValue"
+                            control={control}
+                            render={({field}) => (
+                                <NumericField
+                                    title={"P-value"}
+                                    error={!(errors.pValue === undefined)}
+                                    placeholder="p value"
+                                    helperText={"Number from 0 to 1"} {...field}
+                                    description={"Threshold to determine significance"}
+                                />
+                            )}
+                        />
+                    </ParamWrap>
+
+                    <SubmitButton disabled={(!isValid) || runStatus} text={runStatus ? "Working..." : "Run"}/>
+                </LeftPanel>
+            </form>
             <OneItemCenter>
-                <ResultTable data={result.current}/>
+                {
+                    showResult !== 0 ? <Tree data={remakeData(result.current)}/> : null
+                }
+
             </OneItemCenter>
         </Stack>
     )

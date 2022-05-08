@@ -1,15 +1,16 @@
 import ExpDist from "../../Viz/ExpDist";
 import ExpMap2D from "../../Viz/ExpMap2D";
 import CellMap2D from "../../Viz/CellMap2D";
-import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
-import {useMemo, useState} from "react";
-import Divider from "@mui/material/Divider";
+import VirtualizedAutoComplete from "../../InputComponents/VirtualizedAutoComplete";
+import {useEffect, useState, Suspense} from "react";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import {responsiveSymbolSize} from "../../Viz/responsiveSize";
-import {getBBox} from "../../compute/geo";
-import Ranger from "../../Ranger";
-import OneItemCenter from "../../OneItemCenter";
+import Ranger from "../../InputComponents/Ranger";
+import OneItemCenter from "../../Layout/OneItemCenter";
+import LeftPanel from "../../Layout/LeftPanel";
+import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
+import ParamWrap from "../../InputComponents/ParamWrap";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
@@ -18,35 +19,39 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
     const [marker, setMarker] = useState(markers[0]);
     const changeMarker = (e, v) => setMarker(v);
 
-    console.log(marker)
 
     const {data: expData} = getExpDataFn(roiID, marker);
-    console.log(expData)
-    const [symbolSize, setSymbolSize] = useState(responsiveSymbolSize(cellCount));
+    const [symbolSize, setSymbolSize] = useState(3);
     const [canvasSize, setCanvasSize] = useState(450);
+
+    useEffect(() => {
+        setSymbolSize(responsiveSymbolSize(cellCount))
+    }, [cellCount])
 
     return (
         <Stack direction="row">
-            <Stack
-                sx={{borderRight: 1, borderColor: "divider", pr: 4, minWidth: "320px"}}
-                spacing={2}
-            >
-                <VirtualizedAutoComplete
-                    options={markers}
-                    label={'Select marker'}
-                    value={marker}
-                    onChange={changeMarker}
-                    sx={{width: "200px"}}
-                />
-                <Divider/>
-                <ExpDist arr={expData.expression} title="Expression distribution"/>
-                <Divider/>
-                <Ranger value={symbolSize} min={1} max={10} step={1} title={"Symbol Size"}
-                        onChange={(_, v) => setSymbolSize(v)}/>
-                <Divider/>
-                <Ranger value={canvasSize} min={400} max={1000} step={10} title={"Canvas Size"}
-                        onChange={(_, v) => setCanvasSize(v)}/>
-            </Stack>
+            <LeftPanel sx={{minWidth: '350px'}}>
+                <ParamWrap>
+                    <VirtualizedAutoComplete
+                        options={markers}
+                        label={'Select or Search Marker'}
+                        value={marker}
+                        onChange={changeMarker}
+                    />
+                </ParamWrap>
+                <ParamWrap>
+                    <ExpDist arr={expData.expression} title="Expression distribution"/>
+                </ParamWrap>
+                <ParamWrap>
+                    <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
+                            onChange={(_, v) => setSymbolSize(v)}/>
+                </ParamWrap>
+                <ParamWrap>
+                    <Ranger value={canvasSize} min={400} max={1000} step={10} title={"Canvas Size"}
+                            onChange={(_, v) => setCanvasSize(v)}/>
+                </ParamWrap>
+
+            </LeftPanel>
 
             <OneItemCenter>
                 <ExpMap2D
@@ -62,35 +67,32 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
     )
 }
 
-export const CellMapPanel = ({cellData, roiMeta}) => {
+export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
 
     const cellCount = cellData.cell_x.length;
-    const bbox = useMemo(() => {
-            let bboxV = getBBox(cellData.cell_x, cellData.cell_y)
-            return `${Math.abs(bboxV.x2 - bboxV.x1).toFixed(0)} × ${Math.abs(bboxV.y2 - bboxV.y1).toFixed(0)}`
-        },
-        [cellData.cell_x, cellData.cell_y])
+    const bboxText = `${Math.abs(bbox.x2 - bbox.x1).toFixed(0)} × ${Math.abs(bbox.y2 - bbox.y1).toFixed(0)}`
     const [symbolSize, setSymbolSize] = useState(responsiveSymbolSize(cellCount));
     const [canvasSize, setCanvasSize] = useState(450);
 
+    useEffect(() => {
+        setSymbolSize(responsiveSymbolSize(cellCount))
+    }, [cellCount])
+
     return (
-        <Stack direction="row">
-            <Stack
-                sx={{borderRight: 1, borderColor: "divider", pr: 4, minWidth: "250px"}}
-                spacing={2}
-            >
-                <Typography variant="subtitle2">Current ROI: {roiMeta}</Typography>
-                <Divider/>
-                <Typography variant="subtitle2">ROI Dimension: {bbox}</Typography>
-                <Divider/>
-                <Typography variant="subtitle2">Number of Cells: {cellCount}</Typography>
-                <Divider/>
-                <Ranger value={symbolSize} min={1} max={10} step={1} title={"Symbol Size"}
-                        onChange={(_, v) => setSymbolSize(v)}/>
-                <Divider/>
-                <Ranger value={canvasSize} min={400} max={1000} step={10} title={"Canvas Size"}
-                        onChange={(_, v) => setCanvasSize(v)}/>
-            </Stack>
+        <Stack direction="row" sx={{height: '100%'}}>
+            <LeftPanel>
+                <SectionTitleWrap title={`Current ROI: ${roiMeta}`}/>
+                <SectionTitleWrap title={`ROI Dimension: ${bboxText}`}/>
+                <SectionTitleWrap title={`Number of Cells: ${cellCount}`}/>
+                <ParamWrap>
+                    <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
+                            onChange={(_, v) => setSymbolSize(v)}/>
+                </ParamWrap>
+                <ParamWrap>
+                    <Ranger value={canvasSize} min={400} max={1000} step={10} title={"Canvas Size"}
+                            onChange={(_, v) => setCanvasSize(v)}/>
+                </ParamWrap>
+            </LeftPanel>
 
             <OneItemCenter>
                 <CellMap2D

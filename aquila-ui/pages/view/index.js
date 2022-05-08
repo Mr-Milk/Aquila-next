@@ -1,48 +1,58 @@
 import {fetcher, getRecordsURL} from "data/get";
-import useSWR, {SWRConfig} from "swr";
-import DataTable from "components/DataTable/RecordsTable";
+// import DataTable from "components/DataTable/RecordsTable";
 import {Container, Skeleton} from "@mui/material";
 import Head from 'next/head';
+import RecordsPanel from "../../components/Intro/RecordsPanel";
+import Typography from "@mui/material/Typography";
 
-const ViewPage = ({fallback}) => {
+const ViewPage = ({ recordData }) => {
+
     return (
         <>
             <Head>
                 <title>Aquila | Browse</title>
-                <link rel="preload" href={getRecordsURL} as="fetch" crossOrigin="anonymous"/>
+                {/*<link rel="preload" href={getRecordsURL} as="fetch" crossOrigin="anonymous"/>*/}
             </Head>
-            <SWRConfig value={{fallback}}>
-                <Container maxWidth={"xl"} sx={{mt: 4, mb: 4}}>
-                    <Table/>
+                <Container maxWidth={"xl"} sx={{my: 4, display: 'flex', justifyContent: 'center' }}>
+                    {/*<Table/>*/}
+                    <Typography variant="h3" sx={{ mx: 2 }}>AQUILA DATASETS</Typography>
                 </Container>
-
-            </SWRConfig>
+                <RecordsPanel data={recordData}/>
         </>
 
     )
 }
 
-const Table = () => {
-    const {data, _} = useSWR(getRecordsURL, fetcher);
+// const Table = () => {
+//     const {data, _} = useSWR(getRecordsURL, fetcher);
+//
+//     if (data !== undefined) {
+//         return <DataTable data={data}/>
+//     } else {
+//         return <Skeleton variant={"rectangular"} width={200} height={20}/>
+//     }
+//
+// }
 
-    if (data !== undefined) {
-        return <DataTable data={data}/>
-    } else {
-        return <Skeleton variant={"rectangular"} width={200} height={20}/>
-    }
-
-}
+// const RecordList = () => {
+//     const {data, _} = useSWR(getRecordsURL, fetcher);
+//
+//     if (data !== undefined) {
+//         return <DataRecordList data={data}/>
+//     } else {
+//         return <Skeleton variant={"rectangular"} width={200} height={20}/>
+//     }
+//
+// }
 
 export async function getStaticProps() {
     const data = await fetcher(getRecordsURL);
 
-    const fallbackData = {};
-    fallbackData[`${getRecordsURL}`] = data
-
     return {
         props: {
-            fallback: fallbackData
-        }
+            recordData: data.sort((a, b) => parseInt(b.year) - parseInt(a.year))
+        },
+        revalidate: 60
     }
 }
 

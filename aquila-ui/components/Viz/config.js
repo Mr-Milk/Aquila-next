@@ -15,19 +15,37 @@ export const GRAD_COLORS = [
     "#000000",
 ];
 
-export const RDBU11 = [
-    '#053061',
-    '#2166ac',
-    '#4393c3',
-    '#92c5de',
-    '#d1e5f0',
-    '#f7f7f7',
-    '#fddbc7',
-    '#f4a582',
-    '#d6604d',
-    '#b2182b',
-    '#67001f',
-]
+export const RDBU11 = ['#053061',
+    '#195696',
+    '#2f79b5',
+    '#4c99c6',
+    '#87beda',
+    '#b6d7e8',
+    '#dbeaf2',
+    '#f7f6f6',
+    '#fbe3d4',
+    '#f9c4a9',
+    '#f09c7b',
+    '#da6853',
+    '#c13639',
+    '#9c1127',
+    '#67001f']
+
+export const Greens = ['#f7fcf5',
+    '#edf8e9',
+    '#e1f3dc',
+    '#d0edca',
+    '#bce4b5',
+    '#a7dba0',
+    '#8ed08b',
+    '#73c476',
+    '#56b567',
+    '#3da65a',
+    '#2c944c',
+    '#18823d',
+    '#05712f',
+    '#005b25',
+    '#00441b']
 
 export const CAT_COLORS = [
     "#5470c6",
@@ -73,6 +91,19 @@ export const tooltipOpts = () => ({
     }
 })
 
+export const toolboxOpts = {
+    toolbox: {
+        itemSize: 13,
+        right: '5%',
+        feature: {
+            saveAsImage: {
+                show: true,
+                title: 'Save',
+            },
+        },
+    },
+}
+
 export const legendOpts = (data) => ({
     legend: {
         data: data,
@@ -85,17 +116,4 @@ export const legendOpts = (data) => ({
             fontSize: 8,
         },
     },
-})
-
-export const toolboxOpts = () => ({
-    toolbox: {
-        show: true,
-        itemSize: 13,
-        feature: {
-            dataZoom: {},
-            dataView: {},
-            restore: {},
-            saveAsImage: {}
-        }
-    }
 })

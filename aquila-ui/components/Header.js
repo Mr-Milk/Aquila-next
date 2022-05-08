@@ -7,7 +7,7 @@ import MuiNextLink from "components/Link";
 import Navbar from "components/Navbar";
 import SideDrawer from "components/SideDrawer";
 import HideOnScroll from "components/HideOnScroll";
-import ClientOnly from "components/ClientOnly";
+import ClientOnly from "components/Layout/ClientOnly";
 import Image from "next/image";
 
 export const navLinks = [

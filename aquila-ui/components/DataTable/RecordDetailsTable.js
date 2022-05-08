@@ -64,7 +64,7 @@ const RecordDetailsTable = ({dataID}) => {
                             <TitleCol>Publication</TitleCol>
                             <TableCell>
                                 <Link href={data.source_url} target="_blank" rel="noreferrer" sx={{
-                                    color: "black",
+                                    color: "text.primary",
                                     '&:hover': {
                                         color: "primary.main"
                                     },

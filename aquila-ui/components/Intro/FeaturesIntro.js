@@ -44,14 +44,14 @@ const FeaturesIntro = () => {
                 mb: 4
             }}>
                 <Grid item>
-                    <FeaturesCard title="Viewer" content={`Navigation through all ROIs in a dataset, 
+                    <FeaturesCard title="Data Viewer" content={`Navigation through all ROIs in a dataset, 
                 view the spatial distribution of cells and spatial expression of markers`}>
                         <Viewer height={50} width={50}/>
                     </FeaturesCard>
                 </Grid>
                 <Grid item>
-                    <FeaturesCard title="Analysis" content={`Freely to run all kinds of spatial analysis on any
-                dataset, or you can even analysis your own data`}>
+                    <FeaturesCard title="Data Analysis" content={`Free to run all kinds of spatial analysis on any
+                dataset, or you can even analyze your own data`}>
                         <Analysis height={50} width={50}/>
                     </FeaturesCard>
                 </Grid>

@@ -41,4 +41,7 @@ module.exports = withPlugins(
     }]],
     {
         reactStrictMode: true,
+        compiler: {
+            styledComponents: true
+        }
     })

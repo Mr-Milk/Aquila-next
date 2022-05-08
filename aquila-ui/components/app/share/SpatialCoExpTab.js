@@ -1,90 +1,149 @@
-import {useRef, useState} from "react";
-import Grid from "@mui/material/Grid";
-import Selector from "../../InputComponents/Selector";
-import NumberInput, {inRangeFloat} from "../../InputComponents/NumberInput";
-import RunButton from "../share/RunAnalysisButton";
+import {array, object} from "yup";
+import {useEffect, useRef, useState} from "react";
+import {Controller, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 import axios from "axios";
-import {runSpatialCoexpDB} from "data/post";
-import Graph from "../../Viz/Graph";
+import {runSpatialCoexp} from "../../../data/post";
+import Stack from "@mui/material/Stack";
+import LeftPanel from "../../Layout/LeftPanel";
+import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
+import ParamWrap from "../../InputComponents/ParamWrap";
+import Selector from "../../InputComponents/Selector";
+import VirtualizedAutoComplete from "../../InputComponents/VirtualizedAutoComplete";
+import SubmitButton from "../../InputComponents/SubmitButton";
+import OneItemCenter from "../../Layout/OneItemCenter";
+import Heatmap from "../../Viz/Heatmap";
 
 
-const SpatialCoExpTab = ({roiID, getNeighbors}) => {
+const ExpViz = ({data}) => {
 
-    const neighborsData = getNeighbors();
-
-    const thresh = useRef(0.7);
-
-    const [method, setMethod] = useState("pearson");
-    const [errorThresh, setErrorThresh] = useState(false);
-    const [raiseRunError, setRaiseRunError] = useState(false);
-    const [showViz, setShowViz] = useState(0);
-
-    const handleMethodSelect = (e) => setMethod(e.target.value);
-    const checkThresh = (e) => {
-        if (inRangeFloat(e.target.value, 0.0, 1.0, false)) {
-            setErrorThresh(false);
-            thresh.current = e.target.value;
-        } else {
-            setErrorThresh(true);
+    let heatData = [];
+    data.forEach((r) => {
+        heatData.push([r.marker1, r.marker2, r.value])
+        if (r.marker1 !== r.marker2) {
+            heatData.push([r.marker2, r.marker1, r.value])
         }
-    }
+    })
 
-    const handleRun = () => {
-        if (errorThresh) {
-            setRaiseRunError(true)
-        } else {
-            const body = {
-                neighbors_pairs1: neighborsData.p1,
-                neighbors_pairs2: neighborsData.p2,
-                roi_id: roiID,
-                threshold: parseFloat(thresh.current),
-                method: method
-            }
-            console.log(body)
-            axios.post(runSpatialCoexpDB, body).then((res) => {
-                result.current = res.data;
-                console.log(result.current)
-                setShowViz(showViz + 1)
-            }).catch((e) => console.log(e))
+    return <Heatmap data={heatData} colors={"RdBu"}
+                    min={-1} max={1} legendText={["1", "-1"]}/>
+}
+
+const methods = [
+    {value: 'pearson', label: 'Pearson Correlation'},
+    {value: 'spearman', label: 'Spearman Correlation'}
+]
+
+const defaultValues = {
+    method: "pearson",
+    markers: []
+}
+
+const schema = object({
+    markers: array().min(2).max(30),
+})
+
+
+const SpatialCoExpTab = ({roiID, recordData, getCellExpBatch, getNeighbors}) => {
+    const [showResult, setShowResult] = useState(0);
+    const [runStatus, setRunStatus] = useState(false);
+    const {handleSubmit, formState: {errors, isValid}, watch, control} = useForm({
+        mode: "onChange",
+        defaultValues,
+        resolver: yupResolver(schema)
+    });
+
+    const result = useRef();
+
+    useEffect(() => {
+        setShowResult(0);
+    }, [roiID]);
+
+    const handleRun = async (data) => {
+        setRunStatus(true)
+        const expMatrix = await getCellExpBatch(roiID, data.markers);
+        const neighborsData = getNeighbors();
+        const body = {
+            p1: neighborsData.p1,
+            p2: neighborsData.p2,
+            exp_matrix: expMatrix.map((r) => {
+                return {
+                    marker: r.marker,
+                    exp: r.expression
+                }
+            }),
+            method: data.method
         }
+        console.log(body)
+        axios.post(runSpatialCoexp, body).then((res) => {
+            console.log(res.data)
+            result.current = res.data
+            setShowResult(showResult + 1)
+            setRunStatus(false)
+        }).catch((e) => {
+            console.log(e)
+            setRunStatus(false)
+            setRunStatus(false)
+        })
     }
 
     return (
+        <Stack direction="row" sx={{height: '100%'}}>
 
-        <Grid container flexDirection="row" alignItems="center" justifyContent="flex-start" spacing={2}>
-            <Grid item>
-                <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                    'pearson': 'Pearson',
-                    'spearman': 'Spearman',
-                }} sx={{maxWidth: '150px'}}/>
-            </Grid>
-            <Grid item>
-                <NumberInput
-                    label={"Threshold"}
-                    error={errorThresh}
-                    helperText="Number between 0 to 1"
-                    defaultValue={thresh.current}
-                    onChange={checkThresh}
-                    description={"A number that specify the threshold of correlation, if you specify" +
-                        "0.9, pairs in (-1, -0.9) and (0.9, 1) with be saved."}
-                    sx={{maxWidth: "80px"}}
-                />
-            </Grid>
-            <Grid item>
-                <RunButton onClick={handleRun} onTipOpen={raiseRunError} onTipClose={() => setRaiseRunError(false)}/>
-            </Grid>
-            <Grid component={"div"} container flexDirection="row" justifyContent="center" alignItems="center">
-                <Grid component={"div"} item sx={{mt: 2}}>
-                    {
-                        showViz ? <Graph title="Spatial Co-expression"
-                                         height={500}
-                                         width={500}
-                        /> : <></>
-                    }
-                </Grid>
-            </Grid>
-        </Grid>
+            <form onSubmit={handleSubmit(handleRun)}>
+                <LeftPanel>
+                    <SectionTitleWrap title={"Co-Expression among markers"}/>
+                    <ParamWrap>
+                        <Controller
+                            name="method"
+                            control={control}
+                            render={({field}) => {
+                                return (
+                                    <Selector
+                                        title={"Method"}
+                                        options={methods}
+                                        description={
+                                            <>
+                                                <li>Pearson correlation</li>
+                                                <li>Spearman correlation</li>
+                                            </>
+                                        }
+                                        {...field}/>
+                                )
+                            }}
+                        />
+                    </ParamWrap>
+                    <ParamWrap>
+                        <Controller
+                            name="markers"
+                            control={control}
+                            render={({field}) => {
+                                return (
+                                    <VirtualizedAutoComplete
+                                        {...field}
+                                        multiple={true}
+                                        disableCloseOnSelect={true}
+                                        error={!(errors.markers === undefined)}
+                                        helperText={"Select 2~30 markers"}
+                                        value={field.value}
+                                        label={'Select or Search Marker'}
+                                        options={recordData.markers}
+                                        onChange={(_, v) => field.onChange(v)}
+                                    />
+                                )
+                            }}
+                        />
+                    </ParamWrap>
+                    <SubmitButton disabled={(!isValid) || runStatus} text={runStatus ? "Working..." : "Run"}/>
+                </LeftPanel>
+            </form>
 
+            <OneItemCenter>
+                {
+                    showResult !== 0 ? <ExpViz data={result.current}/> : null
+                }
+            </OneItemCenter>
+        </Stack>
     )
 }
 

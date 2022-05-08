@@ -1,7 +1,7 @@
-import {titleOpts} from "components/Viz/config";
+import {titleOpts, toolboxOpts} from "components/Viz/config";
 import natsort from "natsort";
 import Echarts from "./echarts-obj";
-import {counter} from "components/math";
+import {counter} from "components/compute/math";
 
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
@@ -28,6 +28,7 @@ const Pie = ({arr, width, height, title}) => {
 
     const options = {
         ...titleOpts(title),
+        ...toolboxOpts,
         tooltip: {
             trigger: 'item'
         },

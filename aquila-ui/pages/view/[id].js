@@ -1,26 +1,28 @@
 import {
     fetcher,
-    get2dDataIdURL,
+    get2dDataIdURL, getCellExpBatch,
     getOneRecordURL,
     getOneROIMetaURL,
     useCellData2D,
+    useDataInfo,
     useExpData,
     useROIMeta
 } from "data/get";
 import {Container} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import ROITable from "components/DataTable/ROISelector";
 import RecordDetailsTable from "components/DataTable/RecordDetailsTable";
 import ROIMaps from "components/app/share/ROIMaps";
 import Typography from "@mui/material/Typography";
 import Head from 'next/head';
-//import AnalysisTab from "components/app/View/AnalysisTab";
 import Stack from "@mui/material/Stack";
-import ContentBox from "../../components/ContentBox";
+import ContentBox from "../../components/Layout/ContentBox";
 import AnalysisTab from "../../components/app/View/AnalysisTab";
+import {getBBox} from "../../components/compute/geo";
+import {parseROIDisplay} from "../../components/humanize";
 
 
-const DetailsPage = ({id, initROI, initROIMeta, recordData}) => {
+const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
 
     const [currentROI, setROI] = useState(initROI);
     const [currentROIMeta, setROIMeta] = useState(initROIMeta);
@@ -28,9 +30,15 @@ const DetailsPage = ({id, initROI, initROIMeta, recordData}) => {
         setROI(roiID);
         setROIMeta(roiMeta);
     };
-    // const {data: recordData} = useDataInfo(id);
+    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20})
+
+    const {data: recordData} = useDataInfo(id, initRecordData);
     const {data: roiMeta} = useROIMeta(id);
     const {data: cellData} = useCellData2D(currentROI);
+
+    useEffect(() => {
+        setBBox(getBBox(cellData.cell_x, cellData.cell_y))
+    }, [cellData.cell_x, cellData.cell_y])
 
     return (
         <>
@@ -44,14 +52,18 @@ const DetailsPage = ({id, initROI, initROIMeta, recordData}) => {
                         <RecordDetailsTable dataID={id}/>
                     </ContentBox>
                     <ContentBox>
+                        <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Select ROI</Typography>
                         <ROITable roiMeta={roiMeta} updateFn={updateROI}/>
                     </ContentBox>
                 </Stack>
                 <ROIMaps roiID={currentROI} roiMeta={currentROIMeta}
                          recordData={recordData} cellData={cellData}
-                         getExpDataFn={useExpData}
+                         getExpDataFn={useExpData} bbox={bbox}
                 />
-                <AnalysisTab roiID={currentROI} recordData={recordData} cellData={cellData}/>
+                <AnalysisTab roiID={currentROI} recordData={recordData}
+                             cellData={cellData} bbox={bbox}
+                             getCellExpBatch={getCellExpBatch}
+                />
             </Container>
         </>
     )
@@ -80,22 +92,16 @@ export async function getStaticProps({params}) {
     const roiMeta = await fetcher(ROIMetaURL);
 
     const initROI = roiMeta['roi_id'];
-    let initROIMeta = []
-    Object.entries(JSON.parse(roiMeta['meta'])).map((e) => {
-        if ((e[0] !== 'data_uuid') && (e[0] !== 'roi_id')) {
-            initROIMeta.push(e[1])
-        }
-    });
-    initROIMeta = initROIMeta.join(" | ")
-
+    recordData['markers'] = recordData['markers'].slice(0, 5)
 
     return {
         props: {
             id: params.id,
-            recordData: recordData,
+            initRecordData: recordData,
             initROI: initROI,
-            initROIMeta: initROIMeta,
-        }
+            initROIMeta: parseROIDisplay(JSON.parse(roiMeta['meta'])),
+        },
+        revalidate: 60
     }
 }
 

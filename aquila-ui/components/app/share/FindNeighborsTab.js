@@ -1,37 +1,40 @@
 import {runCellNeighbors} from "data/post";
-import {useCallback, useEffect, useRef, useState} from "react";
-import Selector from "components/Selector";
-import NumberInput, {isPosInt} from "components/NumberInput";
+import {useCallback, useEffect, useState} from "react";
+import Selector from "components/InputComponents/Selector";
+import NumericField from "components/InputComponents/NumberInput";
 import axios from "axios";
-import RunButton from "./RunAnalysisButton";
-import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import Divider from "@mui/material/Divider";
-import ParamWrap from "../../ParamWrap";
-import OneItemCenter from "../../OneItemCenter";
-import Ranger from "../../Ranger";
+import ParamWrap from "../../InputComponents/ParamWrap";
+import OneItemCenter from "../../Layout/OneItemCenter";
+import Ranger from "../../InputComponents/Ranger";
 import GraphGL from "../../Viz/GraphGL";
-import {getBBox} from "../../compute/geo";
+import {getDefaultR} from "../../compute/geo";
+import {number, object} from "yup";
+import {Controller, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import LeftPanel from "../../Layout/LeftPanel";
+import SubmitButton from "../../InputComponents/SubmitButton";
+import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 
 
-const getRunBody = (cx, cy, ct, method, r, k) => {
-    let parsedK = parseInt(k);
-    let parsedR = parseInt(r);
-    let parsedMethod = method;
+const getRunBody = (cellData, userData) => {
+    let parsedK = userData.k;
+    let parsedR = userData.radius;
+    let parsedMethod = userData.method;
 
-    if (method === "kd-tree-1") {
-        parsedK = 0
-    } else if (method === "kd-tree-2") {
+    if (userData.method === "kd-tree-1") {
+        parsedK = -1
+    } else if (userData.method === "kd-tree-2") {
         parsedR = -1
     }
 
-    if (method !== "delaunay") {
+    if (userData.method !== "delaunay") {
         parsedMethod = "kd-tree"
     }
 
     const body = {
-        x: cx,
-        y: cy,
+        x: cellData.cell_x,
+        y: cellData.cell_y,
         method: parsedMethod,
         r: parsedR,
         k: parsedK + 1,
@@ -39,41 +42,43 @@ const getRunBody = (cx, cy, ct, method, r, k) => {
     return body;
 }
 
+const methods = [
+    {value: 'kd-tree-2', label: 'KD Tree (KNN)'},
+    {value: 'kd-tree-1', label: 'KD Tree (Radius)'},
+    {value: 'kd-tree-3', label: 'KD Tree (Radius + KNN)'},
+    {value: 'delaunay', label: 'Delaunay Triangulation'},
+]
 
-// const NeighborsMap = ({show, cx, cy, ct, getNeighbors}) => {
-//     if (show === 0) {
-//         return <></>
-//     } else {
-//         const neighborsData = getNeighbors();
-//         return <CellMap
-//             showNeighbors={true}
-//             cx={cx}
-//             cy={cy}
-//             ct={ct}
-//             neighborsOne={neighborsData.p1}
-//             neighborsTwo={neighborsData.p2}
-//         />
-//     }
-// }
+const defaultValues = {
+    method: "kd-tree-2",
+    radius: 10,
+    k: 3,
+}
+
+const schema = object({
+    k: number().positive().integer().lessThan(11),
+    radius: number().positive(),
+})
 
 
-const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors}) => {
-    console.log(cellData)
-    const r = useRef(10);
+const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
 
-    const [method, setMethod] = useState("kd-tree-2");
-    const [k, setK] = useState(3);
-    const [errorR, setErrorR] = useState(false);
-    const [errorK, setErrorK] = useState(false);
-    const [raiseRunError, setRaiseRunError] = useState(false);
-    const [showViz, setShowViz] = useState(0);
+    const [showResult, setShowResult] = useState(0);
+    const [runStatus, setRunStatus] = useState(false);
+    const {handleSubmit, formState: {errors, isValid}, watch, control} = useForm({
+        defaultValues: {
+            ...defaultValues,
+            radius: getDefaultR(bbox)
+        },
+        resolver: yupResolver(schema)
+    });
+    const watchMethod = watch('method');
 
     useEffect(() => {
-        setShowViz(0);
+        setShowResult(0);
     }, [cellData]);
 
     const plotX = useCallback(() => {
-        const bbox = getBBox(cellData.cell_x, cellData.cell_y);
         const oy = bbox.y2;
         const ox = bbox.x2;
         return cellData.cell_x.map((x) => {
@@ -82,43 +87,17 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors}) => {
     }, [cellData])
     const cell_x = plotX();
 
-    const handleMethodSelect = (e) => {
-        setMethod(e.target.value)
-    };
-
-    const checkR = (e) => {
-        if (!isPosInt(e.target.value)) {
-            setErrorR(true)
-        } else {
-            setErrorR(false);
-            r.current = e.target.value;
-        }
-    };
-
-    const checkK = (e) => {
-        if (!isPosInt(e.target.value) || (e.target.value > 10)) {
-            setErrorK(true)
-        } else {
-            setErrorK(false);
-            k.current = e.target.value;
-        }
-    };
-
-    const handleRun = () => {
-        if ((method === "kd-tree-3") && (errorR || errorK)) {
-            setRaiseRunError(true)
-        } else if ((method === "kd-tree-1") && errorR) {
-            setRaiseRunError(true)
-        } else if ((method === "kd-tree-2") && errorK) {
-            setRaiseRunError(true)
-        } else {
-            const body = getRunBody(cellData.cell_x, cellData.cell_y, cellData.cell_type, method, r.current, k);
-            console.log(body)
-            axios.post(runCellNeighbors, body).then((res) => {
-                updateNeighbors(res.data)
-                setShowViz(showViz + 1)
-            }).catch((e) => console.log(e))
-        }
+    const handleRun = (data) => {
+        const body = getRunBody(cellData, data);
+        console.log(body)
+        axios.post(runCellNeighbors, body).then((res) => {
+            updateNeighbors(res.data)
+            setShowResult(showResult + 1)
+            setRunStatus(false)
+        }).catch((e) => {
+            console.log(e)
+            setRunStatus(false)
+        })
     }
     const neighborsData = getNeighbors();
 
@@ -128,47 +107,78 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors}) => {
 
 
     return (
-        <Stack direction="row">
-            <Stack sx={{
-                borderRight: 1, borderColor: "divider", pr: 2,
-                minWidth: "280px",
-                minHeight: "350px"
-            }} spacing={2}>
-                <Typography variant="subtitle2">{"Find the neighbors for cells"}</Typography>
-                <Divider/>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                        'kd-tree-2': 'KD Tree (KNN)',
-                        'kd-tree-1': 'KD Tree (Radius)',
-                        'kd-tree-3': 'KD Tree (Radius + KNN)',
-                        'delaunay': 'Delaunay Triangulation',
-                    }}/>
-                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
-                               onTipClose={() => setRaiseRunError(false)}/>
-                </Stack>
-                <Divider/>
-                <ParamWrap show={(method === 'kd-tree-1') || (method === 'kd-tree-3')}>
-                    <NumberInput
-                        label={"Search Radius"}
-                        error={errorR}
-                        helperText="Positive Integer"
-                        onChange={checkR}
-                        defaultValue={r.current}
-                        description={"Cells that intersect with the radius range of the center cell will be consider as neighbors"}
-                        sx={{maxWidth: "120px"}}
-                    />
-                </ParamWrap>
-                <ParamWrap show={(method === 'kd-tree-2') || (method === 'kd-tree-3')}>
-                    <Ranger value={k} min={1} max={15} step={1} onChange={(_, v) => setK(v)}
-                            title={"Number of neighbors (K)"}/>
-                </ParamWrap>
-            </Stack>
+        <Stack direction="row" sx={{height: '100%'}}>
+
+            <form onSubmit={handleSubmit(handleRun)}>
+                <LeftPanel>
+                    <SectionTitleWrap title={"Find the neighbors for cells"}/>
+                    <ParamWrap>
+                        <Controller
+                            name="method"
+                            control={control}
+                            render={({field}) => {
+                                return (
+                                    <Selector
+                                        title={"Method"}
+                                        options={methods}
+                                        description={
+                                            <>
+                                                <li>KD Tree: Search nearest K neighbors or neighbors within radius</li>
+                                                <li>Delaunay Triangulation: Building a triangulation network</li>
+                                            </>
+                                        }
+                                        {...field}/>
+                                )
+                            }}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap show={(watchMethod === 'kd-tree-2') || (watchMethod === 'kd-tree-3')}>
+                        <Controller
+                            name="k"
+                            control={control}
+                            render={({field}) => (
+                                <Ranger
+                                    {...field}
+                                    min={1} max={10} step={1}
+                                    title={"Number of neighbors (K)"}
+                                    description={"Number of neighbors a cell will have"}
+                                    onChange={(_, value) => field.onChange(value)}
+                                />
+                            )}
+                        />
+
+                    </ParamWrap>
+
+                    <ParamWrap show={(watchMethod === 'kd-tree-1') || (watchMethod === 'kd-tree-3')}>
+                        <Controller
+                            name="radius"
+                            control={control}
+                            render={({field}) => (
+                                <NumericField
+                                    title={"Radius"}
+                                    error={!(errors.radius === undefined)}
+                                    // placeholder="Sample Radius"
+                                    helperText={"Positive Integer"}
+                                    description={"Cells that intersect with the radius range of " +
+                                        "the center cell will be consider as neighbors"}
+                                    {...field}
+                                />
+                            )}
+                        />
+                    </ParamWrap>
+
+                    <SubmitButton disabled={(!isValid) || runStatus} text={runStatus ? "Working..." : "Run"}/>
+                </LeftPanel>
+            </form>
             <OneItemCenter>
                 {
-                    showViz ? <GraphGL
+                    showResult ? <GraphGL
                         title={"Cell Neighobrs"}
                         cx={cell_x}
                         cy={cellData.cell_y}
+                        ct={cellData.cell_type}
+                        weights={neighborsData.weights}
                         p1={neighborsData.p1}
                         p2={neighborsData.p2}
                         rotate={180}

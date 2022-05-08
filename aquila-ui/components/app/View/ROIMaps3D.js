@@ -3,11 +3,11 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
-import {TabPanel} from "components/TabPanel";
+import {TabPanel} from "components/Layout/TabPanel";
 import {CellMapPanel3D, ExpPanel3D} from "components/app/share/ROIPanels3D";
 
 
-const ROIMaps3D = ({roiID, roiMeta, recordData, cellData}) => {
+const ROIMaps3D = ({roiID, roiMeta, recordData, cellData, bbox}) => {
 
     const [value, setValue] = useState(0);
     const handleChange = (e, v) => setValue(v);
@@ -22,7 +22,7 @@ const ROIMaps3D = ({roiID, roiMeta, recordData, cellData}) => {
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                    <CellMapPanel3D cellData={cellData} roiMeta={roiMeta}/>
+                    <CellMapPanel3D cellData={cellData} roiMeta={roiMeta} bbox={bbox}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     <ExpPanel3D

@@ -2,7 +2,7 @@ import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {VisualMapComponent} from 'echarts/components';
 import 'echarts-gl';
-import {CAT_COLORS, titleOpts} from "./config";
+import {CAT_COLORS, titleOpts, toolboxOpts} from "./config";
 
 echarts.use([
     VisualMapComponent
@@ -38,6 +38,7 @@ const CellMap3D = ({cx, cy, cz, ct, symbolSize, canvasSize}) => {
 
     const options = {
         ...titleOpts("3D Cell Map"),
+        ...toolboxOpts,
         visualMap: {
             type: "piecewise",
             top: 'middle',

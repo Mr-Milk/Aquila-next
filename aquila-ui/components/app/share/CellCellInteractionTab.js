@@ -1,48 +1,75 @@
 import {useEffect, useMemo, useRef, useState} from "react";
-import Selector from "components/Selector";
-import NumberInput, {inRangeFloat, inRangeInt} from "components/NumberInput";
+import Selector from "components/InputComponents/Selector";
+import NumericField from "components/InputComponents/NumberInput";
 import {runCellInterations} from "data/post";
 import Heatmap from "components/Viz/Heatmap";
 import natsort from "natsort";
 import axios from "axios";
-import RunButton from "./RunAnalysisButton";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import ParamWrap from "../../ParamWrap";
-import Ranger from "../../Ranger";
-import OneItemCenter from "../../OneItemCenter";
+import ParamWrap from "../../InputComponents/ParamWrap";
+import Ranger from "../../InputComponents/Ranger";
+import OneItemCenter from "../../Layout/OneItemCenter";
+import {number, object} from "yup";
+import {Controller, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import LeftPanel from "../../Layout/LeftPanel";
+import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
+import SubmitButton from "../../InputComponents/SubmitButton";
+import uniq from "loadsh/uniq";
 
 const patternMap = {'0': 'Non significant', '1': 'Attract', '-1': 'Repeal'}
 
 
 const processResult = (data) => {
 
-    const size = data.type1.length;
-
-    return [...Array(size).keys()].map((i) => {
-        let t1 = data.type1[i];
-        let t2 = data.type2[i];
-        // let pattern = parseInt(data.pattern[i]);
-        // let v = (pattern === 0) ? 0 : data.score[i];
-        let v = data.score[i];
-        return [t1, t2, v,]// `${t1} - ${t2}`, pattern]
+    const dataMapper = {}
+    data.type1.map((t1, i) => {
+        dataMapper[`${t1}${data.type2[i]}`] = data.score[i]
     })
+
+    const labelOrder = uniq(data.type1).sort(natsort());
+    const plotData = [];
+    for (let i=0; i < labelOrder.length; i++) {
+        for (let j=0; j < labelOrder.length; j++) {
+            let k1 = labelOrder[i];
+            let k2 = labelOrder[j];
+            let key = `${k1}${k2}`
+            plotData.push([labelOrder[i], labelOrder[j], dataMapper[key]])
+        }
+    }
+
+    return plotData
 }
+
+
+const methods = [
+    {value: 'pval', label: 'Pseudo P-value'},
+    {value: 'zscore', label: 'zscore'},
+]
+
+const defaultValues = {
+    method: "pval",
+    times: 500,
+    pValue: 0.05,
+}
+
+const schema = object({
+    pValue: number().positive().lessThan(1),
+})
 
 
 const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
 
-    const pvalue = useRef(0.05);
+
     const result = useRef({type1: []});
     const labels = useRef([]);
 
-    const [method, setMethod] = useState("pval");
-    const [times, setTimes] = useState(500);
-    const [errorTimes, setErrorTimes] = useState(false);
-    const [errorPvalue, setErrorPvalue] = useState(false);
-    const [raiseRunError, setRaiseRunError] = useState(false);
-    const [showViz, setShowViz] = useState(0);
+    const [showResult, setShowResult] = useState(0);
+    const [runStatus, setRunStatus] = useState(false);
+    const {handleSubmit, formState: {errors, isValid}, control} = useForm({
+        defaultValues,
+        resolver: yupResolver(schema)
+    });
 
     useMemo(() => {
         if (cellData !== undefined) {
@@ -51,49 +78,29 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
     }, [cellData]);
 
     useEffect(() => {
-        setShowViz(0);
+        setShowResult(0);
     }, [roiID]);
 
-    const handleMethodSelect = (e) => {
-        setMethod(e.target.value)
-    };
-
-    const checkTimes = (e) => {
-        if (!inRangeInt(e.target.value, 1, 1000)) {
-            setErrorTimes(true)
-        } else {
-            setErrorTimes(false);
-            times.current = e.target.value;
+    const handleRun = (data) => {
+        setRunStatus(true)
+        const body = {
+            neighbors_map: neighborsData.map,
+            cell_type: cellData.cell_type,
+            times: data.times,
+            pvalue: data.pValue,
+            method: data.method
         }
-    };
-
-    const checkPvalue = (e) => {
-        if (inRangeFloat(e.target.value, 0.0, 1.0, false)) {
-            setErrorPvalue(false);
-            pvalue.current = e.target.value;
-        } else {
-            setErrorPvalue(true);
-        }
-    }
-
-    const handleRun = () => {
-        if (errorTimes || errorPvalue) {
-            setRaiseRunError(true)
-        } else {
-            const body = {
-                neighbors_map: neighborsData.map,
-                cell_type: cellData.cell_type,
-                times: parseInt(times),
-                pvalue: parseFloat(pvalue.current),
-                method: method
-            }
-            console.log(body)
-            axios.post(runCellInterations, body).then((res) => {
-                result.current = processResult(res.data);
-                console.log(result.current)
-                setShowViz(showViz + 1)
-            }).catch((e) => console.log(e))
-        }
+        //console.log(body)
+        axios.post(runCellInterations, body).then((res) => {
+            console.log(res.data)
+            result.current = processResult(res.data);
+            console.log(result.current)
+            setShowResult(showResult + 1)
+            setRunStatus(false)
+        }).catch((e) => {
+            // console.log(e)
+            setRunStatus(false)
+        })
     }
 
     if (!cellData) {
@@ -101,46 +108,74 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
     }
 
     return (
-        <Stack direction="row">
-            <Stack sx={{
-                borderRight: 1, borderColor: "divider", pr: 2,
-                minWidth: "280px",
-                minHeight: "350px"
-            }} spacing={2}>
-                <Typography variant="subtitle2">{"Spatial interation between cells"}</Typography>
-                <Divider/>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                        'pval': 'Pseudo p-value',
-                        'zscore': 'zscore',
-                    }}/>
-                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
-                               onTipClose={() => setRaiseRunError(false)}/>
-                </Stack>
-                <Divider/>
-                <ParamWrap>
-                    <Ranger value={times} min={500} max={2000} step={100} onChange={(_, v) => setTimes(v)}
-                            title={"Repeat"} description={"How many times to repeat permutation"}/>
-                </ParamWrap>
-                <ParamWrap>
-                    <NumberInput
-                        label={"p value"}
-                        error={errorPvalue}
-                        helperText="Number between 0 to 1"
-                        defaultValue={pvalue.current}
-                        onChange={checkPvalue}
-                        sx={{maxWidth: "80px"}}
-                    />
-                </ParamWrap>
-            </Stack>
+        <Stack direction="row" sx={{height: '100%'}}>
+
+            <form onSubmit={handleSubmit(handleRun)}>
+                <LeftPanel>
+                    <SectionTitleWrap title={"Spatial interation between cells"}/>
+                    <ParamWrap>
+                        <Controller
+                            name="method"
+                            control={control}
+                            render={({field}) => {
+                                return (
+                                    <Selector
+                                        title={"Method"}
+                                        options={methods}
+                                        description={"A permutation test will be conducted by shuffling the cell label," +
+                                            "use either pseudo pvalue or zscore to determine significance"}
+                                        {...field}/>
+                                )
+                            }}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap>
+                        <Controller
+                            name="times"
+                            control={control}
+                            render={({field}) => (
+                                <Ranger
+                                    {...field}
+                                    min={100} max={2000} step={100}
+                                    title={"Times"}
+                                    description={"Number of time to perform shuffling"}
+                                    onChange={(_, value) => field.onChange(value)}
+                                />
+                            )}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap>
+                        <Controller
+                            name="pValue"
+                            control={control}
+                            render={({field}) => (
+                                <NumericField
+                                    title={"P-value"}
+                                    error={!(errors.pValue === undefined)}
+                                    placeholder="p value"
+                                    helperText={"Number from 0 to 1"} {...field}
+                                    description={"Threshold to determine significance"}
+                                />
+                            )}
+                        />
+                    </ParamWrap>
+
+                    <SubmitButton disabled={(!isValid) || runStatus} text={runStatus ? "Working..." : "Run"}/>
+                </LeftPanel>
+            </form>
             <OneItemCenter>
                 {
-                    showViz ? <Heatmap title="Cell interactions"
-                                       data={result.current}
-                                       xlabel={labels.current}
-                                       ylabel={labels.current}
-                                       height={500}
-                                       width={500}
+                    showResult ? <Heatmap title="Cell interactions"
+                                          data={result.current}
+                                          xlabel={labels.current}
+                                          ylabel={labels.current}
+                                          legendText={['1', '-1']}
+                                          min={-1}
+                                          max={1}
+                                          height={500}
+                                          width={500}
                     /> : <></>
                 }
             </OneItemCenter>

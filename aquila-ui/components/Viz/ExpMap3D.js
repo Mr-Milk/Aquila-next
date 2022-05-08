@@ -1,4 +1,6 @@
-import {GRAD_COLORS, titleOpts} from "./config";
+import max from "loadsh/max"
+import min from "loadsh/min"
+import {GRAD_COLORS, titleOpts, toolboxOpts} from "./config";
 import Echarts from "./echarts-obj";
 import 'echarts-gl';
 import * as echarts from "echarts/core";
@@ -9,8 +11,8 @@ echarts.use([GridComponent, VisualMapComponent]);
 
 const ExpMap3D = ({cx, cy, cz, exp, markerName, symbolSize, canvasSize}) => {
 
-    const min_exp = Math.min(...exp);
-    const max_exp = Math.max(...exp);
+    const min_exp = min(exp);
+    const max_exp = max(exp);
     const size = cx.length;
 
     const renderData = cx.map((x, i) => {
@@ -26,6 +28,7 @@ const ExpMap3D = ({cx, cy, cz, exp, markerName, symbolSize, canvasSize}) => {
 
     const option = {
         ...titleOpts(`Expression of ${markerName}`),
+        ...toolboxOpts,
         visualMap: {
             min: min_exp,
             max: max_exp,

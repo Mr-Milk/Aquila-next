@@ -6,7 +6,7 @@ import Tooltip from "@mui/material/Tooltip";
 import {v4 as uuid4} from 'uuid';
 import {db} from "db/schema";
 import LocalRecords from "components/app/Analysis/LocalRecords";
-import ClientOnly from "components/ClientOnly";
+import ClientOnly from "components/Layout/ClientOnly";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -30,29 +30,10 @@ import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import ExpExample from "../../components/app/Analysis/ExpExample";
-
-
-function humanFileSize(bytes, si = false, dp = 1) {
-    const thresh = si ? 1000 : 1024;
-
-    if (Math.abs(bytes) < thresh) {
-        return bytes + ' B';
-    }
-
-    const units = si
-        ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-        : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-    let u = -1;
-    const r = 10 ** dp;
-
-    do {
-        bytes /= thresh;
-        ++u;
-    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
-
-    return bytes.toFixed(dp) + ' ' + units[u];
-}
+import {humanFileSize} from "../../components/humanize";
+import IconButton from "@mui/material/IconButton";
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import Head from "next/head";
 
 const InfoSection = () => {
     return (
@@ -82,7 +63,7 @@ const InfoSection = () => {
             <Button
                 variant="outlined"
                 disableElevation
-                sx={{ mt: 2 }}
+                sx={{mt: 2}}
                 href="/example_data.zip"
             >Download examples</Button>
         </Box>
@@ -139,8 +120,14 @@ const FileUploadRegion = ({rootProps, inputProps, helperText}) => {
                 overflow: 'hidden',
             }}>
                 {helperText}
-                <Typography variant="body2" sx={{color: "darkgrey", display: {xs: 'none', sm: 'block'}}}>{`Drop here or click`}</Typography>
-                <Typography variant="body2" sx={{color: "darkgrey", display: {xs: 'block', sm: 'none'}}}>{`Press to select`}</Typography>
+                <Typography variant="body2" sx={{
+                    color: "darkgrey",
+                    display: {xs: 'none', sm: 'block'}
+                }}>{`Drop here or click`}</Typography>
+                <Typography variant="body2" sx={{
+                    color: "darkgrey",
+                    display: {xs: 'block', sm: 'none'}
+                }}>{`Press to select`}</Typography>
             </Typography>
 
 
@@ -185,7 +172,7 @@ const StatusBar = ({status, text}) => {
 
 const AnalysisPage = () => {
 
-    const dataID = useRef(uuid4().slice(0, 8));
+    const [dataID, setDataID] = useState(uuid4().slice(0, 8));
     const [loadingText, setLoadingText] = useState("Working on it");
     const [status, setStatus] = useState("waiting"); // "waiting", "loading", "finished", "error"
     const [openHelp, setOpenHelp] = useState("none"); // "meta", "info", "exp", "none"
@@ -196,8 +183,20 @@ const AnalysisPage = () => {
         expFile: "",
     })
 
+    const handleReset = () => {
+        setDataID(uuid4().slice(0, 8))
+        setLoadingText("Working on it")
+        setStatus("waiting")
+        setErrorID(false)
+        setFiles({
+            metaFile: "",
+            infoFile: "",
+            expFile: "",
+        })
+    }
+
     const [isSingleCell, setIsSingleCell] = useState(true);
-    const handleSwitch = (e) => setIsSingleCell(e.target.checked)
+    // const handleSwitch = (e) => setIsSingleCell(e.target.checked)
 
     // workers state
     const [comlinkMessage, setComlinkMessage] = useState("");
@@ -213,13 +212,13 @@ const AnalysisPage = () => {
         }
     }, [])
 
-    const checkIDExist = async (e) => {
-        const exists = await db.DataRecords.get(e.target.value);
+    const checkIDExist = async (_, v) => {
+        const exists = await db.DataRecords.get(v);
         if (exists) {
             setErrorID(true);
         } else {
             setErrorID(false);
-            dataID.current = e.target.value;
+            setDataID(v);
         }
     }
 
@@ -248,17 +247,17 @@ const AnalysisPage = () => {
         // db.DataRecords.add({id: dataID.current, created_at: new Date().getTime()})
         try {
             setLoadingText("Processing ROI File")
-            const result = await comlinkWorkerApiRef.current.roiRecord(files.metaFile, dataID.current)
+            const result = await comlinkWorkerApiRef.current.roiRecord(files.metaFile, dataID)
             console.log(result)
             setLoadingText("Processing Cell Info File")
-            const hasCellType = await comlinkWorkerApiRef.current.cellInfo(files.infoFile, dataID.current, result.roiCellCount, result.roiMapper)
+            const hasCellType = await comlinkWorkerApiRef.current.cellInfo(files.infoFile, dataID, result.roiCellCount, result.roiMapper)
             console.log(hasCellType)
             setLoadingText("Processing Exp File")
-            const expResult = await comlinkWorkerApiRef.current.expInfo(files.expFile, dataID.current, result.roiCellCount, result.roiMapper)
+            const expResult = await comlinkWorkerApiRef.current.expInfo(files.expFile, dataID, result.roiCellCount, result.roiMapper)
             console.log(expResult)
 
             const dataRecord = {
-                id: dataID.current,
+                id: dataID,
                 created_at: new Date().getTime(),
                 has_cell_type: hasCellType,
                 roi_count: result.roiCount,
@@ -280,35 +279,39 @@ const AnalysisPage = () => {
     }
 
     return (
+        <>
+            <Head>
+                <title>Aquila | Analysis</title>
+            </Head>
         <Container component="section" maxWidth="xl" sx={{mt: 4, ml: {sm: 2}}}>
 
             <MemoInfoSection/>
             <Typography variant="h4" sx={{mb: 3}}>Upload Files</Typography>
             <Stack alignItems="top" justifyContent="flex-start" spacing={4}>
 
-                    <Stack direction="row" alignItems="center">
-                        <LooksOne sx={{mr: {sm: 1}, color: "secondary.main"}}/>
-                        <FileExampleHelper
-                            title={'ROI File Example'}
-                            open={(openHelp === 'meta')}
-                            onClose={() => setOpenHelp("none")}
-                            onClick={() => setOpenHelp("meta")}
-                        >
-                            <Typography sx={{mb: 2, maxWidth: "300px"}}>
-                                Each line should annotate the ROI that a cell belongs to
-                            </Typography>
-                            <MetaExample/>
-                        </FileExampleHelper>
-                        <FileUploadRegion
-                            rootProps={metaRootProps()}
-                            inputProps={metaInputProps()}
-                            helperText={"ROI File"}
-                        />
+                <Stack direction="row" alignItems="center">
+                    <LooksOne sx={{mr: {sm: 1}, color: "secondary.main"}}/>
+                    <FileExampleHelper
+                        title={'ROI File Example'}
+                        open={(openHelp === 'meta')}
+                        onClose={() => setOpenHelp("none")}
+                        onClick={() => setOpenHelp("meta")}
+                    >
+                        <Typography sx={{mb: 2, maxWidth: "300px"}}>
+                            Each line should annotate the ROI that a cell belongs to
+                        </Typography>
+                        <MetaExample/>
+                    </FileExampleHelper>
+                    <FileUploadRegion
+                        rootProps={metaRootProps()}
+                        inputProps={metaInputProps()}
+                        helperText={"ROI File"}
+                    />
 
-                        <ShowFile file={files.metaFile}
-                                  onDelete={() => setFiles({...files, metaFile: ""})}
-                        />
-                        </Stack>
+                    <ShowFile file={files.metaFile}
+                              onDelete={() => setFiles({...files, metaFile: ""})}
+                    />
+                </Stack>
 
                 <Stack direction="row" alignItems="center">
                     <LooksTwo sx={{mr: {sm: 1}, color: "secondary.main"}}/>
@@ -369,24 +372,24 @@ const AnalysisPage = () => {
 
             </Stack>
 
-            <FormGroup sx={{ mt: 2 }}>
-              <FormControlLabel
-                  control={<Switch
-                      disabled={(status === 'loading')}
-                      checked={isSingleCell}
-                      onChange={handleSwitch}/>}
-                  label="Single Cell Data" />
-            </FormGroup>
+            {/*<FormGroup sx={{ mt: 2 }}>*/}
+            {/*  <FormControlLabel*/}
+            {/*      control={<Switch*/}
+            {/*          disabled={(status === 'loading')}*/}
+            {/*          checked={isSingleCell}*/}
+            {/*          onChange={handleSwitch}/>}*/}
+            {/*      label="Single Cell Data" />*/}
+            {/*</FormGroup>*/}
 
             <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{mt: 2, mb: 2}}>
                 <TextField
                     label="Data ID (Optional)"
                     variant="standard"
-                    defaultValue={dataID.current}
+                    value={dataID}
                     onChange={checkIDExist}
                     error={errorID}
                     helperText={errorID ? 'ID already exists' : 'Better give it a meaningful name'}
-                    sx={{width: "200px", mb: {xs: 1, sm: 0}, mr: {xs:1, sm: 0}}}
+                    sx={{width: "200px", mb: {xs: 1, sm: 0}, mr: {xs: 1, sm: 0}}}
                 />
                 <Button
                     onClick={handleRun}
@@ -396,6 +399,9 @@ const AnalysisPage = () => {
                     sx={{ml: {sm: 2}, color: "common.white"}}>
                     GO!
                 </Button>
+                <IconButton onClick={handleReset}>
+                    <AutorenewIcon color="primary"/>
+                </IconButton>
             </Stack>
 
             <StatusBar status={status} text={loadingText}/>
@@ -405,6 +411,7 @@ const AnalysisPage = () => {
                 <LocalRecords/>
             </ClientOnly>
         </Container>
+            </>
     )
 }
 

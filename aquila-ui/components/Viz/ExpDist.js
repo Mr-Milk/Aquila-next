@@ -6,6 +6,9 @@ import {CanvasRenderer} from 'echarts/renderers';
 import {LineChart} from 'echarts/charts';
 import {GridComponent, TitleComponent, TooltipComponent,} from 'echarts/components';
 
+import max from "loadsh/max"
+import min from "loadsh/min"
+
 echarts.use([
     CanvasRenderer,
     GridComponent,
@@ -17,8 +20,8 @@ echarts.use([
 // histogram([100, 101, 102, 230, 304, 305, 400], 3) === [3, 1, 3];
 function histogram(arr, binCnt) {
     binCnt = binCnt || 4;
-    const first = Math.min(...arr);
-    const binWidth = (Math.max(...arr) - first) / binCnt;
+    const first = min(arr);
+    const binWidth = (max(arr) - first) / binCnt;
     const len = arr.length;
     const bins = [];
     const interval = [];
@@ -48,24 +51,28 @@ const ExpDist = ({arr, title}) => {
         xAxis: {
             name: 'Expression',
             nameLocation: 'middle',
-            nameGap: 25,
+            nameGap: 20,
             type: 'category',
             data: x,
             scale: true
         },
         yAxis: {
-            name: 'Cell Count',
+            name: 'Cell\nCount',
             nameLocation: 'end',
             nameGap: 10,
             nameTextStyle: {
                 align: 'right'
             },
             type: 'value',
+            label: {
+                show: false
+            }
         },
         grid: {
-            top: 30,
-            bottom: 25,
-            left: 15,
+            top: '20%',
+            bottom: '10%',
+            left: '3%',
+            right: '5%',
             containLabel: true
         },
         series: [

@@ -31,11 +31,17 @@ export const runner = async (url, body) => {
 
 
 const root = process.env.NEXT_PUBLIC_API_URL;
+const root2 = process.env.NEXT_PUBLIC_FASTAPI_URL;
 export const runCellNeighbors = `${root}/cell_neighbors`;
-export const runCellDensity = `${root}/cell_density`;
 export const runCellDistribution = `${root}/cell_distribution`;
 export const runSpatialAutoCorr = `${root}/spatial_autocorr`;
 export const runSpatialEntropy = `${root}/spatial_entropy`;
 export const runEntropy = `${root}/entropy`;
-export const runSVGene = `${root}/svgene`;
 export const runCellInterations = `${root}/cell_interactions`;
+export const runCoexp = `${root}/coexp`;
+export const runSpatialCoexp = `${root}/spatial_coexp`;
+
+export const runSVGene = `${root2}/svgene`;
+export const runRipley = `${root2}/ripley`;
+export const runSpatailCommunity = `${root2}/community`;
+export const runCentrality = `${root2}/centrality`;

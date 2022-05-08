@@ -1,4 +1,4 @@
-import {titleOpts} from "components/Viz/config";
+import {titleOpts, toolboxOpts} from "components/Viz/config";
 import Echarts from "./echarts-obj";
 
 import * as echarts from 'echarts/core';
@@ -20,6 +20,7 @@ const BarChart = ({x, y, title}) => {
 
     const options = {
         ...titleOpts(title),
+        ...toolboxOpts,
         tooltip: {
             trigger: 'item',
         },

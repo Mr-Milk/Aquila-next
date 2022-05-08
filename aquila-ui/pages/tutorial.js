@@ -21,6 +21,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import Head from "next/head";
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import IconButton from "@mui/material/IconButton";
+import OneItemCenter from "../components/Layout/OneItemCenter";
 
 
 const Title = ({sx, children}) => {
@@ -185,7 +186,7 @@ const TutorialPage = ({images}) => {
 
     const submitSteps = [
         {
-            label: 'Find the entry point for analysis',
+            label: 'Find the entry point for aquila_spatial',
             description: `The entry point for browse is at the header panel. 
             It\'s available to all pages.`,
             imageProps: images.analysis.step1,
@@ -240,7 +241,7 @@ const TutorialPage = ({images}) => {
             imageProps: images.data.step4,
         },
         {
-            label: 'Run spatial analysis',
+            label: 'Run spatial aquila_spatial',
             description: `Here, you are allowed to run various of advanced analysis. You check the 
             help button if you don't know what that analysis is or what a parameters will do.
             To know more about each analysis, check the section below.`,
@@ -331,7 +332,7 @@ const TutorialPage = ({images}) => {
             <Head>
                 <title>Aquila | Tutorial</title>
             </Head>
-            <Container maxWidth="xl" sx={{ my: 2, mx: {md:4}}}>
+            <Container component="section" maxWidth="xl" sx={{ my: 2, mx: {md:4}}}>
                 <VerticalLinearStepper title={"Browse Data"} steps={browseSteps}/>
                 <VerticalLinearStepper title={"Analyze Your Data"} steps={submitSteps}/>
                 <VerticalLinearStepper title={"Using Analyze Panel"} steps={dataSteps}/>

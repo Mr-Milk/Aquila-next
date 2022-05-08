@@ -1,21 +1,17 @@
 import {Container} from "@mui/material";
 import SectionIntro from "components/Intro/SectionIntro";
 import {fetcher, getDbStatsURL} from "data/get";
-import {SWRConfig} from "swr";
 import StatsIntro from "../components/Intro/StatsIntro";
 import FeaturesIntro from "../components/Intro/FeaturesIntro";
 
-
-const Home = ({fallback}) => {
+const Home = ({ dbStats }) => {
 
     return (
-        <SWRConfig value={{fallback}}>
-            <Container component="section" maxWidth="xl" sx={{mt: {sm: 2, xs: 4}, mb: 2}}>
-                <SectionIntro/>
-                <StatsIntro/>
-                <FeaturesIntro/>
-            </Container>
-        </SWRConfig>
+        <Container component="section" maxWidth="xl" sx={{mt: {sm: 2, xs: 4}, mb: 2}}>
+            <SectionIntro/>
+            <StatsIntro data={dbStats}/>
+            <FeaturesIntro/>
+        </Container>
     )
 }
 
@@ -24,10 +20,9 @@ export async function getStaticProps() {
 
     return {
         props: {
-            fallback: {
-                getDbStatsURL: data
-            }
-        }
+            dbStats: data
+        },
+        revalidate: 60
     }
 }
 

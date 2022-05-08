@@ -114,7 +114,10 @@ const StyledPopper = styled(Popper)({
     }
 });
 
-export default function VirtualizedAutoComplete({options, label, ...leftProps}) {
+const VirtualizedAutoComplete = forwardRef(function VirtualizedAutoComplete(props, ref) {
+
+    const {options, label, error, helperText, ...leftProps} = props;
+
     return (
         <Autocomplete
             id="virtualized"
@@ -124,9 +127,13 @@ export default function VirtualizedAutoComplete({options, label, ...leftProps}) 
             PopperComponent={StyledPopper}
             ListboxComponent={ListboxComponent}
             options={options}
-            renderInput={(params) => <TextField variant="standard" {...params} label={label}/>}
+            renderInput={(params) => <TextField variant="standard" error={error} label={label}
+                                                helperText={error ? helperText : ""} {...params}/>}
             renderOption={(props, option) => [props, option]}
+            ref={ref}
             {...leftProps}
         />
     );
-}
+});
+
+export default VirtualizedAutoComplete;

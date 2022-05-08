@@ -26,7 +26,7 @@ export function TabPanel(props) {
                 }}
                 {...other}
             >
-                <Box sx={{ height: '100%'}}>
+                <Box sx={{height: '100%'}}>
                     {children}
                 </Box>
             </div>

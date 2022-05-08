@@ -1,6 +1,8 @@
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import HelperTips from "./HelperTips";
+import {forwardRef, useState} from "react";
+import Typography from "@mui/material/Typography";
 
 
 export const isPosInt = (num) => {
@@ -43,51 +45,25 @@ export const inRangeFloat = (num, lower, upper, edge) => {
 }
 
 
-const BaseInput = ({label, error, onChange, helperText, defaultValue, useNumber, ...other}) => {
-    return <TextField
-        label={label}
-        variant="standard"
-        type={useNumber ? "number" : "text"}
-        inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
-        error={error}
-        helperText={error && helperText}
-        onChange={onChange}
-        defaultValue={defaultValue}
-        {...other}
-    />
-}
+const NumericField = forwardRef(function NumericField(
+    props,
+    ref) {
+    const {title, error = false, placeholder, helperText, description, ...other} = props;
 
+    return <Stack>
+        <Stack direction="row" alignItems="center">
+            <Typography variant="subtitle2">{title}</Typography>
+            {description ? <HelperTips text={description} sx={{ml: 1}}/> : null}
+        </Stack>
+        <TextField error={error}
+                   variant="standard"
+                   placeholder={placeholder}
+                   type="number"
+                   inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
+                   helperText={error ? helperText : ""}
+                   ref={ref}
+                   {...other} />
+    </Stack>
+})
 
-const NumberInput = ({label, error, onChange, helperText, description, defaultValue, useNumber, ...other}) => {
-
-    useNumber = useNumber || true
-
-    if (description !== undefined) {
-        return (
-            <Stack direction="row" alignItems="center" spacing={1}>
-                <BaseInput
-                    label={label}
-                    error={error}
-                    helperText={error && helperText}
-                    onChange={onChange}
-                    defaultValue={defaultValue}
-                    {...other}
-                />
-                <HelperTips text={description} style={{marginTop: "0.5rem"}}/>
-            </Stack>
-        )
-    } else {
-        return <BaseInput
-            label={label}
-            error={error}
-            helperText={error && helperText}
-            onChange={onChange}
-            defaultValue={defaultValue}
-            {...other}
-        />
-    }
-
-
-}
-
-export default NumberInput;
+export default NumericField;

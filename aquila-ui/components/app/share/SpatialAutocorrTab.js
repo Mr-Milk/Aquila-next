@@ -1,116 +1,194 @@
 import {useEffect, useRef, useState} from "react";
-import NumberInput, {inRangeFloat} from "../../NumberInput";
+import NumericField from "../../InputComponents/NumberInput";
 import axios from "axios";
 import {runSpatialAutoCorr} from "../../../data/post";
-import Selector from "../../Selector";
-import RunButton from "./RunAnalysisButton";
-import Typography from "@mui/material/Typography";
-import VirtualizedAutoComplete from "../../VirtualizedAutoComplete";
-import Divider from "@mui/material/Divider";
+import Selector from "../../InputComponents/Selector";
+import VirtualizedAutoComplete from "../../InputComponents/VirtualizedAutoComplete";
 import Stack from "@mui/material/Stack";
-import ParamWrap from "../../ParamWrap";
-import OneItemCenter from "../../OneItemCenter";
+import ParamWrap from "../../InputComponents/ParamWrap";
+import OneItemCenter from "../../Layout/OneItemCenter";
+import {array, number, object} from "yup";
+import {Controller, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
+import LeftPanel from "../../Layout/LeftPanel";
+import SubmitButton from "../../InputComponents/SubmitButton";
+import VolcanoPlot from "../../Viz/VolcanoPlot";
+import {displayMinMax} from "../../humanize";
 
 
-const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getExpData}) => {
+const Viz = ({data, pvalue}) => {
 
-    const pvalue = useRef(0.05);
-    const neighborsData = getNeighbors();
+    const x = [];
+    const y = [];
+    const label = [];
+    data.forEach((record) => {
+        x.push(record.value)
+        y.push(-Math.log10(record.pvalue))
+        label.push(record.marker)
+    })
 
-    const [method, setMethod] = useState("geary_c");
-    const [result, setResult] = useState(0);
-    const [errorPvalue, setErrorPvalue] = useState(false);
-    const [raiseRunError, setRaiseRunError] = useState(false);
-
-    const [marker, setMarker] = useState(recordData.markers[0]);
-    const {data: expData} = getExpData(roiID, marker);
-
-    useEffect(() => {
-        setResult(0);
-    }, [cellData]);
-
-    const changeMarker = (e, v) => setMarker(v);
-
-    const handleMethodSelect = (e) => {
-        setMethod(e.target.value)
-    };
-
-    const checkPvalue = (e) => {
-        if (inRangeFloat(e.target.value, 0.0, 1.0, false)) {
-            setErrorPvalue(false);
-            pvalue.current = e.target.value;
-        } else {
-            setErrorPvalue(true);
-        }
+    let yrange = displayMinMax(y)
+    if (yrange[1] < 5) {
+        yrange = [0, 10]
     }
 
-    const handleRun = () => {
-        if (errorPvalue) {
-            setRaiseRunError(true);
-        } else {
-            const body = {
-                neighbors_map: neighborsData.map,
-                expression: expData.expression,
-                pvalue: parseFloat(pvalue.current),
-                method: method
-            }
+    return <VolcanoPlot x={x} y={y} label={label}
+                        xrange={displayMinMax(x)}
+                        yrange={yrange}
+                        ytitle={"-log10(pval)"}
+                        xtitle={"Autocorrelation"}
+                        ythresh={-Math.log10(pvalue)}
+    />
+}
 
-            axios.post(runSpatialAutoCorr, body).then((res) => {
-                setResult(res.data);
-            }).catch((e) => console.log(e))
+
+const methods = [
+    {value: 'moran_i', label: 'Moran\'s I'},
+    {value: 'geary_c', label: 'Geary\'s C'},
+]
+
+const defaultValues = {
+    method: "moran_i",
+    pValue: 0.05,
+    markers: []
+}
+
+const schema = object({
+    pValue: number().positive().lessThan(1),
+    markers: array().min(1).max(50),
+})
+
+
+const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getCellExpBatch}) => {
+
+    const result = useRef();
+    const userpValue = useRef();
+    const [showResult, setShowResult] = useState(0);
+    const [runStatus, setRunStatus] = useState(false);
+    const {handleSubmit, formState: {errors, isValid}, watch, control} = useForm({
+        mode: "onChange",
+        defaultValues,
+        resolver: yupResolver(schema)
+    });
+
+    //const {data: expData} = getExpData(roiID, marker);
+
+    useEffect(() => {
+        setShowResult(0);
+    }, [cellData]);
+
+    const neighborsData = getNeighbors();
+
+
+    const handleRun = async (data) => {
+        setRunStatus(true)
+        const expMatrix = await getCellExpBatch(roiID, data.markers);
+        const body = {
+            neighbors_map: neighborsData.map,
+            exp_matrix: expMatrix.map((r) => {
+                return {
+                    marker: r.marker,
+                    exp: r.expression
+                }
+            }),
+            pvalue: data.pValue,
+            method: data.method
         }
+
+        userpValue.current = data.pValue
+
+        console.log(body)
+
+        axios.post(runSpatialAutoCorr, body).then((res) => {
+            console.log(res.data)
+            result.current = res.data
+            setShowResult(showResult + 1)
+            setRunStatus(false)
+        }).catch((e) => {
+            console.log(e)
+            setRunStatus(false)
+        })
     }
 
     if (!cellData) {
         return null
     }
     return (
-        <Stack direction="row">
-            <Stack sx={{
-                borderRight: 1, borderColor: "divider", pr: 2,
-                minWidth: "200px",
-                minHeight: "350px"
-            }} spacing={2}>
-                <Typography
-                    variant="subtitle2">{"Correlation between expression and nearby spatial location"}</Typography>
-                <Divider/>
-                <VirtualizedAutoComplete
-                    options={recordData.markers}
-                    label={'Select marker'}
-                    value={marker}
-                    onChange={changeMarker}
-                    sx={{width: "200px"}}
-                />
-                <Divider/>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                    <Selector title="Method" value={method} onChange={handleMethodSelect} items={{
-                        'geary_c': 'Geary\'s C',
-                        'moran_i': 'Moran\'s I',
-                    }}/>
-                    <RunButton onClick={handleRun} onTipOpen={raiseRunError}
-                               onTipClose={() => setRaiseRunError(false)}/>
-                </Stack>
-                <Divider/>
-                <ParamWrap>
-                    <NumberInput
-                        label={"p value"}
-                        error={errorPvalue}
-                        helperText="Number between 0 to 1"
-                        defaultValue={pvalue.current}
-                        onChange={checkPvalue}
-                        sx={{maxWidth: "80px"}}
-                    />
-                </ParamWrap>
-            </Stack>
+        <Stack direction="row" sx={{height: '100%'}}>
+            <form onSubmit={handleSubmit(handleRun)}>
+                <LeftPanel>
+                    <SectionTitleWrap title={"Correlation between expression and nearby spatial location"}/>
+
+                    <ParamWrap>
+                        <Controller
+                            name="method"
+                            control={control}
+                            render={({field}) => {
+                                return (
+                                    <Selector
+                                        title={"Method"}
+                                        options={methods}
+                                        description={
+                                            <>
+                                                <p>Due to the precision issue of floating point in JavaScript,
+                                                    the result may be a bit different between each run</p>
+                                                <li>{"Moran'I: Local measurement"}</li>
+                                                <li>{"Geary'C: Global measurement"}</li>
+                                            </>
+                                        }
+                                        {...field}/>
+                                )
+                            }}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap>
+                        <Controller
+                            name="markers"
+                            control={control}
+                            render={({field}) => {
+                                return (
+                                    <VirtualizedAutoComplete
+                                        {...field}
+                                        multiple={true}
+                                        disableCloseOnSelect={true}
+                                        error={!(errors.markers === undefined)}
+                                        helperText={"Select 1~50 markers"}
+                                        value={field.value}
+                                        label={'Select or Search Marker'}
+                                        options={recordData.markers}
+                                        onChange={(_, v) => field.onChange(v)}
+                                    />
+                                )
+                            }}
+                        />
+                    </ParamWrap>
+
+                    <ParamWrap>
+                        <Controller
+                            name="pValue"
+                            control={control}
+                            render={({field}) => (
+                                <NumericField
+                                    title={"P-value"}
+                                    error={!(errors.pValue === undefined)}
+                                    placeholder="p value"
+                                    helperText={"Number from 0 to 1"} {...field}
+                                    description={"Threshold to determine significance"}
+                                />
+                            )}
+                        />
+                    </ParamWrap>
+
+
+                    <SubmitButton disabled={(!isValid) || runStatus} text={runStatus ? "Working..." : "Run"}/>
+                </LeftPanel>
+            </form>
             <OneItemCenter>
-                {(result !== 0) ?
+                {(showResult !== 0) ?
                     <>
-                        <Typography component="h3" sx={{mt: 2}}>
-                            Spatial Autocorrelation: {(result.pattern === 0) ? "✔️" : "❌"}
-                        </Typography>
-                        <Typography component="h3" sx={{mt: 2}}>
-                            Index value: {result.autocorr_value.toFixed(5)}
-                        </Typography>
+                        <Viz data={result.current} pvalue={userpValue.current}/>
                     </>
                     : <></>}
             </OneItemCenter>

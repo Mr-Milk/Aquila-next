@@ -1,4 +1,5 @@
 import Echarts from "./echarts-obj";
+import 'echarts-gl';
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {ScatterChart} from 'echarts/charts';
@@ -12,7 +13,7 @@ import {
     VisualMapComponent,
     VisualMapContinuousComponent
 } from 'echarts/components';
-import {CAT_COLORS, titleOpts} from "./config";
+import {CAT_COLORS, titleOpts, toolboxOpts} from "./config";
 
 echarts.use([
     CanvasRenderer,
@@ -34,6 +35,7 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
     if (hasCellType && (ct.length === 0)) {
         hasCellType = false
     }
+    const dataSize = cx.length;
     const categories = hasCellType ? [...new Set(ct)] : ['unknown'];
     const pieces = categories.map((c, i) => {
         return {
@@ -48,14 +50,24 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
     })
 
     const option = {
-        ...titleOpts("Cell Map"),
+        title: {
+            text: 'Cell Map',
+            left: "33%",
+            top: "0%",
+            textStyle: {
+                fontSize: 14,
+            },
+        },
+        ...toolboxOpts,
         visualMap: {
             type: "piecewise",
             top: 'middle',
+            align: 'left',
             // categories: categories,
             min: 0,
             max: categories.length,
-            left: 0,
+            left: '75%',
+            right: 0,
             splitNumber: categories.length,
             dimension: 2,
             pieces: pieces,
@@ -84,27 +96,30 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
         },
         // To maintain the x-y at same ratio
         grid: {
+            show: false,
             top: 'middle',
             width: canvasSize,
             height: canvasSize,
             containLabel: true,
+            left: '0%',
+            right: '15%'
         },
-        xAxis: {show: false, scale: false},
-        yAxis: {show: false, scale: false},
+        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
         series: {
-            type: 'scatter',
+            type: dataSize < 15000 ? 'scatter' : 'scatterGL',
             symbolSize: symbolSize,
             encode: {tooltip: [2]},
             itemStyle: {
                 borderColor: '#555',
-                borderWidth: 0.5
+                borderWidth: (symbolSize < 3) ? 0 : 0.5,
             },
             data: renderData
         }
     }
 
     return <Echarts
-        echarts={echarts} option={option} style={{height: canvasSize + 100, width: canvasSize + 100}}/>
+        echarts={echarts} option={option} style={{height: canvasSize + 50, width: canvasSize + 150}}/>
 }
 
 export default CellMap2D;

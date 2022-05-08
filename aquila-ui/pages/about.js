@@ -6,7 +6,7 @@ import Link from "@mui/material/Link";
 import Image from "next/image"
 import GitHub from "@mui/icons-material/GitHub";
 import Box from "@mui/material/Box";
-import {Accordion, Divider, Icon} from "@mui/material";
+import Divider from "@mui/material/Divider";
 import {getPlaiceholder} from "plaiceholder";
 import Head from "next/head";
 
@@ -98,13 +98,13 @@ const AboutPage = ({ images }) => {
             <Title>Why we concern about data security?</Title>
             <Content>{"The source of spatial-omics data may comes from " +
                 "patient samples, and usually you need privacy information from patients to do the" +
-                "analysis. The security of remote server is not guaranteed. To ensure the best privacy, " +
-                "none of the data will be sent to the server before running any of the analysis." +
+                "aquila_spatial. The security of remote server is not guaranteed. To ensure the best privacy, " +
+                "none of the data will be sent to the server before running any of the aquila_spatial." +
                 "The data sent to the server only contains location, expression and cell type information. "}</Content>
 
             <Title>{"I know how to code and want to analyze large dataset"}</Title>
             <Content>{"Allow me to shamelessly promote "}<a href="https://github.com/Mr-Milk/SpatialTis">SpatialTis</a>
-                {": a spatial single-cell analysis software written in Python and the underlying algorithms are implemented in Rust. " +
+                {": a spatial single-cell aquila_spatial software written in Python and the underlying algorithms are implemented in Rust. " +
                 "I made it easy to use and extremely fast. If you are interested, try it out!"}</Content>
 
             <Stack direction="column" justifyContent="center" alignItems="center" sx={{my: 4}}>

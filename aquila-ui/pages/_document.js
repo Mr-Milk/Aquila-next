@@ -6,7 +6,7 @@ import theme from "../styles/theme";
 
 
 const APP_NAME = 'Aquila'
-const APP_DESCRIPTION = 'Spatial single cell database and analysis platform'
+const APP_DESCRIPTION = 'Spatial single cell database and aquila_spatial platform'
 
 export default class MyDocument extends Document {
     render() {

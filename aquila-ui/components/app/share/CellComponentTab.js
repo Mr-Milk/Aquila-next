@@ -1,5 +1,5 @@
 import Pie from "components/Viz/Pie";
-import OneItemCenter from "../../OneItemCenter";
+import OneItemCenter from "../../Layout/OneItemCenter";
 
 const CellComponentTab = ({cellData}) => {
 
