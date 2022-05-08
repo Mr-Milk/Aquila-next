@@ -26,12 +26,14 @@ class Technology(Enum):
     BaristaSeq: str = "Barista-seq"
     DbitSeq: str = "DBiT-seq"
     ExSeq: str = "ExSeq"
+    PciSeq: str = "pciSeq"
     HDST: str = "HDST"
     SciSpace: str = "sci-Space"
     seqScope: str = "seq-scope"
     SlideSeq: str = "Slide-seq"
-    SteroSeq: str = "Stero-seq"
+    StereoSeq: str = "Stereo-seq"
     XYZeq: str = "XYZeq"
+    ISS: str = "ISS"
 
 
 class Molecule(Enum):
@@ -43,6 +45,9 @@ class Molecule(Enum):
 class Species(Enum):
     Human: str = "Human"
     Mouse: str = "Mouse"
+    HM: str = "Human+Mouse"
+    Chicken: str = "Chicken"
+    Pig: str = "Pig"
 
 
 class Organ(Enum):
@@ -50,7 +55,9 @@ class Organ(Enum):
     Brain: str = "Brain"
     Bone: str = "Bone"
     BonesMarrow: str = "Bones Marrow"
+    Breast: str = "Breast"
     Bladder: str = "Bladder"
+    Intestine: str = "Intestine"
     Colon: str = "Colon"
     Cerebellum: str = "Cerebellum"
     Eye: str = "Eye"
@@ -61,15 +68,21 @@ class Organ(Enum):
     Lung: str = "Lung"
     LymphNode: str = "Lymph Node"
     Ovary: str = "Ovary"
+    Organoid: str = "Organoid"
     Pancreas: str = "Pancreas"
     Prostate: str = "Prostate"
     Rectum: str = "Rectum"
     Skin: str = "Skin"
+    SpinalCord: str = "Spinal Cord"
     Spleen: str = "Spleen"
     Stomach: str = "Stomach"
     Tonsil: str = "Tonsil"
     Thyroid: str = "Thyroid"
     Uterus: str = "Uterus"
+    Embryo: str = "Embryo"
+    Mixed: str = "Mixed"
+    Muscle: str = "Muscle"
+    Joint: str = "Joint"
 
 
 def check_type(raw: str, target):
@@ -113,12 +126,42 @@ def _default_false(meta, key):
     assert isinstance(meta[key], bool)
 
 
+tech_molecule_mapper = {
+# Cytometry based
+    "IMC": "Protein",
+    "MIBI": "Protein",
+    "CODEX": "Protein",
+    "CyCIF": "Protein",
+    # Microscopy based
+    "MERFISH": "RNA",
+    "osmFISH": "RNA",
+    "seqFISH": "RNA",
+    "STARmap": "RNA",
+    # Single-cell seq
+    # Non single-cell seq
+    "Visium": "RNA",
+    "APEX-seq": "RNA",
+    "Barista-seq": "RNA",
+    "DBiT-seq": "RNA",
+    "ExSeq": "RNA",
+    "HDST": "RNA",
+    "sci-Space": "RNA",
+    "seq-scope": "RNA",
+    "Slide-seq": "RNA",
+    "Stereo-seq": "RNA",
+    "XYZeq": "RNA",
+    "pciSeq": "RNA",
+}
+
+
 def full_meta(meta):
     meta = meta.copy()
     meta["organ"] = check_type(meta["organ"], Organ)
     meta["technology"] = check_type(meta["technology"], Technology)
     meta["molecule"] = check_type(meta["molecule"], Molecule)
     meta["species"] = check_type(meta["species"], Species)
+
+    assert tech_molecule_mapper[meta["technology"]] == meta["molecule"]
 
     _default_false(meta, "is_single_cell")
     _default_false(meta, "has_cell_type")
@@ -187,6 +230,9 @@ def check_adata(data: ad.AnnData):
             not_obs.append(f)
     if len(not_obs) > 0:
         raise ValueError(f"{', '.join(not_obs)} not in `data.obs`")
+
+    if data.obs.isnull().values.any():
+        raise ValueError("NaN value in obs, please fill it")
 
     var_keys = data.var_keys()
     not_var = []

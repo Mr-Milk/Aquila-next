@@ -85,6 +85,14 @@ def check_uuid(data_uuid):
         return False
 
 
+def get_records(data_uuid):
+    config = get_config()
+    engine = create_engine(config['ENGINE'])
+    with engine.connect() as conn:
+        result = conn.execute(text(f"""select * from data_records where data_uuid='{data_uuid}';"""))
+        return result.first()
+
+
 def init_db(engine=None):
     config = get_config()
     engine = create_engine(config['ENGINE'])
@@ -96,3 +104,15 @@ def clean_db(engine=None):
     engine = create_engine(config['ENGINE'])
     PGBase.metadata.drop_all(engine)
 
+
+def delete_data(data_uuid):
+    config = get_config()
+    engine = create_engine(config['ENGINE'])
+    with engine.connect() as conn:
+        conn.execute(text(f"""DELETE FROM data_records WHERE data_uuid='{data_uuid}'"""))
+        conn.execute(text(f"""DELETE FROM roi_info WHERE data_uuid='{data_uuid}'"""))
+        conn.execute(text(f"""DELETE FROM cell_info WHERE data_uuid='{data_uuid}'"""))
+        conn.execute(text(f"""DELETE FROM cell_exp WHERE data_uuid='{data_uuid}'"""))
+        conn.execute(text(f"""DELETE FROM roi_info_3d WHERE data_uuid='{data_uuid}'"""))
+        conn.execute(text(f"""DELETE FROM cell_info_3d WHERE data_uuid='{data_uuid}'"""))
+        conn.execute(text(f"""DELETE FROM cell_exp_3d WHERE data_uuid='{data_uuid}'"""))
