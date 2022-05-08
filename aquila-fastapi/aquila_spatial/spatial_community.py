@@ -16,7 +16,8 @@ def run_community(e1, e2, weights,
         part = G.community_multilevel(weights="weight")
     else:
         part = G.community_infomap(edge_weights='weight', trials=trials)
-    return part.membership
+
+    return [str(i) for i in part.membership]
 
 
 def run_centrality(e1, e2, types, measure="closeness"):
@@ -35,7 +36,7 @@ def run_centrality(e1, e2, types, measure="closeness"):
     data = pd.DataFrame({
         "value": centrality,
         "type": types
-    })
+    }).fillna(0)
     response = []
     for n, g in data.groupby('type'):
         response.append({
