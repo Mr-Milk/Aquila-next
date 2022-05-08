@@ -166,10 +166,11 @@ pub fn build_spatial_weight(neighbors: HashMap<usize, Vec<usize>>) -> SpatialWei
     let mut neighbors_data: Vec<Vec<usize>> = vec![];
     let mut labels: Vec<usize> = vec![];
 
-    for (k, v) in neighbors {
-        labels.push(k);
-        neighbors_data.push(v);
-    }
+    (0..neighbors.len()).for_each(|i| {
+        labels.push(i);
+        let neigh = neighbors.get(&i).unwrap();
+        neighbors_data.push(neigh.clone());
+    });
 
     SpatialWeight::from_neighbors(neighbors_data, labels)
 }

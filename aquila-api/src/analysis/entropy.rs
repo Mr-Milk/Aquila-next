@@ -5,13 +5,6 @@ use ndarray::prelude::*;
 use crate::analysis::custom_type::{Point2D, Point3D};
 use crate::analysis::{get_neighbors, kdtree_builder};
 
-fn pairs_counter(pairs: Vec<usize>, n: usize) -> Vec<f64> {
-    let mut arr = vec![0.0; n + 1];
-    for e in pairs {
-        arr[e] += 1.0;
-    }
-    arr
-}
 
 pub fn leibovici_entropy(points: Vec<Point2D>, types: Vec<&str>, d: f64) -> f64 {
     let tree = kdtree_builder(&points);

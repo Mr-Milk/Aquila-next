@@ -1,7 +1,7 @@
 import {useRef, useState} from "react";
 import Grid from "@mui/material/Grid";
-import Selector from "../../Selector";
-import NumberInput, {inRangeFloat} from "../../NumberInput";
+import Selector from "../../InputComponents/Selector";
+import NumberInput, {inRangeFloat} from "../../InputComponents/NumberInput";
 import RunButton from "../share/RunAnalysisButton";
 import axios from "axios";
 import {runSpatialCoexpDB} from "data/post";

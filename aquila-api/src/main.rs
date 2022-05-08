@@ -97,7 +97,7 @@ async fn main() -> Result<()> {
             )
             .app_data(Data::new(db_pool.clone()))
             // Change the payload size limit to 50MiB, default is only 2MiB
-            .app_data(web::JsonConfig::default().limit(2503422))
+            .app_data(web::JsonConfig::default().limit(10000000))
             .service(fs::Files::new("/static", &static_dir).show_files_listing())
             .service(fs::Files::new("/img", "./image"))
             .service(index)

@@ -63,6 +63,7 @@ pub struct DBStats {
     disease_count: i64,
     technology_count: i64,
     total_cell: i64,
+    total_roi: i64,
     tissue_distinct: Vec<TypeCount>,
     disease_distinct: Vec<TypeCount>,
     technology_distinct: Vec<TypeCount>
@@ -102,6 +103,10 @@ impl DataRecords {
             r#"SELECT SUM(cell_count) as "sum!" FROM data_records;"#
         ).fetch_one(pool).await?;
 
+        let total_roi = sqlx::query!(
+            r#"SELECT SUM(roi_count) as "sum!" FROM data_records;"#
+        ).fetch_one(pool).await?;
+
 
         let stats = DBStats {
             data_count: data.count,
@@ -109,6 +114,7 @@ impl DataRecords {
             disease_count: disease.count,
             technology_count: technology.count,
             total_cell: total_cell.sum,
+            total_roi: total_roi.sum,
             tissue_distinct,
             disease_distinct,
             technology_distinct,

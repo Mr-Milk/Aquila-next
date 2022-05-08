@@ -29,7 +29,7 @@ pub fn kdtree_builder<const K: usize>(
     points: &Vec<[f64; K]>,
 ) -> KdTree<f64, usize, K> {
     let mut tree: KdTree<f64, usize, K> = KdTree::new();
-    for (p, label) in points.iter().zip(0..points.len()) {
+    for (label, p) in points.iter().enumerate() {
         tree.add(p, label).unwrap();
     }
     tree

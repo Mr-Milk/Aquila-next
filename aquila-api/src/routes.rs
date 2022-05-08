@@ -1,7 +1,4 @@
 use std::collections::HashMap;
-use std::detect::__is_feature_detected::sha;
-use std::sync::Arc;
-
 use actix_web::{get, HttpResponse, post, Responder, web};
 use actix_web::web::Json;
 use itertools::{Itertools, izip};
