@@ -72,7 +72,9 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
 
     useEffect(() => {
         setNeighborsStatus(false)
+    }, [roiID])
 
+    useEffect(() => {
         if (notLeaveTab.includes(value)) {
             setValue(value)
         } else {
