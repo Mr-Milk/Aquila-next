@@ -26,10 +26,10 @@ import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDiss
 
 const SpeciesChip = ({species}) => {
     if (species === 'Mouse') {
-        return <Chip icon={<GiSeatedMouse color="#5c6bc0"/>} label='Mouse' variant="outlined"
+        return <Chip size="small" icon={<GiSeatedMouse color="#5c6bc0"/>} label='Mouse' variant="outlined"
                      sx={{color: "#5c6bc0", borderColor: "#5c6bc0"}}/>
     } else {
-        return <Chip icon={<IoIosMan color="#42a5f5"/>} label={species} variant="outlined"
+        return <Chip size="small" icon={<IoIosMan color="#42a5f5"/>} label={species} variant="outlined"
                      sx={{color: "#42a5f5", borderColor: "#42a5f5"}}/>
     }
 }
@@ -146,21 +146,24 @@ const DataRecordCard = ({record}) => {
     }
 
     return <Container maxWidth="400px">
-        <Paper square elevation={2} sx={{
+        <Paper square elevation={1} sx={{
             my: 2,
             pt: 2,
             pb: 1,
             px: 4,
+            border: 1,
+            borderRadius: '8px',
+            borderColor: '#BDC0BA'
         }}>
             <Grid container direction="row" spacing={2} justifyContent="flex-start">
                 <Grid item>
                     <SpeciesChip species={record.species}/>
                 </Grid>
                 <Grid item>
-                    <Chip label={tissue} variant="outlined" sx={{color: '#ec407a', borderColor: '#ec407a'}}></Chip>
+                    <Chip size="small" label={tissue} variant="outlined" sx={{color: '#ec407a', borderColor: '#ec407a'}}></Chip>
                 </Grid>
                 <Grid item>
-                    <Chip label={disease} variant="outlined"
+                    <Chip size="small" label={disease} variant="outlined"
                           color={(disease === 'Normal') ? 'success' : 'error'}></Chip>
                 </Grid>
                 <Grid item>
@@ -186,8 +189,9 @@ const DataRecordCard = ({record}) => {
                 </Grid>
                 <Grid item>
                     <Chip label={'Cell Type'}
-                          icon={record.has_cell_type ? <CheckIcon sx={{ "&&": { color: "green" } }}/> : <CloseIcon sx={{ "&&": { color: "red" } }}/>}
-                          //color={record.has_cell_type ? 'success' : 'error'}
+                          icon={record.has_cell_type ?
+                              <CheckIcon sx={{ "&&": { color: "#00896C" } }}/> :
+                              <CloseIcon sx={{ "&&": { color: "#CB4042" } }}/>}
                           variant="filled"
                           size="small"
                     />

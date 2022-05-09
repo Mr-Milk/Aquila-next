@@ -82,7 +82,7 @@ export const useDataInfoDB = (dataID) => {
         cell_count: 213123,
         marker_count: 13123,
         markers: ["marker1", "marker2"],
-        has_cell_type: true,
+        has_cell_type: false,
         roi_count: 10,
     });
 

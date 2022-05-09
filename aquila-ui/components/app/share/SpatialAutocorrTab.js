@@ -23,8 +23,17 @@ const Viz = ({data, pvalue}) => {
     const y = [];
     const label = [];
     data.forEach((record) => {
-        x.push(record.value)
-        y.push(-Math.log10(record.pvalue))
+
+        x.push((record.value === null) ? 0 : record.value.toFixed(2))
+        let pvalue;
+        if (record.pvalue === 0) {
+            pvalue = 1e-20
+        } else if (record.pvalue === null) {
+            pvalue = 1
+        } else {
+            pvalue = record.pvalue
+        }
+        y.push(-Math.log10(pvalue).toFixed(2))
         label.push(record.marker)
     })
 
@@ -34,11 +43,12 @@ const Viz = ({data, pvalue}) => {
     }
 
     return <VolcanoPlot x={x} y={y} label={label}
-                        xrange={displayMinMax(x)}
+                        xrange={[-1, 1]}
                         yrange={yrange}
                         ytitle={"-log10(pval)"}
                         xtitle={"Autocorrelation"}
                         ythresh={-Math.log10(pvalue)}
+                        xthresh={0.5}
     />
 }
 

@@ -1,5 +1,6 @@
 import max from "loadsh/max"
 import min from "loadsh/min"
+import Typography from "@mui/material/Typography";
 
 export const displayMinMax = (arr) => {
     const dmin = min(arr)
@@ -15,11 +16,11 @@ export const parseROIDisplay = (roiMeta) => {
     const name = [];
     Object.entries(roiMeta).forEach(([header, value]) => {
         if (!(header === 'roi_id') && !(header === 'data_uuid')) {
-            name.push(`${header}: ${value}`)
+            name.push({header: header, value: value})
         }
     })
 
-    return name.join(" ")
+    return name
 }
 
 const PREFIXES = {

@@ -11,6 +11,7 @@ import LeftPanel from "../../Layout/LeftPanel";
 import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import ParamWrap from "../../InputComponents/ParamWrap";
 import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
 
 
 export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
@@ -69,6 +70,8 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
 
 export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
 
+    console.log(roiMeta)
+
     const cellCount = cellData.cell_x.length;
     const bboxText = `${Math.abs(bbox.x2 - bbox.x1).toFixed(0)} × ${Math.abs(bbox.y2 - bbox.y1).toFixed(0)}`
     const [symbolSize, setSymbolSize] = useState(responsiveSymbolSize(cellCount));
@@ -81,9 +84,18 @@ export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
     return (
         <Stack direction="row" sx={{height: '100%'}}>
             <LeftPanel>
-                <SectionTitleWrap title={`Current ROI: ${roiMeta}`}/>
-                <SectionTitleWrap title={`ROI Dimension: ${bboxText}`}/>
-                <SectionTitleWrap title={`Number of Cells: ${cellCount}`}/>
+                <SectionTitleWrap title={`Current ROI`}>
+                    {
+                        roiMeta.map((r, i) => {
+                            return <Stack key={i} direction="row" spacing={1}>
+                                <Typography variant={"subtitle2"} fontWeight={400}>{r.header}</Typography>
+                                <Typography variant={"subtitle2"} sx={{ color: "secondary.main"}}>{r.value}</Typography>
+                            </Stack>
+                        })
+                    }
+                </SectionTitleWrap>
+                <SectionTitleWrap title={`ROI Dimension:`} value={bboxText}/>
+                <SectionTitleWrap title={`Number of Cells:`} value={cellCount}/>
                 <ParamWrap>
                     <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
                             onChange={(_, v) => setSymbolSize(v)}/>

@@ -22,8 +22,10 @@ const VolcanoPlot = ({x, y, label, xrange = [-1, 1], yrange = [0, 1], xtitle, yt
         let color;
         if (vx > xthresh) {
             color = '#CB1B45'
-        } else {
+        } else if (vx < -xthresh) {
             color = "#211E55"
+        } else {
+            color = "#ccc"
         }
         if (vy < ythresh) {
             color = "#ccc"
@@ -52,7 +54,7 @@ const VolcanoPlot = ({x, y, label, xrange = [-1, 1], yrange = [0, 1], xtitle, yt
             max: yrange[1]
         },
         tooltip: {
-            formatter: '{b}'
+            formatter: '{c}'
         },
         series: [{
             type: 'scatter',
@@ -60,7 +62,7 @@ const VolcanoPlot = ({x, y, label, xrange = [-1, 1], yrange = [0, 1], xtitle, yt
             data: plotData,
             symbolSize: 10,
             label: {
-                show: true,
+                show: false,
                 formatter: "{b}",
                 fontSize: 11,
             },

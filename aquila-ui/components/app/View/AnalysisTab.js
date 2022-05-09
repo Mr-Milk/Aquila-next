@@ -1,4 +1,4 @@
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -51,6 +51,7 @@ const TabTitle = ({label, disabled, disabledText, ...other}) => {
 
 }
 
+const notLeaveTab = [0, 1, 2, 3, 4, 5, 6, 7];
 
 const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
 
@@ -69,9 +70,15 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
     }
     const getNeighbors = useCallback(() => neighborsData.current, [])
 
-    // useEffect(() => {
-    //     setNeighborsStatus(false)
-    // }, [cellData.cell_x, cellData.cell_y, roiID])
+    useEffect(() => {
+        setNeighborsStatus(false)
+
+        if (notLeaveTab.includes(value)) {
+            setValue(value)
+        } else {
+            setValue(hasCellType ? 0 : 7);
+        }
+    }, [hasCellType, roiID, value])
 
     return (
         <Box id="analysis-box-outer-box" sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>

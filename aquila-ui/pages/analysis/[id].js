@@ -66,7 +66,7 @@ const ShareNotWorkingPrompt = () => {
 const PageContent = ({ id }) => {
 
     const [currentROI, setROI] = useState("key");
-    const [currentROIMeta, setROIMeta] = useState("key");
+    const [currentROIMeta, setROIMeta] = useState([]);
     const updateROI = (roiID, roiMeta) => {
         setROI(roiID);
         setROIMeta(roiMeta);
