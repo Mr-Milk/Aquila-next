@@ -80,7 +80,8 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
         } else {
             setValue(hasCellType ? 0 : 7);
         }
-    }, [hasCellType, roiID, value])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [hasCellType, roiID])
 
     return (
         <Box id="analysis-box-outer-box" sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider'}}>
