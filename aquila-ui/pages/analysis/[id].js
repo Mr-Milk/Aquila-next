@@ -123,7 +123,7 @@ const AnalysisResult = () => {
             setReady(true)
         }
     }, [router.isReady])
-    console.log(router.query)
+    //console.log(router.query)
     const { id } = router.query;
 
     if (!ready) return null

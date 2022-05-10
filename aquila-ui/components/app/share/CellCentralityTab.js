@@ -56,14 +56,14 @@ const CellCentralityTab = ({roiID, cellData, getNeighbors}) => {
             types: cellData.cell_type,
             method: data.method
         }
-        console.log(body)
+        //console.log(body)
         axios.post(runCentrality, body).then((res) => {
-            console.log(res.data)
+            //console.log(res.data)
             result.current = res.data
             setShowResult(showResult + 1)
             setRunStatus(false)
         }).catch((e) => {
-            console.log(e)
+            //console.log(e)
             setRunStatus(false)
             setRunStatus(false)
         })

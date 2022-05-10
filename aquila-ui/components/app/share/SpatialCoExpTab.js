@@ -74,14 +74,14 @@ const SpatialCoExpTab = ({roiID, recordData, getCellExpBatch, getNeighbors}) => 
             }),
             method: data.method
         }
-        console.log(body)
+        //console.log(body)
         axios.post(runSpatialCoexp, body).then((res) => {
-            console.log(res.data)
+            //console.log(res.data)
             result.current = res.data
             setShowResult(showResult + 1)
             setRunStatus(false)
         }).catch((e) => {
-            console.log(e)
+            //console.log(e)
             setRunStatus(false)
             setRunStatus(false)
         })

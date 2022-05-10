@@ -61,7 +61,7 @@ const SpatialEntropyTab = ({cellData, bbox}) => {
                 setResult(res.data.entropy);
                 setRunStatus(false)
             }).catch((e) => {
-                console.log(e)
+                //console.log(e)
                 setRunStatus(false)
             })
         } else {
@@ -72,7 +72,7 @@ const SpatialEntropyTab = ({cellData, bbox}) => {
                 setResult(res.data.entropy);
                 setRunStatus(false)
             }).catch((e) => {
-                console.log(e)
+                //console.log(e)
                 setRunStatus(false)
             })
         }

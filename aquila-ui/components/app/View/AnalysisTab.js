@@ -65,7 +65,7 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
     const handleChange = (e, v) => setValue(v)
     const afterNeighbors = (neighbors) => {
         neighborsData.current = neighbors;
-        console.log(neighborsData.current)
+        //console.log(neighborsData.current)
         setNeighborsStatus(true)
     }
     const getNeighbors = useCallback(() => neighborsData.current, [])

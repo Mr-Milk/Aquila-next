@@ -206,7 +206,7 @@ const AnalysisPage = () => {
     useEffect(() => {
         comlinkWorkerRef.current = new Worker(new URL('../../db/fileprocess.js', import.meta.url), {type: "module"})
         comlinkWorkerApiRef.current = Comlink.wrap(comlinkWorkerRef.current);
-        console.log(comlinkWorkerRef)
+        //console.log(comlinkWorkerRef)
         return () => {
             comlinkWorkerRef.current.terminate();
         }
@@ -248,13 +248,13 @@ const AnalysisPage = () => {
         try {
             setLoadingText("Processing ROI File")
             const result = await comlinkWorkerApiRef.current.roiRecord(files.metaFile, dataID)
-            console.log(result)
+            //console.log(result)
             setLoadingText("Processing Cell Info File")
             const hasCellType = await comlinkWorkerApiRef.current.cellInfo(files.infoFile, dataID, result.roiCellCount, result.roiMapper)
-            console.log(hasCellType)
+            //console.log(hasCellType)
             setLoadingText("Processing Exp File")
             const expResult = await comlinkWorkerApiRef.current.expInfo(files.expFile, dataID, result.roiCellCount, result.roiMapper)
-            console.log(expResult)
+            //console.log(expResult)
 
             const dataRecord = {
                 id: dataID,

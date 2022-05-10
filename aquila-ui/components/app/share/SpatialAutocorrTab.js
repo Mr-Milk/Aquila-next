@@ -108,15 +108,15 @@ const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getCellE
 
         userpValue.current = data.pValue
 
-        console.log(body)
+        //console.log(body)
 
         axios.post(runSpatialAutoCorr, body).then((res) => {
-            console.log(res.data)
+            //console.log(res.data)
             result.current = res.data
             setShowResult(showResult + 1)
             setRunStatus(false)
         }).catch((e) => {
-            console.log(e)
+            //console.log(e)
             setRunStatus(false)
         })
     }

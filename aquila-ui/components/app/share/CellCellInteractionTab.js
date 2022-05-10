@@ -92,9 +92,9 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
         }
         //console.log(body)
         axios.post(runCellInterations, body).then((res) => {
-            console.log(res.data)
+            //console.log(res.data)
             result.current = processResult(res.data);
-            console.log(result.current)
+            //console.log(result.current)
             setShowResult(showResult + 1)
             setRunStatus(false)
         }).catch((e) => {

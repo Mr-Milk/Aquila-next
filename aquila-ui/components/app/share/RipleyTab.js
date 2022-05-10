@@ -64,7 +64,7 @@ const RipleyTab = ({cellData}) => {
             types: cellData.cell_type
         }).then((res) => {
             result.current = res.data
-            console.log(result.current)
+            //console.log(result.current)
             setShowResult(showResult + 1)
         })
     }

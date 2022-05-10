@@ -123,16 +123,16 @@ const CellDistributionTab = ({cellData, bbox}) => {
     }, [cellData]);
 
     const handleRun = (data) => {
-        console.log(data)
+        //console.log(data)
         setRunStatus(true)
         const body = getRunBody(cellData, data);
-        console.log(body)
+        //console.log(body)
         axios.post(runCellDistribution, body).then((res) => {
             result.current = res.data;
             setShowResult(showResult + 1)
             setRunStatus(false)
         }).catch((e) => {
-            console.log(e)
+            //console.log(e)
             setRunStatus(false)
         })
     }

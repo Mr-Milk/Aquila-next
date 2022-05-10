@@ -19,7 +19,7 @@ const CellDensityTab = ({cellData, bbox}) => {
             result.y.push(counts[k] / area * 1000000)
         });
         return result
-    }, [cellData])
+    }, [bbox.x1, bbox.x2, bbox.y1, bbox.y2, cellData.cell_type])
 
     const result = getDensityResult();
     if (!cellData) {

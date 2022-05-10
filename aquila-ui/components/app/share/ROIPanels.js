@@ -69,7 +69,7 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
 
 export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
 
-    console.log(roiMeta)
+    //console.log(roiMeta)
 
     const cellCount = cellData.cell_x.length;
     const bboxText = `${Math.abs(bbox.x2 - bbox.x1).toFixed(0)} × ${Math.abs(bbox.y2 - bbox.y1).toFixed(0)}`

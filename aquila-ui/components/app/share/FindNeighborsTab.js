@@ -79,23 +79,23 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
     }, [cellData]);
 
     const plotX = useCallback(() => {
-        const oy = bbox.y2;
+        //const oy = bbox.y2;
         const ox = bbox.x2;
         return cellData.cell_x.map((x) => {
             return -x + ox
         })
-    }, [cellData])
+    }, [bbox.x2, cellData.cell_x])
     const cell_x = plotX();
 
     const handleRun = (data) => {
         const body = getRunBody(cellData, data);
-        console.log(body)
+        //console.log(body)
         axios.post(runCellNeighbors, body).then((res) => {
             updateNeighbors(res.data)
             setShowResult(showResult + 1)
             setRunStatus(false)
         }).catch((e) => {
-            console.log(e)
+            //console.log(e)
             setRunStatus(false)
         })
     }
