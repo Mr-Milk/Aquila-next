@@ -103,12 +103,12 @@ const AboutPage = ({ images }) => {
                 "The data sent to the server only contains location, expression and cell type information. "}</Content>
 
             <Title>{"I know how to code and want to analyze large dataset"}</Title>
-            <Content>{"Allow me to shamelessly promote "}<a href="https://github.com/Mr-Milk/SpatialTis" target="_blank">SpatialTis</a>
+            <Content>{"Allow me to shamelessly promote "}<a href="https://github.com/Mr-Milk/SpatialTis" target="_blank" rel="noreferrer">SpatialTis</a>
                 {": a spatial single-cell spatial analysis software written in Python and the underlying algorithms are implemented in Rust. " +
                 "I made it easy to use and extremely fast. If you are interested, try it out!"}</Content>
 
             <Stack direction="column" justifyContent="center" alignItems="center" sx={{my: 4}}>
-                <a href="https://github.com/Mr-Milk/SpatialTis" target="_blank">
+                <a href="https://github.com/Mr-Milk/SpatialTis" target="_blank" rel="noreferrer">
                 <Image {...images.spatialtisLogo} alt="spatialtis-logo"/>
                 </a>
                 <Typography variant={"caption"} sx={{mt: 1}}>{"SpatialTis"}</Typography>
