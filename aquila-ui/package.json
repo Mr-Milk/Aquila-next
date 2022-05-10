@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@antv/algorithm": "^0.1.23",
     "@emotion/cache": "^11.6.0",
     "@emotion/react": "^11.9.0",
     "@emotion/server": "^11.4.0",
@@ -24,7 +23,6 @@
     "axios": "0.26.0",
     "clsx": "^1.1.1",
     "comlink": "^4.3.1",
-    "danfojs": "^1.1.1",
     "dexie": "3.2.1-beta.2",
     "dexie-react-hooks": "^1.1.1",
     "echarts": "^5.2.2",

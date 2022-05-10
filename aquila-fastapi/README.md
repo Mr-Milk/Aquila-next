@@ -17,5 +17,9 @@ own image in delete mode `-d`
 ```shell
 docker run -d \
   --name aquila-fastapi-server \
-  -p 80:80 aquila-fastapi
+  -p 8000:8000 aquila-fastapi
+```
+Once built, start the stopped container
+```shell
+docker start aquila-fastapi-server
 ```

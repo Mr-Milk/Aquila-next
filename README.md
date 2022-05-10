@@ -4,9 +4,18 @@
 
 The scripts are written in Python, the database use PostgreSQL.
 
-### API Server `aquila-api` and `aquila-sv`
+### API Server `aquila-api` and `aquila-fastapi`
 
-The API Server is written in Rust, including the analysis code. The spatial variable gene is called from python, so a specific python env must be satified.
+The main API Server is written in Rust using Actix. 
+
+The side API Server is written in Python using FastAPI to run following analysis:
+- Spatial variable gene: SpatialDE
+- Ripley's Function K, F, G, L
+- Spatial community detection
+- Cell centrality
+
+Two server is registered under the same domain: `https://api.cheunglab.org` through
+reverse proxy provided by Nginx.
 
 To run a dev build with HMR
 ```shell
@@ -32,4 +41,23 @@ To run a dev build with HMR
 ```shell
 cd aquila-ui
 yarn dev
+```
+
+## Deployment
+
+The UI part will be deployed automatically by Vercel.
+
+To deploy actix server
+```shell
+cd aquila-api
+
+SERVER_PID="$(pidof aquila-api)"
+
+echo "Terminate current running process at $SERVER_PID"
+
+kill $SERVER_PID
+
+cargo build --release
+
+nohup ./target/release/aquila-api > log.out 2>&1 &
 ```

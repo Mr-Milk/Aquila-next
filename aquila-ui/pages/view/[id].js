@@ -101,7 +101,6 @@ export async function getStaticProps({params}) {
             initROI: initROI,
             initROIMeta: parseROIDisplay(JSON.parse(roiMeta['meta'])),
         },
-        revalidate: 60
     }
 }
 

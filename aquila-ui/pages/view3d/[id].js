@@ -15,7 +15,7 @@ import ROIMaps3D from "../../components/app/View/ROIMaps3D";
 import {useEffect, useState} from "react";
 import ContentBox from "../../components/Layout/ContentBox";
 import Stack from "@mui/material/Stack";
-import {getBBox, getBBox3D} from "../../components/compute/geo";
+import {getBBox3D} from "../../components/compute/geo";
 
 
 const ViewerPage3D = ({id, initROI, initROIMeta, recordData}) => {
