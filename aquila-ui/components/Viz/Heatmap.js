@@ -63,7 +63,7 @@ const Heatmap = ({data, xlabel, ylabel, title, legendText, min, max, colors = "R
                 show: false
             },
             axisLabel: {
-                rotate: 30,
+                rotate: 90,
                 fontSize: 12,
             },
             fontSize: 6,

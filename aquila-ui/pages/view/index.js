@@ -13,7 +13,7 @@ const ViewPage = ({ recordData }) => {
                 <title>Aquila | Browse</title>
                 {/*<link rel="preload" href={getRecordsURL} as="fetch" crossOrigin="anonymous"/>*/}
             </Head>
-                <Container maxWidth={"xl"} sx={{my: 4, display: 'flex', justifyContent: 'center' }}>
+                <Container maxWidth={"xl"} sx={{mb: 4, display: 'flex', justifyContent: 'center' }}>
                     {/*<Table/>*/}
                     <Typography variant="h3" sx={{ mx: 2 }}>AQUILA DATASETS</Typography>
                 </Container>

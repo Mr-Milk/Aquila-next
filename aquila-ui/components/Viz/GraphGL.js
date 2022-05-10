@@ -13,6 +13,9 @@ import {
     VisualMapComponent
 } from "echarts/components";
 import {responsiveSymbolSize} from "./responsiveSize";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import {useEffect, useState} from "react";
 
 echarts.use([
     CanvasRenderer,
@@ -53,8 +56,17 @@ const rotatePoint = (px, py, origin, angle) => {
 
 
 const GraphGL = ({title, cx, cy, ct, p1, p2, weights, rotate, community}) => {
+    const dataSize = cx.length + p1.length;
 
-    if (cx.length < 6000) {
+    const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        if (dataSize < 10000) {
+            setShow(true)
+        }
+    }, [dataSize])
+
+    if (show) {
         if (rotate !== 0) {
             [cx, cy] = rotatePoint(cx, cy, [0, 0], rotate)
         }
@@ -150,7 +162,10 @@ const GraphGL = ({title, cx, cy, ct, p1, p2, weights, rotate, community}) => {
             style={{width: "750px", height: "450px"}}
         />
     } else {
-        return <Typography>Cannot render more than 500K elements</Typography>
+        return <Stack direction="column" alignItems="center">
+            <Typography variant="caption">GPU support not available, render more than 100K elements may crash your browser.</Typography>
+            <Button onClick={() => setShow(true)}>Render</Button>
+        </Stack>
     }
 
 

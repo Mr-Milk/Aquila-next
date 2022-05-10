@@ -29,8 +29,8 @@ const processResult = (data) => {
 
     const labelOrder = uniq(data.type1).sort(natsort());
     const plotData = [];
-    for (let i=0; i < labelOrder.length; i++) {
-        for (let j=0; j < labelOrder.length; j++) {
+    for (let i = 0; i < labelOrder.length; i++) {
+        for (let j = 0; j < labelOrder.length; j++) {
             let k1 = labelOrder[i];
             let k2 = labelOrder[j];
             let key = `${k1}${k2}`

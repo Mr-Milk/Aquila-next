@@ -1,10 +1,6 @@
 import Grid from "@mui/material/Grid";
 // import StasCard from "../InfoDisplay/StatsCard";
-import {useDBStats} from "data/get";
 import Typography from "@mui/material/Typography";
-import Puzzle from "../icons/Puzzle";
-import Cells from "../icons/Cells";
-import Badperson from "../icons/Badperson";
 import Stack from "@mui/material/Stack";
 import Image from "next/image";
 import {toHumanString} from "../humanize";

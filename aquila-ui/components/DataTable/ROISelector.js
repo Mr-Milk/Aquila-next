@@ -1,10 +1,12 @@
 import {DataGrid, GridToolbar} from '@mui/x-data-grid';
-import {useCallback, useMemo} from "react";
+import {useCallback, useMemo, useState} from "react";
 import Button from "@mui/material/Button";
 import {parseROIDisplay} from "../humanize";
 
 
 const ROITable = ({roiMeta, updateFn}) => {
+
+    const [pageSize, setPageSize] = useState(10);
 
     const renderData = [];
     roiMeta.map((d) => {
@@ -54,7 +56,8 @@ const ROITable = ({roiMeta, updateFn}) => {
         rows={renderData}
         columns={columns}
         getRowId={(row) => row.roi_id}
-        pageSize={10}
+        pageSize={pageSize}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         rowsPerPageOptions={[10, 20, 50]}
         components={{
             Toolbar: GridToolbar,

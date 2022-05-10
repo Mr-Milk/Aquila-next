@@ -5,6 +5,7 @@ import SearchRecords from "../DataTable/SearchRecords";
 import Divider from "@mui/material/Divider";
 import SortButton from "../DataTable/SortButton";
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 
 
 const RecordsPanel = ({data}) => {
@@ -18,16 +19,17 @@ const RecordsPanel = ({data}) => {
         <>
             <FilterList data={data} updateDataFn={setDisplayData}/>
             <Divider sx={{mb: 6}}></Divider>
-            <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+            <Grid container justifyContent="center" alignItems="center" sx={{
                 px: 10,
                 my: 4,
             }}>
-                <SearchRecords data={data} updateDataFn={setDisplayData}/>
-                <SortButton displayData={displayData} updateDataFn={setDisplayData}/>
-            </Box>
+                <Grid item>
+                    <SearchRecords data={data} updateDataFn={setDisplayData}/>
+                </Grid>
+                <Grid item>
+                    <SortButton displayData={displayData} updateDataFn={setDisplayData}/>
+                </Grid>
+            </Grid>
 
             <DataRecordList data={displayData}/>
         </>

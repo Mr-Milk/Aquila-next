@@ -20,8 +20,8 @@ import {toHumanString} from "../humanize";
 import Tooltip from "@mui/material/Tooltip";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import TagFacesIcon from '@mui/icons-material/TagFaces';
-import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import IconButton from "@mui/material/IconButton";
+import DownloadIcon from '@mui/icons-material/Download';
 
 
 const SpeciesChip = ({species}) => {
@@ -160,7 +160,8 @@ const DataRecordCard = ({record}) => {
                     <SpeciesChip species={record.species}/>
                 </Grid>
                 <Grid item>
-                    <Chip size="small" label={tissue} variant="outlined" sx={{color: '#ec407a', borderColor: '#ec407a'}}></Chip>
+                    <Chip size="small" label={tissue} variant="outlined"
+                          sx={{color: '#ec407a', borderColor: '#ec407a'}}></Chip>
                 </Grid>
                 <Grid item>
                     <Chip size="small" label={disease} variant="outlined"
@@ -190,8 +191,8 @@ const DataRecordCard = ({record}) => {
                 <Grid item>
                     <Chip label={'Cell Type'}
                           icon={record.has_cell_type ?
-                              <CheckIcon sx={{ "&&": { color: "#00896C" } }}/> :
-                              <CloseIcon sx={{ "&&": { color: "#CB4042" } }}/>}
+                              <CheckIcon sx={{"&&": {color: "#00896C"}}}/> :
+                              <CloseIcon sx={{"&&": {color: "#CB4042"}}}/>}
                           variant="filled"
                           size="small"
                     />
@@ -200,9 +201,14 @@ const DataRecordCard = ({record}) => {
 
             <Divider sx={{my: 1}}/>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction="row" alignItems="center">
                 <Button size="small" endIcon={<ChevronRightIcon/>}>
                     <Link href={record.is_3d ? `/view3d/${record.data_uuid}` : `/view/${record.data_uuid}`}>View</Link>
                 </Button>
+                <IconButton size="small" href={`https://api.aquila.cheunglab.org/static/${record.data_uuid}.zip`} color="primary">
+                    <DownloadIcon/>
+                </IconButton>
+                    </Stack>
                 <Tooltip title={record.source_name}>
                     <MUILink href={record.source_url} target="_blank" color="#757575">
                         {`${getJournal(record.journal)}, ${record.year}`.toUpperCase()}

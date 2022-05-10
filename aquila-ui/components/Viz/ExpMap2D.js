@@ -2,7 +2,7 @@ import max from "loadsh/max"
 import min from "loadsh/min"
 
 import Echarts from "./echarts-obj";
-import {GRAD_COLORS, titleOpts, toolboxOpts} from "components/Viz/config";
+import {GRAD_COLORS, toolboxOpts} from "components/Viz/config";
 
 
 import * as echarts from 'echarts/core';

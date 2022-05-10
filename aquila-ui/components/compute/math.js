@@ -1,5 +1,3 @@
-import {louvainAsync, iLouvainAsync, labelPropagationAsync} from '@antv/algorithm';
-
 export const counter = (arr) => {
     const counts = {};
     arr.forEach((i) => {

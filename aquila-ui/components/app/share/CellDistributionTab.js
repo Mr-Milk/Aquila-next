@@ -123,6 +123,7 @@ const CellDistributionTab = ({cellData, bbox}) => {
     }, [cellData]);
 
     const handleRun = (data) => {
+        console.log(data)
         setRunStatus(true)
         const body = getRunBody(cellData, data);
         console.log(body)
@@ -204,7 +205,7 @@ const CellDistributionTab = ({cellData, bbox}) => {
                     </ParamWrap>
 
                     <ParamWrap show={watchMethod === 'morisita'}>
-                        <Stack direction="row" spacing={2}>
+                        <Stack direction="row" spacing={2} sx={{ minWidth: "300px" }}>
                             <Controller
                                 name="quad1"
                                 control={control}
@@ -240,15 +241,16 @@ const CellDistributionTab = ({cellData, bbox}) => {
                         <Controller
                             name="pValue"
                             control={control}
-                            render={({field}) => (
-                                <NumericField
+                            render={({field}) => {
+                                return <NumericField
+                                    {...field}
                                     title={"P-value"}
                                     error={!(errors.pValue === undefined)}
                                     placeholder="p value"
-                                    helperText={"Number from 0 to 1"} {...field}
+                                    helperText={"Number from 0 to 1"}
                                     description={"Threshold to determine significance"}
                                 />
-                            )}
+                            }}
                         />
                     </ParamWrap>
 

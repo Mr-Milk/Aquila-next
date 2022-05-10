@@ -1,6 +1,5 @@
 import max from "loadsh/max"
 import min from "loadsh/min"
-import Typography from "@mui/material/Typography";
 
 export const displayMinMax = (arr) => {
     const dmin = min(arr)

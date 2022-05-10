@@ -17,9 +17,16 @@ const LinkPool = {
     CODEX: "https://www.akoyabio.com/codex/",
     CyCIF: "https://www.cycif.org/",
 
+    Visium: "https://www.10xgenomics.com/products/spatial-gene-expression",
     seqFISH: "https://www.seqfish.com/",
     osmFISH: "https://linnarssonlab.org/osmFISH/",
     MERFISH: "http://zhuang.harvard.edu/merfish.html",
+    'seq-scope': "https://lee.lab.medicine.umich.edu/seq-scope",
+    STARmap: "https://www.starmapresources.org/",
+    'sci-Space': "https://www.science.org/doi/10.1126/science.abb9536",
+    'DBiT-seq': "https://www.sciencedirect.com/science/article/pii/S2666166721002392",
+    'pciSeq': "https://www.nature.com/articles/s41592-019-0631-4",
+    'Steoro-seq': "https://www.sciencedirect.com/science/article/pii/S0092867422003993",
 };
 
 const TechChip = ({name}) => {

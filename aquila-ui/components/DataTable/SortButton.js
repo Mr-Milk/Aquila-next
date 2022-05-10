@@ -64,7 +64,7 @@ const SortButton = ({displayData, updateDataFn}) => {
     }
 
     return (
-        <Stack direction="row" alignItems="center" sx={{minWidth: "180px", ml: 2}}>
+        <Stack direction="row" alignItems="center" sx={{minWidth: "180px", ml: 2, md: {mb: 2}}}>
 
             <Button startIcon={<SortIcon/>} onClick={handleClick} sx={{textTransform: 'none',}}>{sortMethod}</Button>
             <Menu

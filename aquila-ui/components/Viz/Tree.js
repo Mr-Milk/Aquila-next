@@ -1,7 +1,5 @@
-import {titleOpts, toolboxOpts} from "components/Viz/config";
-import natsort from "natsort";
+import {toolboxOpts} from "components/Viz/config";
 import Echarts from "./echarts-obj";
-import {counter} from "components/compute/math";
 
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';

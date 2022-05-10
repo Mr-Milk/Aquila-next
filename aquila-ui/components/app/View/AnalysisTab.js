@@ -126,7 +126,7 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
                               disabledText={noNeighborsHelp}
                     />
                     <TabTitle id="tab-b-13" label="Spatial variable gene"
-                        disabled={size > 5000}
+                              disabled={size > 5000}
                               disabledText={"Unavailable for ROI > 5000 cells, Current SV algorithms are not efficient to run on large ROI"}
                     />
                 </Tabs>

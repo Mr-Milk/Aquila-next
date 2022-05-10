@@ -31,39 +31,39 @@ export const ExpPanel3D = ({roiID, cellData, markers}) => {
 
             <LeftPanel sx={{minWidth: '350px'}}>
                 <ParamWrap>
-                  <VirtualizedAutoComplete
-                    options={markers}
-                    label={'Select or search marker'}
-                    value={marker}
-                    onChange={changeMarker}
-                />
+                    <VirtualizedAutoComplete
+                        options={markers}
+                        label={'Select or search marker'}
+                        value={marker}
+                        onChange={changeMarker}
+                    />
                 </ParamWrap>
 
                 <ParamWrap>
                     <ExpDist arr={expData.expression} title="Expression distribution"/>
                 </ParamWrap>
 
-               <ParamWrap>
-                   <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
-                        onChange={(_, v) => setSymbolSize(v)}/>
-               </ParamWrap>
+                <ParamWrap>
+                    <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
+                            onChange={(_, v) => setSymbolSize(v)}/>
+                </ParamWrap>
 
                 <ParamWrap>
-                   <Ranger value={canvasSize} min={400} max={1000} step={10} title={"Canvas Size"}
-                        onChange={(_, v) => setCanvasSize(v)}/>
+                    <Ranger value={canvasSize} min={400} max={1000} step={10} title={"Canvas Size"}
+                            onChange={(_, v) => setCanvasSize(v)}/>
                 </ParamWrap>
 
             </LeftPanel>
             <OneItemCenter>
-               <ExpMap3D
-                        cx={cellData.cell_x}
-                        cy={cellData.cell_y}
-                        cz={cellData.cell_z}
-                        exp={expData.expression}
-                        markerName={marker}
-                        symbolSize={symbolSize}
-                        canvasSize={canvasSize}
-                    />
+                <ExpMap3D
+                    cx={cellData.cell_x}
+                    cy={cellData.cell_y}
+                    cz={cellData.cell_z}
+                    exp={expData.expression}
+                    markerName={marker}
+                    symbolSize={symbolSize}
+                    canvasSize={canvasSize}
+                />
             </OneItemCenter>
         </Stack>
     )
@@ -91,25 +91,25 @@ export const CellMapPanel3D = ({cellData, roiMeta, bbox}) => {
                 <SectionTitleWrap title={`Number of Cells: ${cellCount}`}/>
                 <ParamWrap>
                     <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
-                        onChange={(_, v) => setSymbolSize(v)}/>
+                            onChange={(_, v) => setSymbolSize(v)}/>
                 </ParamWrap>
 
                 <ParamWrap>
                     <Ranger value={canvasSize} min={400} max={1000} step={10} title={"Canvas Size"}
-                        onChange={(_, v) => setCanvasSize(v)}/>
+                            onChange={(_, v) => setCanvasSize(v)}/>
                 </ParamWrap>
 
             </LeftPanel>
 
             <OneItemCenter>
                 <CellMap3D
-                        cx={cellData.cell_x}
-                        cy={cellData.cell_y}
-                        cz={cellData.cell_z}
-                        ct={cellData.cell_type}
-                        symbolSize={symbolSize}
-                        canvasSize={canvasSize}
-                    />
+                    cx={cellData.cell_x}
+                    cy={cellData.cell_y}
+                    cz={cellData.cell_z}
+                    ct={cellData.cell_type}
+                    symbolSize={symbolSize}
+                    canvasSize={canvasSize}
+                />
             </OneItemCenter>
         </Stack>
     )

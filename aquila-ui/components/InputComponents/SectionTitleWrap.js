@@ -15,8 +15,8 @@ const SectionTitleWrap = (props) => {
                     {
                         (value !== undefined) ?
                             <Typography variant="subtitle2"
-                                        sx={{ color: 'secondary.main' }}>
-                            {value}</Typography> : null
+                                        sx={{color: 'secondary.main'}}>
+                                {value}</Typography> : null
                     }
                 </Stack>
 

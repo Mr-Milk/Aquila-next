@@ -2,7 +2,7 @@ import ExpDist from "../../Viz/ExpDist";
 import ExpMap2D from "../../Viz/ExpMap2D";
 import CellMap2D from "../../Viz/CellMap2D";
 import VirtualizedAutoComplete from "../../InputComponents/VirtualizedAutoComplete";
-import {useEffect, useState, Suspense} from "react";
+import {useEffect, useState} from "react";
 import Stack from "@mui/material/Stack";
 import {responsiveSymbolSize} from "../../Viz/responsiveSize";
 import Ranger from "../../InputComponents/Ranger";
@@ -10,7 +10,6 @@ import OneItemCenter from "../../Layout/OneItemCenter";
 import LeftPanel from "../../Layout/LeftPanel";
 import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import ParamWrap from "../../InputComponents/ParamWrap";
-import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 
 
@@ -89,7 +88,7 @@ export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
                         roiMeta.map((r, i) => {
                             return <Stack key={i} direction="row" spacing={1}>
                                 <Typography variant={"subtitle2"} fontWeight={400}>{r.header}</Typography>
-                                <Typography variant={"subtitle2"} sx={{ color: "secondary.main"}}>{r.value}</Typography>
+                                <Typography variant={"subtitle2"} sx={{color: "secondary.main"}}>{r.value}</Typography>
                             </Stack>
                         })
                     }

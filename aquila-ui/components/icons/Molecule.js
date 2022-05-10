@@ -2,8 +2,9 @@ import SvgIcon from "@mui/material/SvgIcon";
 
 const Molecule = (props) => {
     return (
-        <SvgIcon t="1650595392621" className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-             p-id="9663" width="20" height="20" {...props}>
+        <SvgIcon t="1650595392621" className="icon" viewBox="0 0 1024 1024" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg"
+                 p-id="9663" width="20" height="20" {...props}>
             <path
                 d="M786.41 207.385l58.69 58.69-197.211 197.21-58.69-58.69zM608.05 638.177l58.689-58.689 197.21 197.21-58.69 58.69zM143.583 474.993l11.189-82.245 276.362 37.596-11.189 82.244z"
                 fill="#100515" p-id="9664"></path>

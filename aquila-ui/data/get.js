@@ -14,6 +14,7 @@ export const fetcher = async url => {
 const root = process.env.NEXT_PUBLIC_API_URL;
 export const getDbStatsURL = `${root}/dbstats`;
 export const getDataIdURL = `${root}/data_ids`;
+export const getDataIdbyMarkerURL = `${root}/data_ids/query_marker`;
 export const get2dDataIdURL = `${root}/data_ids_2d`;
 export const get3dDataIdURL = `${root}/data_ids_3d`;
 export const getOneRecordURL = `${root}/record`;
@@ -27,14 +28,14 @@ export const getCellExpURL = `${root}/cell_exp`;
 
 
 const DBStatsFallback = {
-        data_count: 0,
-        disease_count: 0,
-        tissue_count: 0,
-    }
+    data_count: 0,
+    disease_count: 0,
+    tissue_count: 0,
+}
 
 
 export const useDBStats = () => {
-    const { data, error } = useSWR(getDbStatsURL, fetcher)
+    const {data, error} = useSWR(getDbStatsURL, fetcher)
     return {
         data: !data ? DBStatsFallback : data,
         error: error,
@@ -42,28 +43,28 @@ export const useDBStats = () => {
 }
 
 const DataInfoFallback = {
-        data_uuid: "",
-        technology: "",
-        species: "",
-        tissue: "",
-        disease: "",
-        molecule: "",
-        markers: ["marker1", "marker2"],
-        source_name: "",
-        source_url: "",
-        journal: "",
-        year: "",
-        cell_count: "",
-        marker_count: "",
-        roi_count: "",
-        is_single_cell: false,
-        has_cell_type: false,
-        created_at: 123
-    }
+    data_uuid: "",
+    technology: "",
+    species: "",
+    tissue: "",
+    disease: "",
+    molecule: "",
+    markers: ["marker1", "marker2"],
+    source_name: "",
+    source_url: "",
+    journal: "",
+    year: "",
+    cell_count: "",
+    marker_count: "",
+    roi_count: "",
+    is_single_cell: false,
+    has_cell_type: false,
+    created_at: 123
+}
 
-export const useDataInfo = (dataID, fallback= DataInfoFallback) => {
+export const useDataInfo = (dataID, fallback = DataInfoFallback) => {
 
-    const { data, error } = useSWR(`${getOneRecordURL}/${dataID}`, fetcher)
+    const {data, error} = useSWR(`${getOneRecordURL}/${dataID}`, fetcher)
 
     return {
         data: !data ? fallback : data,
@@ -74,7 +75,9 @@ export const useDataInfo = (dataID, fallback= DataInfoFallback) => {
 
 export const useDataInfoDB = (dataID) => {
 
-    if (!dataID) { dataID = "non-existing-keys"}
+    if (!dataID) {
+        dataID = "non-existing-keys"
+    }
 
     const record = useLiveQuery(() => db.DataRecords.get(dataID), [dataID], {
         id: "key",
@@ -105,14 +108,15 @@ export const useDataInfoDB = (dataID) => {
 }
 
 
-const ROIMetaFallback = [{"roi_id":"7fe9d30f-7047-44b2-acc3-f201c7d46ef8",
-        "data_uuid":"f909c60ddb489858fb8b569456fb90a8",
-        "meta":"{\"Field of View\": 0, \"data_uuid\": \"f909c60ddb489858fb8b569456fb90a8\", \"roi_id\": \"7fe9d30f-7047-44b2-acc3-f201c7d46ef8\"}"
-    },]
+const ROIMetaFallback = [{
+    "roi_id": "7fe9d30f-7047-44b2-acc3-f201c7d46ef8",
+    "data_uuid": "f909c60ddb489858fb8b569456fb90a8",
+    "meta": "{\"Field of View\": 0, \"data_uuid\": \"f909c60ddb489858fb8b569456fb90a8\", \"roi_id\": \"7fe9d30f-7047-44b2-acc3-f201c7d46ef8\"}"
+},]
 
 
 export const useROIMeta = (dataID) => {
-    const { data, error } = useSWR(`${getROIMetaURL}/${dataID}`, fetcher)
+    const {data, error} = useSWR(`${getROIMetaURL}/${dataID}`, fetcher)
     return {
         data: !data ? ROIMetaFallback : data,
         error: error,
@@ -121,22 +125,24 @@ export const useROIMeta = (dataID) => {
 
 
 export const useROIMetaDB = (dataID) => {
-    if (!dataID) { dataID = "non-existing-keys"}
+    if (!dataID) {
+        dataID = "non-existing-keys"
+    }
     return useLiveQuery(() => db.ROIInfo.where("data_uuid").equals(dataID).toArray(),
         [dataID], ROIMetaFallback)
 }
 
 
 const CellDataFallback = {
-        cell_x: [0.0, 0.1],
-        cell_y: [0.0, 0.1],
-        cell_z: [0.0, 0.1],
-        cell_type: ['unknown', 'unknown']
-    }
+    cell_x: [0.0, 0.1],
+    cell_y: [0.0, 0.1],
+    cell_z: [0.0, 0.1],
+    cell_type: ['unknown', 'unknown']
+}
 
 
 export const useCellData2D = (roiID) => {
-    const { data, error } = useSWR(`${getCellInfo2DURL}/${roiID}`, fetcher, {
+    const {data, error} = useSWR(`${getCellInfo2DURL}/${roiID}`, fetcher, {
         revalidateOnFocus: false
     })
 
@@ -148,7 +154,7 @@ export const useCellData2D = (roiID) => {
 
 
 export const useCellData3D = (roiID) => {
-    const { data, error } = useSWR(`${getCellInfo3DURL}/${roiID}`, fetcher, {
+    const {data, error} = useSWR(`${getCellInfo3DURL}/${roiID}`, fetcher, {
         revalidateOnFocus: false
     })
 
@@ -174,7 +180,7 @@ const ExpFallback = {
 
 
 export const useExpData = (roiID, marker) => {
-    const { data, error } = useSWR(`${getCellExpURL}/${roiID}/${marker}`, fetcher, {
+    const {data, error} = useSWR(`${getCellExpURL}/${roiID}/${marker}`, fetcher, {
         revalidateOnFocus: false
     })
 
