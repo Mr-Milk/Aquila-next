@@ -30,6 +30,15 @@ async fn data_ids(db_pool: web::Data<PgPool>) -> impl Responder {
     }
 }
 
+#[get("/data_ids/query_marker/{marker}")]
+async fn data_ids_query_marker(marker: web::Path<String>, db_pool: web::Data<PgPool>) -> impl Responder {
+    let result = DataRecords::query_by_marker(marker.into_inner(), db_pool.get_ref()).await;
+    match result {
+        Ok(data_ids_marker) => json_response(data_ids_marker),
+        Err(e) => error_response(e),
+    }
+}
+
 #[get("/data_ids_2d")]
 async fn data_ids_2d(db_pool: web::Data<PgPool>) -> impl Responder {
     let result = DataRecords::data_ids_2d(db_pool.get_ref()).await;
@@ -550,6 +559,7 @@ async fn run_cell_interactions(params: web::Json<RequestCCI>) -> impl Responder 
 pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(dbstats);
     cfg.service(data_ids);
+    cfg.service(data_ids_query_marker);
     cfg.service(data_ids_2d);
     cfg.service(data_ids_3d);
     cfg.service(records);

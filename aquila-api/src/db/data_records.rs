@@ -198,4 +198,21 @@ impl DataRecords {
 
         Ok(record)
     }
+
+    pub async fn query_by_marker(marker_name: String, pool: &PgPool) -> Result<Vec<String>> {
+        let mut data_ids: Vec<String> = vec![];
+        let recs = sqlx::query!(
+            r#"
+            SELECT data_uuid FROM data_records WHERE $1 = ANY(markers);
+        "#, marker_name
+        )
+            .fetch_all(pool)
+            .await?;
+
+        for rec in recs {
+            data_ids.push(rec.data_uuid);
+        }
+
+        Ok(data_ids)
+    }
 }
