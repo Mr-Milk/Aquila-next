@@ -426,18 +426,18 @@ const TutorialPage = ({images}) => {
     ]
 
     return (
-        <>
-            <Head>
+
+            <Container component="section" maxWidth="xl" sx={{ mt: 2, mb: 2}}>
+<Head>
                 <title>Aquila | Tutorial</title>
             </Head>
-            <Container component="section" maxWidth="xl" sx={{my: 2, mx: {md: 4}}}>
-                <VerticalLinearStepper title={"Browse Data"} steps={browseSteps}/>
-                <VerticalLinearStepper title={"Analyze Your Data"} steps={submitSteps}/>
-                {/*<VerticalLinearStepper title={"Using Analyze Panel"} steps={dataSteps}/>*/}
-                <Title sx={{mb: 2}}>What does each analysis do?</Title>
-                <StackAccordion items={analysisExplanations}/>
+                    <VerticalLinearStepper title={"Browse Data"} steps={browseSteps}/>
+                    <VerticalLinearStepper title={"Analyze Your Data"} steps={submitSteps}/>
+                    {/*<VerticalLinearStepper title={"Using Analyze Panel"} steps={dataSteps}/>*/}
+                    <Title sx={{mb: 2}}>What does each analysis do?</Title>
+                    <StackAccordion items={analysisExplanations}/>
+
             </Container>
-        </>
     )
 }
 

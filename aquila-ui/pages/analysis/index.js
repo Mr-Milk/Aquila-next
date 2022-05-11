@@ -34,6 +34,7 @@ import {humanFileSize} from "../../components/humanize";
 import IconButton from "@mui/material/IconButton";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Head from "next/head";
+import Grid from "@mui/material/Grid";
 
 const InfoSection = () => {
     return (
@@ -283,135 +284,138 @@ const AnalysisPage = () => {
             <Head>
                 <title>Aquila | Analysis</title>
             </Head>
-        <Container component="section" maxWidth="xl" sx={{mt: 4, ml: {sm: 2}}}>
+            <Container component="section" maxWidth="xl" sx={{mt: 4}}>
+                {/*<Grid container direction="row" alignItems="center" justifyContent="center">*/}
+                {/*    <Grid item>*/}
+                        <MemoInfoSection/>
+                        <Typography variant="h4" sx={{mb: 3}}>Upload Files</Typography>
+                        <Stack alignItems="top" justifyContent="flex-start" spacing={4}>
 
-            <MemoInfoSection/>
-            <Typography variant="h4" sx={{mb: 3}}>Upload Files</Typography>
-            <Stack alignItems="top" justifyContent="flex-start" spacing={4}>
+                            <Stack direction="row" alignItems="center">
+                                <LooksOne sx={{mr: {sm: 1}, color: "secondary.main"}}/>
+                                <FileExampleHelper
+                                    title={'ROI File Example'}
+                                    open={(openHelp === 'meta')}
+                                    onClose={() => setOpenHelp("none")}
+                                    onClick={() => setOpenHelp("meta")}
+                                >
+                                    <Typography sx={{mb: 2, maxWidth: "300px"}}>
+                                        Each line should annotate the ROI that a cell belongs to
+                                    </Typography>
+                                    <MetaExample/>
+                                </FileExampleHelper>
+                                <FileUploadRegion
+                                    rootProps={metaRootProps()}
+                                    inputProps={metaInputProps()}
+                                    helperText={"ROI File"}
+                                />
 
-                <Stack direction="row" alignItems="center">
-                    <LooksOne sx={{mr: {sm: 1}, color: "secondary.main"}}/>
-                    <FileExampleHelper
-                        title={'ROI File Example'}
-                        open={(openHelp === 'meta')}
-                        onClose={() => setOpenHelp("none")}
-                        onClick={() => setOpenHelp("meta")}
-                    >
-                        <Typography sx={{mb: 2, maxWidth: "300px"}}>
-                            Each line should annotate the ROI that a cell belongs to
-                        </Typography>
-                        <MetaExample/>
-                    </FileExampleHelper>
-                    <FileUploadRegion
-                        rootProps={metaRootProps()}
-                        inputProps={metaInputProps()}
-                        helperText={"ROI File"}
-                    />
+                                <ShowFile file={files.metaFile}
+                                          onDelete={() => setFiles({...files, metaFile: ""})}
+                                />
+                            </Stack>
 
-                    <ShowFile file={files.metaFile}
-                              onDelete={() => setFiles({...files, metaFile: ""})}
-                    />
-                </Stack>
-
-                <Stack direction="row" alignItems="center">
-                    <LooksTwo sx={{mr: {sm: 1}, color: "secondary.main"}}/>
-                    <FileExampleHelper
-                        title={'Cell Info File Example'}
-                        open={(openHelp === 'info')}
-                        onClose={() => setOpenHelp("none")}
-                        onClick={() => setOpenHelp("info")}
-                    >
-                        <Typography sx={{mb: 2, maxWidth: "400px"}}>
-                            {`Must have following columns, if you are spatial transcriptome
+                            <Stack direction="row" alignItems="center">
+                                <LooksTwo sx={{mr: {sm: 1}, color: "secondary.main"}}/>
+                                <FileExampleHelper
+                                    title={'Cell Info File Example'}
+                                    open={(openHelp === 'info')}
+                                    onClose={() => setOpenHelp("none")}
+                                    onClick={() => setOpenHelp("info")}
+                                >
+                                    <Typography sx={{mb: 2, maxWidth: "400px"}}>
+                                        {`Must have following columns, if you are spatial transcriptome
                                 data, you don't need to specify cell type. Remember the order 
                                 must match exact as listed beneath.`}
-                        </Typography>
-                        <ul style={{lineHeight: "35px"}}>
-                            <li>Cell coordination X: <Chip label="Cell X" size='small'/></li>
-                            <li>Cell coordination Y: <Chip label="Cell Y" size='small'/></li>
-                            <li>Cell Type <i>(Optional)</i>: <Chip label="Cell Type" size='small'/></li>
-                        </ul>
-                        <CellInfoExample/>
-                    </FileExampleHelper>
+                                    </Typography>
+                                    <ul style={{lineHeight: "35px"}}>
+                                        <li>Cell coordination X: <Chip label="Cell X" size='small'/></li>
+                                        <li>Cell coordination Y: <Chip label="Cell Y" size='small'/></li>
+                                        <li>Cell Type <i>(Optional)</i>: <Chip label="Cell Type" size='small'/></li>
+                                    </ul>
+                                    <CellInfoExample/>
+                                </FileExampleHelper>
 
-                    <FileUploadRegion
-                        rootProps={infoRootProps()}
-                        inputProps={infoInputProps()}
-                        helperText={"Cell Info File"}
-                    />
+                                <FileUploadRegion
+                                    rootProps={infoRootProps()}
+                                    inputProps={infoInputProps()}
+                                    helperText={"Cell Info File"}
+                                />
 
-                    <ShowFile file={files.infoFile}
-                              onDelete={() => setFiles({...files, infoFile: ""})}
-                    />
-                </Stack>
+                                <ShowFile file={files.infoFile}
+                                          onDelete={() => setFiles({...files, infoFile: ""})}
+                                />
+                            </Stack>
 
-                <Stack direction="row" alignItems="center">
-                    <Looks3 sx={{mr: {sm: 1}, color: "secondary.main"}}/>
-                    <FileExampleHelper
-                        title={'Expression File Example'}
-                        open={(openHelp === 'exp')}
-                        onClose={() => setOpenHelp("none")}
-                        onClick={() => setOpenHelp("exp")}
-                    >
-                        <Typography sx={{mb: 2, maxWidth: "300px"}}>
-                            Each column represents a marker, each line is a cell record
-                        </Typography>
-                        <ExpExample/>
-                    </FileExampleHelper>
+                            <Stack direction="row" alignItems="center">
+                                <Looks3 sx={{mr: {sm: 1}, color: "secondary.main"}}/>
+                                <FileExampleHelper
+                                    title={'Expression File Example'}
+                                    open={(openHelp === 'exp')}
+                                    onClose={() => setOpenHelp("none")}
+                                    onClick={() => setOpenHelp("exp")}
+                                >
+                                    <Typography sx={{mb: 2, maxWidth: "300px"}}>
+                                        Each column represents a marker, each line is a cell record
+                                    </Typography>
+                                    <ExpExample/>
+                                </FileExampleHelper>
 
-                    <FileUploadRegion
-                        rootProps={expRootProps()}
-                        inputProps={expInputProps()}
-                        helperText={"Expression File"}
-                    />
+                                <FileUploadRegion
+                                    rootProps={expRootProps()}
+                                    inputProps={expInputProps()}
+                                    helperText={"Expression File"}
+                                />
 
-                    <ShowFile file={files.expFile}
-                              onDelete={() => setFiles({...files, expFile: ""})}
-                    />
-                </Stack>
+                                <ShowFile file={files.expFile}
+                                          onDelete={() => setFiles({...files, expFile: ""})}
+                                />
+                            </Stack>
 
-            </Stack>
+                        </Stack>
 
-            {/*<FormGroup sx={{ mt: 2 }}>*/}
-            {/*  <FormControlLabel*/}
-            {/*      control={<Switch*/}
-            {/*          disabled={(status === 'loading')}*/}
-            {/*          checked={isSingleCell}*/}
-            {/*          onChange={handleSwitch}/>}*/}
-            {/*      label="Single Cell Data" />*/}
-            {/*</FormGroup>*/}
+                        {/*<FormGroup sx={{ mt: 2 }}>*/}
+                        {/*  <FormControlLabel*/}
+                        {/*      control={<Switch*/}
+                        {/*          disabled={(status === 'loading')}*/}
+                        {/*          checked={isSingleCell}*/}
+                        {/*          onChange={handleSwitch}/>}*/}
+                        {/*      label="Single Cell Data" />*/}
+                        {/*</FormGroup>*/}
 
-            <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{mt: 2, mb: 2}}>
-                <TextField
-                    label="Data ID (Optional)"
-                    variant="standard"
-                    value={dataID}
-                    onChange={checkIDExist}
-                    error={errorID}
-                    helperText={errorID ? 'ID already exists' : 'Better give it a meaningful name'}
-                    sx={{width: "200px", mb: {xs: 1, sm: 0}, mr: {xs: 1, sm: 0}}}
-                />
-                <Button
-                    onClick={handleRun}
-                    variant="contained"
-                    disableElevation
-                    disabled={(status === 'loading')}
-                    sx={{ml: {sm: 2}, color: "common.white"}}>
-                    GO!
-                </Button>
-                <IconButton onClick={handleReset}>
-                    <AutorenewIcon color="primary"/>
-                </IconButton>
-            </Stack>
+                        <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{mt: 2, mb: 2}}>
+                            <TextField
+                                label="Data ID (Optional)"
+                                variant="standard"
+                                value={dataID}
+                                onChange={checkIDExist}
+                                error={errorID}
+                                helperText={errorID ? 'ID already exists' : 'Better give it a meaningful name'}
+                                sx={{width: "200px", mb: {xs: 1, sm: 0}, mr: {xs: 1, sm: 0}}}
+                            />
+                            <Button
+                                onClick={handleRun}
+                                variant="contained"
+                                disableElevation
+                                disabled={(status === 'loading')}
+                                sx={{ml: {sm: 2}, color: "common.white"}}>
+                                GO!
+                            </Button>
+                            <IconButton onClick={handleReset}>
+                                <AutorenewIcon color="primary"/>
+                            </IconButton>
+                        </Stack>
 
-            <StatusBar status={status} text={loadingText}/>
+                        <StatusBar status={status} text={loadingText}/>
 
-            <Typography variant="h4">Analysis Records</Typography>
-            <ClientOnly>
-                <LocalRecords/>
-            </ClientOnly>
-        </Container>
-            </>
+                        <Typography variant="h4">Analysis Records</Typography>
+                        <ClientOnly>
+                            <LocalRecords/>
+                        </ClientOnly>
+                {/*    </Grid>*/}
+                {/*</Grid>*/}
+            </Container>
+        </>
     )
 }
 
