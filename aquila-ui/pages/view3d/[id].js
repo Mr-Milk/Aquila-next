@@ -3,6 +3,7 @@ import {
     get3dDataIdURL,
     getOneRecordURL,
     getOneROIMetaURL,
+    useDataInfo,
     useCellData3D,
     useROIMeta
 } from "../../data/get";
@@ -16,9 +17,10 @@ import {useEffect, useState} from "react";
 import ContentBox from "../../components/Layout/ContentBox";
 import Stack from "@mui/material/Stack";
 import {getBBox3D} from "../../components/compute/geo";
+import {parseROIDisplay} from "../../components/humanize";
 
 
-const ViewerPage3D = ({id, initROI, initROIMeta, recordData}) => {
+const ViewerPage3D = ({id, initROI, initROIMeta, initRecordData}) => {
 
     const [currentROI, setROI] = useState(initROI);
     const [currentROIMeta, setROIMeta] = useState(initROIMeta);
@@ -26,7 +28,8 @@ const ViewerPage3D = ({id, initROI, initROIMeta, recordData}) => {
         setROI(roiID);
         setROIMeta(roiMeta);
     };
-    // const {data: recordData} = useDataInfo(id);
+
+    const {data: recordData} = useDataInfo(id, initRecordData);
     const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20, z1: 10, z2: 10})
     const {data: roiMeta} = useROIMeta(id);
     const {data: cellData} = useCellData3D(currentROI);
@@ -37,7 +40,7 @@ const ViewerPage3D = ({id, initROI, initROIMeta, recordData}) => {
 
     return (<>
         <Head>
-            <title>Aquila | Data Details</title>
+            <title>Aquila | 3D Data Details</title>
         </Head>
         <Container maxWidth={"xl"} sx={{mt: 4, mb: 4}}>
             <Stack direction="row" justifyContent="flex-start" spacing={4}>
@@ -82,20 +85,14 @@ export async function getStaticProps({params}) {
     const roiMeta = await fetcher(ROIMetaURL);
 
     const initROI = roiMeta['roi_id'];
-    let initROIMeta = []
-    Object.entries(JSON.parse(roiMeta['meta'])).map((e) => {
-        if ((e[0] !== 'data_uuid') && (e[0] !== 'roi_id')) {
-            initROIMeta.push(e[1])
-        }
-    });
-    initROIMeta = initROIMeta.join(" | ")
+    recordData['markers'] = recordData['markers'].slice(0, 5)
 
     return {
         props: {
             id: params.id,
-            recordData: recordData,
+            initRecordData: recordData,
             initROI: initROI,
-            initROIMeta: initROIMeta,
+            initROIMeta: parseROIDisplay(JSON.parse(roiMeta['meta'])),
         }
     }
 }

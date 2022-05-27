@@ -34,7 +34,8 @@ const ExpMap3D = ({cx, cy, cz, exp, markerName, symbolSize, canvasSize}) => {
             max: max_exp,
             precision: 3,
             calculable: false,
-            left: 0,
+            left: '90%',
+            right: 0,
             top: "middle",
             inRange: {
                 color: GRAD_COLORS,

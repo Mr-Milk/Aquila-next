@@ -21,7 +21,7 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
 
 
     const {data: expData} = getExpDataFn(roiID, marker);
-    const [symbolSize, setSymbolSize] = useState(3);
+    const [symbolSize, setSymbolSize] = useState(1);
     const [canvasSize, setCanvasSize] = useState(450);
 
     useEffect(() => {
@@ -73,7 +73,7 @@ export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
 
     const cellCount = cellData.cell_x.length;
     const bboxText = `${Math.abs(bbox.x2 - bbox.x1).toFixed(0)} × ${Math.abs(bbox.y2 - bbox.y1).toFixed(0)}`
-    const [symbolSize, setSymbolSize] = useState(responsiveSymbolSize(cellCount));
+    const [symbolSize, setSymbolSize] = useState(1);
     const [canvasSize, setCanvasSize] = useState(450);
 
     useEffect(() => {

@@ -11,6 +11,7 @@ import ParamWrap from "../../InputComponents/ParamWrap";
 import OneItemCenter from "../../Layout/OneItemCenter";
 import LeftPanel from "../../Layout/LeftPanel";
 import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
+import Typography from "@mui/material/Typography";
 
 export const ExpPanel3D = ({roiID, cellData, markers}) => {
     const cellCount = cellData.cell_x.length;
@@ -18,7 +19,7 @@ export const ExpPanel3D = ({roiID, cellData, markers}) => {
     const changeMarker = (e, v) => setMarker(v);
 
     const {data: expData} = useExpData(roiID, marker);
-    const [symbolSize, setSymbolSize] = useState(3);
+    const [symbolSize, setSymbolSize] = useState(1);
     const [canvasSize, setCanvasSize] = useState(450);
 
     useEffect(() => {
@@ -76,8 +77,8 @@ export const CellMapPanel3D = ({cellData, roiMeta, bbox}) => {
         ${Math.abs(bbox.y2 - bbox.y1).toFixed(0)} × 
         ${Math.abs(bbox.z2 - bbox.z1).toFixed(0)}
         `
-    const [symbolSize, setSymbolSize] = useState(2);
-    const [canvasSize, setCanvasSize] = useState(450);
+    const [symbolSize, setSymbolSize] = useState(1);
+    const [canvasSize, setCanvasSize] = useState(650);
 
     useEffect(() => {
         setSymbolSize(responsiveSymbolSize(cellCount))
@@ -86,9 +87,18 @@ export const CellMapPanel3D = ({cellData, roiMeta, bbox}) => {
     return (
         <Stack direction="row" sx={{height: '100%'}}>
             <LeftPanel>
-                <SectionTitleWrap title={`Current ROI: ${roiMeta}`}/>
-                <SectionTitleWrap title={`ROI Dimension: ${bboxText}`}/>
-                <SectionTitleWrap title={`Number of Cells: ${cellCount}`}/>
+                <SectionTitleWrap title={`Current ROI`}>
+                    {
+                        roiMeta.map((r, i) => {
+                            return <Stack key={i} direction="row" spacing={1}>
+                                <Typography variant={"subtitle2"} fontWeight={400}>{r.header}</Typography>
+                                <Typography variant={"subtitle2"} sx={{color: "secondary.main"}}>{r.value}</Typography>
+                            </Stack>
+                        })
+                    }
+                </SectionTitleWrap>
+                <SectionTitleWrap title={`ROI Dimension:`} value={bboxText}/>
+                <SectionTitleWrap title={`Number of Cells:`} value={cellCount}/>
                 <ParamWrap>
                     <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
                             onChange={(_, v) => setSymbolSize(v)}/>

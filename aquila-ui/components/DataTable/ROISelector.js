@@ -36,6 +36,7 @@ const ROITable = ({roiMeta, updateFn}) => {
             } else {
                 columns.push({
                     field: h,
+                    width: 120,
                     headerName: h.replace(/^\w/, (c) => c.toUpperCase()),
                 });
             }
