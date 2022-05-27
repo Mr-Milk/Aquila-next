@@ -203,7 +203,7 @@ impl DataRecords {
         let mut data_ids: Vec<String> = vec![];
         let recs = sqlx::query!(
             r#"
-            SELECT data_uuid FROM data_records WHERE $1 = ANY(markers);
+            SELECT data_uuid FROM data_records WHERE $1 ILIKE ANY(markers);
         "#, marker_name
         )
             .fetch_all(pool)
