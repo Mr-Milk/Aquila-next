@@ -153,7 +153,7 @@ const DataRecordCard = ({record}) => {
             px: 4,
             border: 1,
             borderRadius: '8px',
-            borderColor: '#BDC0BA'
+            borderColor: 'rgba(253,151,0,0.45)'
         }}>
             <Grid container direction="row" spacing={2} justifyContent="flex-start">
                 <Grid item>
@@ -173,7 +173,7 @@ const DataRecordCard = ({record}) => {
             </Grid>
 
             <Stack direction="row" justifyContent="space-between" spacing={4} sx={{my: 2}}>
-                <StatsText count={record.cell_count} unit={'Cell'}/>
+                <StatsText count={record.cell_count} unit={record.is_single_cell ? 'Cell' : 'Spot'}/>
                 <StatsText count={record.marker_count} unit={record.molecule === 'RNA' ? 'Gene' : 'Marker'}/>
                 <StatsText count={record.roi_count} unit={'ROI'}/>
             </Stack>

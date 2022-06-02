@@ -48,9 +48,9 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
             <FormControl sx={{m: 2}} component="fieldset" variant="standard">
                 <FormLabel component="legend">{title.toUpperCase()}</FormLabel>
                 <Box sx={{
-                    maxHeight: '280px',
+                    maxHeight: '320px',
                     overflow: 'auto',
-                    '&::-webkit-scrollbar': {display: 'none'}
+                    '&::-webkit-scrollbar': {display: 'none'},
                 }}>
                     {(ItemList.length === 0) ? <Typography>{"No Item Found"}</Typography> :
                         <FormGroup>
@@ -79,6 +79,7 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
                                             />
                                         }
                                         label={<FilterItemText item={k} count={v}/>}
+                                        sx={{ mb: 0.5 }}
                                         key={i}
                                     />
                                 })
@@ -88,15 +89,17 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
                 </Box>
                 {
                     ((!showLess) && (ItemList.length > 11)) ? <Box sx={{
+                        pt: 0.5,
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
                         borderTop: 2,
+                        borderTopStyle: 'dashed',
                         borderColor: '#bdbdbd',
                         color: '#757575',
                     }}>
                         <KeyboardDoubleArrowDownIcon/>
-                        <Typography variant="body2">Scroll</Typography>
+                        {/*<Typography variant="caption">Scroll</Typography>*/}
                     </Box> : null
                 }
             </FormControl>
@@ -257,7 +260,7 @@ const FilterList = ({data, updateDataFn}) => {
         }}>
 
             <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Stack direction="row" spacing={4}>
+                <Stack direction="row" spacing={8}>
                     <Stack direction="column" justifyContent="flex-start">
                         {
                             ['species', 'dimension', 'molecule'].map((f, i) => {

@@ -59,6 +59,7 @@ const CellMap3D = ({cx, cy, cz, ct, symbolSize, canvasSize}) => {
     }
 
     const options = {
+        color: CAT_COLORS,
         ...titleOpts("3D Cell Map"),
         ...toolboxOpts,
         // visualMap: {

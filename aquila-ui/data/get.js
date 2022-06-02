@@ -167,7 +167,7 @@ export const useCellData3D = (roiID) => {
 
 export const useCellDataDB = (roiID) => {
     const data = useLiveQuery(() => db.CellInfo.where({"roi_id": roiID}).first(), [roiID], CellDataFallback)
-    return data ? data : CellDataFallback;
+    return {data: data ? data : CellDataFallback};
 }
 
 

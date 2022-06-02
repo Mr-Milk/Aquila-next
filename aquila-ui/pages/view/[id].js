@@ -9,7 +9,7 @@ import {
     useROIMeta
 } from "data/get";
 import {Container} from "@mui/material";
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import ROITable from "components/DataTable/ROISelector";
 import RecordDetailsTable from "components/DataTable/RecordDetailsTable";
 import ROIMaps from "components/app/share/ROIMaps";
@@ -20,17 +20,58 @@ import ContentBox from "../../components/Layout/ContentBox";
 import AnalysisTab from "../../components/app/View/AnalysisTab";
 import {getBBox} from "../../components/compute/geo";
 import {parseROIDisplay} from "../../components/humanize";
+import ROIMapGallery from "../../components/app/share/ROIMapGallery";
 
 
 const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
 
     const [currentROI, setROI] = useState(initROI);
     const [currentROIMeta, setROIMeta] = useState(initROIMeta);
+    const [roiList, setROIList] = useState([initROI]);
+    const [roiMetaList, setROIMetaList] = useState([initROIMeta]);
+    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20})
+
     const updateROI = (roiID, roiMeta) => {
+        let update = true;
+        setROI(roiID);
+        setROIMeta(roiMeta);
+        setROIList((prev) => {
+            update = prev.includes(roiID)
+            if (update) {
+                return prev
+            } else {
+                return [...prev, roiID]
+            }
+            })
+        setROIMetaList((prev) => {
+            if (update) {
+                return prev
+            } else {
+                return [...prev, roiMeta]
+            }
+        })
+    };
+    const setCurrentROI = (roiID, roiMeta) => {
         setROI(roiID);
         setROIMeta(roiMeta);
     };
-    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20})
+    const deleteROI = (roiID) => {
+
+        let newROIList = [];
+        let newROIMetaList = [];
+
+        for (let i=0; i < roiList.length; i++) {
+            let ele = roiList[i];
+            if (ele !== roiID) {
+                newROIList.push(roiList[i])
+                newROIMetaList.push(roiMetaList[i])
+            }
+        }
+
+        setROIList(() => newROIList)
+        setROIMetaList(() => newROIMetaList)
+
+    };
 
     const {data: recordData} = useDataInfo(id, initRecordData);
     const {data: roiMeta} = useROIMeta(id);
@@ -45,7 +86,7 @@ const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
             <Head>
                 <title>Aquila | Data Details</title>
             </Head>
-            <Container maxWidth={"xl"} sx={{mt: 4, mb: 4}}>
+            <Container maxWidth={"xl"} sx={{ mb: 4 }}>
                 <Stack direction="row" justifyContent="flex-start" spacing={4}>
                     <ContentBox>
                         <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Data Summary</Typography>
@@ -56,12 +97,23 @@ const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
                         <ROITable roiMeta={roiMeta} updateFn={updateROI}/>
                     </ContentBox>
                 </Stack>
-                <ROIMaps roiID={currentROI} roiMeta={currentROIMeta}
-                         recordData={recordData} cellData={cellData}
-                         getExpDataFn={useExpData} bbox={bbox}
+                <ROIMapGallery roiList={roiList}
+                               roiMetaList={roiMetaList}
+                               setCurrentROI={setCurrentROI}
+                               deleteROI={deleteROI}
+                               getCellData={useCellData2D}
                 />
-                <AnalysisTab roiID={currentROI} recordData={recordData}
-                             cellData={cellData} bbox={bbox}
+                <ROIMaps roiID={currentROI}
+                         roiMeta={currentROIMeta}
+                         recordData={recordData}
+                         cellData={cellData}
+                         getExpDataFn={useExpData}
+                         bbox={bbox}
+                />
+                <AnalysisTab roiID={currentROI}
+                             recordData={recordData}
+                             cellData={cellData}
+                             bbox={bbox}
                              getCellExpBatch={getCellExpBatch}
                 />
             </Container>

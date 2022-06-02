@@ -1,6 +1,5 @@
 import {fetcher, getRecordsURL} from "data/get";
-// import DataTable from "components/DataTable/RecordsTable";
-import {Container, Skeleton} from "@mui/material";
+import {Container} from "@mui/material";
 import Head from 'next/head';
 import RecordsPanel from "../../components/Intro/RecordsPanel";
 import Typography from "@mui/material/Typography";
@@ -11,11 +10,12 @@ const ViewPage = ({ recordData }) => {
         <>
             <Head>
                 <title>Aquila | Browse</title>
+                <link href="https://fonts.googleapis.com/css2?family=family=Orbitron:wght@500&display=swap" rel="stylesheet"/>
                 {/*<link rel="preload" href={getRecordsURL} as="fetch" crossOrigin="anonymous"/>*/}
             </Head>
                 <Container maxWidth={"xl"} sx={{mb: 4, display: 'flex', justifyContent: 'center' }}>
                     {/*<Table/>*/}
-                    <Typography variant="h3" sx={{ mx: 2 }}>AQUILA DATASETS</Typography>
+                    <Typography variant="h3" sx={{ mx: 2 }} fontFamily='Orbitron'>Aquila Datasets</Typography>
                 </Container>
                 <RecordsPanel data={recordData}/>
         </>

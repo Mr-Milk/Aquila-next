@@ -1,4 +1,4 @@
-import {titleOpts, toolboxOpts} from "components/Viz/config";
+import {CAT_COLORS, titleOpts, toolboxOpts} from "components/Viz/config";
 import natsort from "natsort";
 import Echarts from "./echarts-obj";
 import {counter} from "components/compute/math";
@@ -27,6 +27,7 @@ const Pie = ({arr, width, height, title}) => {
     const legendData = data.map((i) => i.name).sort(natsort());
 
     const options = {
+        color: CAT_COLORS,
         ...titleOpts(title),
         ...toolboxOpts,
         tooltip: {

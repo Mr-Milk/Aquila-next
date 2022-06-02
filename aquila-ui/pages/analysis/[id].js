@@ -23,6 +23,7 @@ import RecordDetailsTable from "../../components/DataTable/RecordDetailsTable";
 import Stack from "@mui/material/Stack";
 import {parseROIDisplay} from "../../components/humanize";
 import {getBBox} from "../../components/compute/geo";
+import ROIMapGallery from "../../components/app/share/ROIMapGallery";
 
 
 const promptKey = "sharingPrompt";
@@ -63,25 +64,68 @@ const ShareNotWorkingPrompt = () => {
 }
 
 
-const PageContent = ({ id }) => {
+const PageContent = ({id}) => {
 
     const [currentROI, setROI] = useState("key");
     const [currentROIMeta, setROIMeta] = useState([]);
+    const [roiList, setROIList] = useState([]);
+    const [roiMetaList, setROIMetaList] = useState([]);
+    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20})
+
     const updateROI = (roiID, roiMeta) => {
+        let update = true;
+        setROI(roiID);
+        setROIMeta(roiMeta);
+        setROIList((prev) => {
+            update = prev.includes(roiID)
+            if (update) {
+                return prev
+            } else {
+                return [...prev, roiID]
+            }
+        })
+        setROIMetaList((prev) => {
+            if (update) {
+                return prev
+            } else {
+                return [...prev, roiMeta]
+            }
+        })
+    };
+    const setCurrentROI = (roiID, roiMeta) => {
         setROI(roiID);
         setROIMeta(roiMeta);
     };
-    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20})
+    const deleteROI = (roiID) => {
+
+        let newROIList = [];
+        let newROIMetaList = [];
+
+        for (let i = 0; i < roiList.length; i++) {
+            let ele = roiList[i];
+            if (ele !== roiID) {
+                newROIList.push(roiList[i])
+                newROIMetaList.push(roiMetaList[i])
+            }
+        }
+
+        setROIList(() => newROIList)
+        setROIMetaList(() => newROIMetaList)
+
+    };
 
     const recordData = useDataInfoDB(id);
     const roiMeta = useROIMetaDB(id);
-    const cellData = useCellDataDB(currentROI);
-
+    const {data: cellData} = useCellDataDB(currentROI);
 
     useEffect(() => {
-        setROI(recordData.init_roi)
-        setROIMeta(parseROIDisplay(JSON.parse(roiMeta[0]['meta'])))
-        }, [recordData.init_roi, roiMeta])
+        let initROI = recordData.init_roi;
+        let initROIMeta = parseROIDisplay(JSON.parse(roiMeta[0]['meta']));
+        setROI(initROI)
+        setROIMeta(initROIMeta)
+        setROIList([initROI])
+        setROIMetaList([initROIMeta])
+    }, [recordData.init_roi, roiMeta])
 
     useEffect(() => {
         setBBox(getBBox(cellData.cell_x, cellData.cell_y))
@@ -90,41 +134,50 @@ const PageContent = ({ id }) => {
     return (
         <Container maxWidth={"xl"} sx={{mt: 4, mb: 4}}>
             <Stack direction="row" justifyContent="flex-start" spacing={4}>
-                    <ContentBox>
-                        <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Data Summary</Typography>
-                        <AnalysisRecordTable data={recordData}/>
-                    </ContentBox>
-                    <ContentBox>
-                        <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Select ROI</Typography>
-                        <ROITable roiMeta={roiMeta} updateFn={updateROI}/>
-                    </ContentBox>
-                </Stack>
-                <ROIMaps roiID={currentROI} roiMeta={currentROIMeta}
-                         recordData={recordData} cellData={cellData}
-                         getExpDataFn={useExpDataDB} bbox={bbox}/>
-                <AnalysisTab roiID={currentROI}
-                             recordData={recordData}
-                             cellData={cellData}
-                             bbox={bbox}
-                             getCellExpBatch={getCellExpBatchDB}
-                />
-            </Container>
+                <ContentBox>
+                    <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Data Summary</Typography>
+                    <AnalysisRecordTable data={recordData}/>
+                </ContentBox>
+                <ContentBox>
+                    <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Select ROI</Typography>
+                    <ROITable roiMeta={roiMeta} updateFn={updateROI}/>
+                </ContentBox>
+            </Stack>
+            <ROIMapGallery roiList={roiList}
+                           roiMetaList={roiMetaList}
+                           setCurrentROI={setCurrentROI}
+                           deleteROI={deleteROI}
+                           getCellData={useCellDataDB}
+            />
+            <ROIMaps roiID={currentROI}
+                     roiMeta={currentROIMeta}
+                     recordData={recordData}
+                     cellData={cellData}
+                     getExpDataFn={useExpDataDB}
+                     bbox={bbox}
+            />
+            <AnalysisTab roiID={currentROI}
+                         recordData={recordData}
+                         cellData={cellData}
+                         bbox={bbox}
+                         getCellExpBatch={getCellExpBatchDB}
+            />
+        </Container>
     )
 }
-
 
 
 const AnalysisResult = () => {
     const router = useRouter();
     const [ready, setReady] = useState(false)
-    
+
     useEffect(() => {
         if (router.isReady) {
             setReady(true)
         }
     }, [router.isReady])
     //console.log(router.query)
-    const { id } = router.query;
+    const {id} = router.query;
 
     if (!ready) return null
     return (

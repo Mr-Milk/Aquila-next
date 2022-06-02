@@ -1,8 +1,8 @@
 import max from "loadsh/max"
 import min from "loadsh/min"
-
+import 'echarts-gl';
 import Echarts from "./echarts-obj";
-import {GRAD_COLORS, toolboxOpts} from "components/Viz/config";
+import {GRAD_COLORS, ThumbNailSize, toolboxOpts} from "components/Viz/config";
 
 
 import * as echarts from 'echarts/core';
@@ -58,8 +58,67 @@ const AssignColor = (colors, arr, min, max) => {
     });
 };
 
-const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps}) => {
+export const ExpMap2DThumbNail = ({cx, cy, exp}) => {
 
+    const dataSize = cx.length;
+    const min_exp = min(exp);
+    const max_exp = max(exp);
+
+    const renderData = exp.map((e, i) => {
+        return [cx[i], cy[i], e]
+    });
+
+    const options = {
+        visualMap: {
+            show: false,
+            min: min_exp,
+            max: max_exp,
+            precision: 3,
+            calculable: false,
+            left: '85%',
+            right: 0,
+            top: "middle",
+            inRange: {
+                color: GRAD_COLORS,
+            },
+            text: [Math.round(max_exp), Math.round(min_exp)],
+        },
+        grid: {
+            show: true,
+            top: 0,
+            left: 0,
+            width: ThumbNailSize,
+            height: ThumbNailSize,
+            containLabel: true,
+        },
+        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        series: [
+            {
+                type: dataSize < 15000 ? "scatter" : "scatterGL",
+                symbolSize: dataSize < 5000 ? 2 : 1,
+                data: renderData,
+                itemStyle: {
+                    borderColor: '#555',
+                    borderWidth: 0,
+                },
+            },
+        ],
+    };
+
+    return (
+        <Echarts
+            echarts={echarts}
+            option={options}
+            style={{height: ThumbNailSize, width: ThumbNailSize}}
+        />
+    )
+
+}
+
+export const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, setCharRef, ...leftProps}) => {
+
+    const dataSize = cx.length;
     const min_exp = min(exp);
     const max_exp = max(exp);
 
@@ -113,7 +172,7 @@ const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps
         yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
         series: [
             {
-                type: "scatter",
+                type: dataSize < 15000 ? "scatter" : "scatterGL",
                 symbolSize: symbolSize,
                 data: renderData,
                 itemStyle: {
@@ -125,8 +184,10 @@ const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, ...leftProps
     };
 
     return (
-        <Echarts echarts={echarts} option={options} style={{height: canvasSize + 50, width: canvasSize + 100}}/>
+        <Echarts
+            echarts={echarts}
+            option={options}
+            style={{height: canvasSize + 50, width: canvasSize + 100}}
+        />
     )
 }
-
-export default ExpMap2D;

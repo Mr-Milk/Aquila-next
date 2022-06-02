@@ -124,7 +124,10 @@ async function cellInfo(file, dataID, roiCellCount, roiMapper) {
                     let roiID = roiMapper[lineCount]
                     records[roiID].cell_x.push(parseFloat(d[cellXHeader]))
                     records[roiID].cell_y.push(parseFloat(d[cellYHeader]))
-                    records[roiID].cell_type.push(hasCellType ? d[cellTypeHeader] : "")
+                    // ensure the cell type format is consistent with database schema
+                    if (hasCellType) {
+                        records[roiID].cell_type.push(d[cellTypeHeader])
+                    }
                     lineCount += 1
                 })
 

@@ -1,3 +1,5 @@
+export const ThumbNailSize = 150;
+
 export const GRAD_COLORS = [
     "#ECDBBD",
     "#E8C4A4",

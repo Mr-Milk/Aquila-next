@@ -13,7 +13,7 @@ import {
     VisualMapComponent,
     VisualMapContinuousComponent
 } from 'echarts/components';
-import {CAT_COLORS, toolboxOpts} from "./config";
+import {CAT_COLORS, ThumbNailSize, toolboxOpts} from "./config";
 
 echarts.use([
     CanvasRenderer,
@@ -28,22 +28,17 @@ echarts.use([
     VisualMapContinuousComponent
 ])
 
-
-const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
+const getSeries = (cx, cy, ct, symbolSize) => {
 
     let hasCellType = (ct !== undefined);
     if (hasCellType && (ct.length === 0)) {
         hasCellType = false
     }
     const dataSize = cx.length;
+    if (!symbolSize) {
+        symbolSize = dataSize < 5000 ? 2 : 1;
+    }
     const categories = hasCellType ? [...new Set(ct)] : ['unknown'];
-    // const pieces = categories.map((c, i) => {
-    //     return {
-    //         value: c,
-    //         label: c,
-    //         color: CAT_COLORS[i]
-    //     }
-    // })
 
     const chartType = dataSize < 15000 ? 'scatter' : 'scatterGL'
     const borderWidth = (symbolSize < 3) ? 0 : 0.5
@@ -70,11 +65,76 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
         )
     })
 
-    // const renderData = cx.map((x, i) => {
-    //     return [x, cy[i], hasCellType ? ct[i] : "unknown"]
-    // })
+    return Object.values(series)
+}
 
+const getSeriesTN = (cx, cy, ct) => {
+
+    let hasCellType = (ct !== undefined);
+    if (hasCellType && (ct.length === 0)) {
+        hasCellType = false
+    }
+    const dataSize = cx.length;
+    const symbolSize = dataSize < 5000 ? 2 : 1;
+    const categories = hasCellType ? [...new Set(ct)] : ['unknown'];
+
+    const chartType = dataSize < 15000 ? 'scatter' : 'scatterGL'
+    const series = {}
+    categories.forEach((c) => {
+        series[c] = {
+            name: c,
+            type: chartType,
+            symbolSize: symbolSize,
+            data: []
+        }
+    })
+
+    cx.map((x, i) => {
+        let y = cy[i];
+        let t = hasCellType ? ct[i] : "unknown";
+        series[t].data.push(
+            [x, y]
+        )
+    })
+
+    return Object.values(series)
+}
+
+export const CellMap2DThumbNail = ({cx, cy, ct}) => {
+    const series = getSeriesTN(cx, cy, ct)
+    console.log('cell map TN', series.map((s) =>  s.name ))
     const option = {
+        color: CAT_COLORS,
+        // To maintain the x-y at same ratio
+        grid: {
+            show: true,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: ThumbNailSize,
+            height: ThumbNailSize,
+            containLabel: true,
+        },
+        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        series: series
+    }
+
+    return <Echarts
+        echarts={echarts}
+        option={option}
+        notMerge={true}
+        style={{height: ThumbNailSize, width: ThumbNailSize}}
+    />
+}
+
+export const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
+
+    const series = getSeries(cx, cy, ct, symbolSize)
+    console.log('cell map', series.map((s) =>  s.name ))
+    const option = {
+        color: CAT_COLORS,
         title: {
             text: 'Cell Map',
             left: "33%",
@@ -94,32 +154,12 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
                 dataZoom: {}
             }
         },
-        // visualMap: {
-        //     type: "piecewise",
-        //     top: 'middle',
-        //     align: 'left',
-        //     // categories: categories,
-        //     min: 0,
-        //     max: categories.length,
-        //     left: '75%',
-        //     right: 0,
-        //     splitNumber: categories.length,
-        //     dimension: 2,
-        //     pieces: pieces,
-        //     itemSymbol: 'circle',
-        //     itemHeight: 10,
-        //     textGap: 5,
-        //     textStyle: {
-        //         width: 5,
-        //         fontSize: 12,
-        //         overflow: 'breakAll'
-        //     }
-        // },
         legend: {
             type: "scroll",
             align: "left",
             left: '75%',
             top: 'middle',
+            height: '75%',
             // itemSymbol: "circle",
             orient: "vertical",
             itemHeight: 10,
@@ -132,13 +172,7 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
             },
             tooltip: {
                 show: true
-            }
-            // borderWidth: 0,
-            // textStyle: {
-            //     width: 5,
-            //     fontSize: 12,
-            //     overflow: 'breakAll'
-            // }
+            },
         },
         // allow zoom x-y at the same ratio
         dataZoom: [
@@ -167,21 +201,13 @@ const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
         },
         xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
         yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
-        // series: {
-        //     type: dataSize < 15000 ? 'scatter' : 'scatterGL',
-        //     symbolSize: symbolSize,
-        //     encode: {tooltip: [2]},
-        //     itemStyle: {
-        //         borderColor: '#555',
-        //         borderWidth: (symbolSize < 3) ? 0 : 0.5,
-        //     },
-        //     data: renderData
-        // }
-        series: Object.values(series)
+        series: series
     }
 
     return <Echarts
-        echarts={echarts} option={option} style={{height: canvasSize + 50, width: canvasSize + 150}}/>
+        echarts={echarts}
+        option={option}
+        notMerge={true}
+        style={{height: canvasSize + 50, width: canvasSize + 150}}
+    />
 }
-
-export default CellMap2D;

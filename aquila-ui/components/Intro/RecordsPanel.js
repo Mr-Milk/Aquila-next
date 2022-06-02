@@ -17,6 +17,7 @@ const RecordsPanel = ({data}) => {
 
     return (
         <>
+            <Divider/>
             <FilterList data={data} updateDataFn={setDisplayData}/>
             <Divider sx={{mb: 6}}></Divider>
             <Grid container justifyContent="center" alignItems="center" sx={{

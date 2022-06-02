@@ -31,7 +31,8 @@ const SearchRecords = ({data, updateDataFn}) => {
             'source_name',
             'journal',
             'year'
-        ]
+        ],
+        threshold: 0.2
     })
 
     const runSearch = (keyword) => {
