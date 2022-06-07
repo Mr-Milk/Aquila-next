@@ -14,7 +14,7 @@ import MUILink from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import DNA from "../icons/DNA";
 import Molecule from "../icons/Molecule";
-import {useState} from "react";
+import {memo, useState} from "react";
 import Link from "../Link";
 import {toHumanString} from "../humanize";
 import Tooltip from "@mui/material/Tooltip";
@@ -130,7 +130,7 @@ const StatsText = ({count, unit}) => {
 }
 
 
-const DataRecordCard = ({record}) => {
+const DataRecordCard = ({key, record}) => {
 
     let tissue;
     let disease;
@@ -146,7 +146,8 @@ const DataRecordCard = ({record}) => {
         disease = `${record.disease}`
     }
 
-    return <Container maxWidth="400px">
+    return <Grid item xs={4} md={6} key={key}>
+    <Container maxWidth="400px">
         <Paper square elevation={0} sx={{
             my: 2,
             pt: 2,
@@ -223,7 +224,10 @@ const DataRecordCard = ({record}) => {
             </Stack>
         </Paper>
     </Container>
+    </Grid>
 }
+
+const MemoDataRecordCard = memo(DataRecordCard);
 
 const DataRecordList = ({data}) => {
     return <Container maxWidth={'xl'} sx={{minHeight: '1vh'}}>
@@ -243,10 +247,8 @@ const DataRecordList = ({data}) => {
 
                 :
                 <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, md: 12}}>
-                    {data.map((r, i) => (
-                        <Grid item xs={4} md={6} key={i}>
-                            <DataRecordCard record={r}/>
-                        </Grid>
+                    {data.map((r) => (
+                        <MemoDataRecordCard record={r} key={r.data_uuid}/>
                     ))}
                 </Grid>
         }

@@ -112,7 +112,6 @@ const SearchPubs = ({data, updateDataFn}) => {
                }}
         >
             <Search sx={{mr: 1}}/>
-            {/*<Search sx={{color: 'action.active', mr: 1, my: 0.5}}/>*/}
             <TextField fullWidth
                        variant="standard"
                        placeholder={"Search publications"}
@@ -148,8 +147,8 @@ const PublicationPage = ({pubData}) => {
                         mt: 4
                     }}>
                         {
-                            displayData.map((record, i) => (
-                                <MemoPubCard record={record} key={i}/>
+                            displayData.map((record) => (
+                                <MemoPubCard record={record} key={record.url}/>
                             ))
                         }
                     </Stack>

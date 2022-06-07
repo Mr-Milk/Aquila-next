@@ -62,6 +62,7 @@ pub struct DBStats {
     tissue_count: i64,
     disease_count: i64,
     technology_count: i64,
+    publication_count: i64,
     total_cell: i64,
     total_roi: i64,
     tissue_distinct: Vec<TypeCount>,
@@ -99,6 +100,10 @@ impl DataRecords {
             r#"SELECT technology as "field", COUNT(technology) as "count" FROM data_records GROUP BY technology;"#
         ).fetch_all(pool).await?;
 
+        let publication = sqlx::query!(
+            r#"SELECT COUNT(DISTINCT source_url) as "count!" FROM data_records;"#
+        ).fetch_one(pool).await?;
+
         let total_cell = sqlx::query!(
             r#"SELECT SUM(cell_count) as "sum!" FROM data_records;"#
         ).fetch_one(pool).await?;
@@ -113,6 +118,7 @@ impl DataRecords {
             tissue_count: tissue.count,
             disease_count: disease.count,
             technology_count: technology.count,
+            publication_count: publication.count,
             total_cell: total_cell.sum,
             total_roi: total_roi.sum,
             tissue_distinct,
