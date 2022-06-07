@@ -13,7 +13,7 @@ import {styled} from "@mui/material/styles";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
-const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
+const Offset = styled("div")(({theme}) => theme.mixins.toolbar);
 
 export default function MyApp(props) {
     const {Component, emotionCache = clientSideEmotionCache, pageProps} = props;

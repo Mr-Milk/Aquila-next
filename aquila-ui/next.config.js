@@ -3,7 +3,7 @@ const {withPlaiceholder} = require("@plaiceholder/next");
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
 })
-const withTranspileModules = require("next-transpile-modules")(["echarts", "zrender", "echarts-gl"]);
+const withTranspileModules = require("next-transpile-modules")(["echarts", "zrender", "echarts-gl", "three"]);
 const withPWA = require("next-pwa");
 //const withWorker = require('worker-plugin');
 

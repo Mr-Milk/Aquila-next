@@ -28,8 +28,8 @@ const FilterTitleMemo = memo(FilterTitle);
 
 const FilterItemText = ({item, count}) => {
     return <Box sx={{display: 'flex'}}>
-        <Typography sx={{mr: 1}}>{item}</Typography>
-        <Typography color="#757575">{`(${count})`}</Typography>
+        <Typography color="rgba(22,22,22,0.8)" sx={{mr: 1}}>{item}</Typography>
+        <Typography color="grass" fontWeight="500">{`(${count})`}</Typography>
     </Box>
 }
 
@@ -46,7 +46,11 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
     return (
         <Stack direction="column">
             <FormControl sx={{m: 2}} component="fieldset" variant="standard">
-                <FormLabel component="legend">{title.toUpperCase()}</FormLabel>
+                <FormLabel component="legend" sx={{
+                    fontSize: '1.1rem',
+                    fontWeight: 500,
+                    color: 'rgba(154,80,52,0.85)'
+                }}>{title.toUpperCase()}</FormLabel>
                 <Box sx={{
                     maxHeight: '320px',
                     overflow: 'auto',
@@ -79,7 +83,7 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
                                             />
                                         }
                                         label={<FilterItemText item={k} count={v}/>}
-                                        sx={{ mb: 0.5 }}
+                                        sx={{mb: 0.5}}
                                         key={i}
                                     />
                                 })
@@ -250,15 +254,7 @@ const FilterList = ({data, updateDataFn}) => {
     }
 
     return (
-        <Box sx={{
-            display: {
-                xs: 'none',
-                md: 'block',
-            },
-            pt: 2,
-            backgroundColor: "#fafafa"
-        }}>
-
+        <div>
             <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                 <Stack direction="row" spacing={8}>
                     <Stack direction="column" justifyContent="flex-start">
@@ -305,8 +301,8 @@ const FilterList = ({data, updateDataFn}) => {
                     Clear All
                 </Button>
             </Box>
+        </div>
 
-        </Box>
     )
 
 

@@ -12,14 +12,12 @@ import Image from "next/image";
 
 export const navLinks = [
     {title: "Home", path: "/"},
-    {title: "Browse", path: "/view"},
+    {title: "Dataset", path: "/view"},
+    {title: "Publication", path: "/publication"},
     {title: "Analysis", path: "/analysis"},
     {title: "Tutorial", path: "/tutorial"},
     {title: "About", path: "/about"},
 ]
-
-
-const Offset = styled("div")(({theme}) => theme.mixins.toolbar);
 
 const Header = () => {
     return (
@@ -51,9 +49,6 @@ const Header = () => {
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
-            <ClientOnly>
-                <Offset/>
-            </ClientOnly>
         </>
     );
 };

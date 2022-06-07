@@ -8,7 +8,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import {GiSeatedMouse} from "react-icons/gi";
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import ViewInArOutlinedIcon from '@mui/icons-material/ViewInArOutlined';
 import {IoIosMan} from 'react-icons/io'
 import MUILink from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
@@ -22,23 +22,24 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from "@mui/material/IconButton";
 import DownloadIcon from '@mui/icons-material/Download';
+import SquareIcon from '@mui/icons-material/Square';
 
 
 const SpeciesChip = ({species}) => {
     if (species === 'Mouse') {
-        return <Chip size="small" icon={<GiSeatedMouse color="#5c6bc0"/>} label='Mouse' variant="outlined"
+        return <Chip size="small" icon={<GiSeatedMouse color="#5c6bc0" fontSize="small"/>} label='Mouse' variant="outlined"
                      sx={{color: "#5c6bc0", borderColor: "#5c6bc0"}}/>
     } else {
-        return <Chip size="small" icon={<IoIosMan color="#42a5f5"/>} label={species} variant="outlined"
+        return <Chip size="small" icon={<IoIosMan color="#42a5f5" fontSize="small"/>} label={species} variant="outlined"
                      sx={{color: "#42a5f5", borderColor: "#42a5f5"}}/>
     }
 }
 
 const DimChip = ({is3d}) => {
     if (is3d) {
-        return <Chip size="small" icon={<ViewInArIcon color="inherit"/>} label='3D'/>
+        return <Chip size="small" icon={<ViewInArOutlinedIcon color="inherit" fontSize="small"/>} label='3D'/>
     } else {
-        return <Chip size="small" label={'2D'}/>
+        return <Chip size="small" icon={<SquareIcon color="inherit" fontSize="small"/>} label={'2D'}/>
     }
 }
 
@@ -124,7 +125,7 @@ const StatsText = ({count, unit}) => {
     return <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
 
         <Typography variant="h5">{toHumanString(count)}</Typography>
-        <Typography variant="caption" sx={{ml: 0.5}}>{unit}</Typography>
+        <Typography variant="caption" fontSize={14} sx={{ml: 0.5}}>{unit}</Typography>
     </Box>
 }
 
@@ -146,14 +147,18 @@ const DataRecordCard = ({record}) => {
     }
 
     return <Container maxWidth="400px">
-        <Paper square elevation={1} sx={{
+        <Paper square elevation={0} sx={{
             my: 2,
             pt: 2,
             pb: 1,
             px: 4,
             border: 1,
             borderRadius: '8px',
-            borderColor: 'rgba(253,151,0,0.45)'
+            borderColor: 'divider',
+            '&:hover': {
+                backgroundColor: 'rgba(255,204,128,0.05)',
+                transition: 'background 0.3s'
+            }
         }}>
             <Grid container direction="row" spacing={2} justifyContent="flex-start">
                 <Grid item>

@@ -10,12 +10,11 @@ const ViewPage = ({ recordData }) => {
         <>
             <Head>
                 <title>Aquila | Browse</title>
-                <link href="https://fonts.googleapis.com/css2?family=family=Orbitron:wght@500&display=swap" rel="stylesheet"/>
                 {/*<link rel="preload" href={getRecordsURL} as="fetch" crossOrigin="anonymous"/>*/}
             </Head>
-                <Container maxWidth={"xl"} sx={{mb: 4, display: 'flex', justifyContent: 'center' }}>
+                <Container maxWidth={"xl"} sx={{my: 4, display: 'flex', justifyContent: 'center' }}>
                     {/*<Table/>*/}
-                    <Typography variant="h3" sx={{ mx: 2 }} fontFamily='Orbitron'>Aquila Datasets</Typography>
+                    <Typography variant="h3" sx={{ mx: 2 }} fontFamily='Plus Jakarta Sans'>Datasets</Typography>
                 </Container>
                 <RecordsPanel data={recordData}/>
         </>

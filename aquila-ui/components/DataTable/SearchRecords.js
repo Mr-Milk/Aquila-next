@@ -63,28 +63,28 @@ const SearchRecords = ({data, updateDataFn}) => {
         })
     }
 
-    return <Stack direction="row" alignItems="center" sx={{md: {mb: 2}, minWidth: "400px"}}>
+    return <Stack direction="row" alignItems="center" sx={{ width: '100%' }}>
         <Button
             startIcon={<Search/>}
             endIcon={<ExpandMoreIcon/>}
             sx={{mr: 1, my: 0.5, textTransform: 'none', color: 'action.active'}}
             onClick={handleClick}
         >
-            Search
+            {(searchMethod === "fuzz") ? 'Keywords' : 'Markers'}
         </Button>
         <Menu
             anchorEl={anchorEl}
             open={open}
             onClose={() => setAnchorEl(null)}
         >
-            <MenuItem onClick={() => {setAnchorEl(null); setSearchMethod("fuzz")}}>Fuzzy Search</MenuItem>
-            <MenuItem onClick={() => {setAnchorEl(null); setSearchMethod("marker")}}>Search by markers</MenuItem>
+            <MenuItem onClick={() => {setAnchorEl(null); setSearchMethod("fuzz")}}>Search Keywords</MenuItem>
+            <MenuItem onClick={() => {setAnchorEl(null); setSearchMethod("marker")}}>Search Markers</MenuItem>
         </Menu>
         {/*<Search sx={{color: 'action.active', mr: 1, my: 0.5}}/>*/}
         <TextField fullWidth
                    variant="standard"
-                   placeholder={(searchMethod === "fuzz") ? "Search technology, disease, species, ..." : "Search marker"}
-                   sx={{maxWidth: 'md'}}
+                   sx={{ minWidth: '400px' }}
+                   placeholder={(searchMethod === "fuzz") ? "Any keywords..." : "Markers/Genes..."}
                    onChange={(e) => {
                        (searchMethod === "fuzz") ? runSearch(e.target.value) : runMarkerSearch(e.target.value)
                    }}

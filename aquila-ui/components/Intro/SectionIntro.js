@@ -47,11 +47,11 @@ const SectionIntro = () => {
                 <Grid item xs={10} sm={5}>
 
                     <Image
-                        src={"/undraw_projections_re_1mrh.svg"}
-                        alt={"data visualization"}
+                        src={"/3d-tissue.png"}
+                        alt={"3d tissue"}
                         layout={"responsive"}
-                        width={850}
-                        height={350}
+                        width={1618}
+                        height={1362}
                         priority
                     />
 
