@@ -13,6 +13,7 @@ import {runCoexp} from "../../../data/post";
 import axios from "axios";
 import Selector from "../../InputComponents/Selector";
 import Heatmap from "../../Viz/Heatmap";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const ExpViz = ({data}) => {
@@ -86,7 +87,9 @@ const CoExpTab = ({roiID, recordData, getCellExpBatch}) => {
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Co-Expression among markers"}/>
+                    <SectionExplainer title={"Markers co-expression analysis"}
+                                      details={"Reveal the relationship among markers, whether they express at the " +
+                                          "same pattern (+1) or complementary pattern (-1)."}/>
                     <ParamWrap>
                         <Controller
                             name="method"

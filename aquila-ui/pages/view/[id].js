@@ -87,7 +87,7 @@ const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
                 <title>Aquila | Data Details</title>
             </Head>
             <Container maxWidth={"xl"} sx={{ mb: 4 }}>
-                <Stack direction="row" justifyContent="flex-start" spacing={4}>
+                <Stack direction="row" justifyContent="flex-start" spacing={4} sx={{ mt : 4 }}>
                     <ContentBox>
                         <Typography variant={"h6"} sx={{mb: 2, mt: 1}}>Data Summary</Typography>
                         <RecordDetailsTable dataID={id}/>

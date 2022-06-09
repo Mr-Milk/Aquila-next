@@ -52,7 +52,8 @@ const ROITable = ({roiMeta, updateFn}) => {
         density="compact"
         sx={{
             border: 'none',
-            height: '400px'
+            height: '400px',
+            width: '100%',
         }}
         rows={renderData}
         columns={columns}

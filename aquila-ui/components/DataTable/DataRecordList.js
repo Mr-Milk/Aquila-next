@@ -130,7 +130,7 @@ const StatsText = ({count, unit}) => {
 }
 
 
-const DataRecordCard = ({key, record}) => {
+const DataRecordCard = ({record}) => {
 
     let tissue;
     let disease;
@@ -146,7 +146,7 @@ const DataRecordCard = ({key, record}) => {
         disease = `${record.disease}`
     }
 
-    return <Grid item xs={4} md={6} key={key}>
+    return <Grid item xs={4} md={6}>
     <Container maxWidth="400px">
         <Paper square elevation={0} sx={{
             my: 2,

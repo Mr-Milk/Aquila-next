@@ -54,7 +54,7 @@ const RecordDetailsTable = ({dataID}) => {
         return <></>
     } else {
         return (
-            <TableContainer component={Paper} sx={{boxShadow: 0, maxWidth: "550px"}}>
+            <TableContainer component={Paper} sx={{boxShadow: 0, width: "100%"}}>
                 <Table size="small">
                     <TableBody>
                         <TableRow>

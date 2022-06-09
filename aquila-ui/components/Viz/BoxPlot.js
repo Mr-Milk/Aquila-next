@@ -4,12 +4,17 @@ import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {BoxplotChart} from 'echarts/charts';
-import {GridComponent, TitleComponent, TooltipComponent} from 'echarts/components';
+import {
+    GridComponent, TitleComponent, TooltipComponent,
+    DatasetComponent, TransformComponent
+} from 'echarts/components';
 
 echarts.use(
     [
         BoxplotChart,
         GridComponent,
+        DatasetComponent,
+        TransformComponent,
         TooltipComponent,
         TitleComponent,
         CanvasRenderer,
@@ -29,8 +34,6 @@ const BoxPlot = ({data, xlabel, title}) => {
         },
         xAxis: {
             type: 'category',
-            data: xlabel,
-            splitNumber: xlabel.length,
             axisTick: {
                 alignWithLabel: true,
             },
@@ -45,10 +48,34 @@ const BoxPlot = ({data, xlabel, title}) => {
         yAxis: {
             type: 'value',
         },
+        dataset: [
+            {
+                source: data
+            },
+            {
+                transform: {
+                    type: 'boxplot',
+                    print: true,
+                    config: {itemNameFormatter: (params) => xlabel[params.value]}
+                }
+            },
+            {
+                fromDatasetIndex: 1,
+                fromTransformResult: 1
+            }
+        ],
         series: [
             {
-                data: data,
+                name: 'boxplot',
                 type: 'boxplot',
+                datasetIndex: 1
+            },
+            {
+                name: 'outlier',
+                type: 'scatter',
+                datasetIndex: 2,
+                symbolSize: 5,
+                symbol: 'diamond',
             }
         ]
     }

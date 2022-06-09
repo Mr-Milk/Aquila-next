@@ -15,6 +15,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import LeftPanel from "../../Layout/LeftPanel";
 import SubmitButton from "../../InputComponents/SubmitButton";
 import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const getRunBody = (cellData, userData) => {
@@ -111,7 +112,11 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Find the neighbors for cells"}/>
+                    <SectionExplainer title={"Neighbors network embedding"}
+                        details={"This is the basis step for other analysis. It tells whether " +
+                            "two cells are neighbors to each other."}
+                                      vizTips={"Hover to the link between two cells to find the distance between them."}
+                    />
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -123,8 +128,10 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
                                         options={methods}
                                         description={
                                             <>
-                                                <li>KD Tree: Search nearest K neighbors or neighbors within radius</li>
-                                                <li>Delaunay Triangulation: Building a triangulation network</li>
+                                                <li>KD Tree: Search nearest K neighbors (KNN) and/or
+                                                    neighbors within radius (Radius).</li>
+                                                <li>Delaunay Triangulation: Filled the space with triangles while using cells
+                                                as vertices.</li>
                                             </>
                                         }
                                         {...field}/>

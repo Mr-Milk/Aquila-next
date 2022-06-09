@@ -96,7 +96,7 @@ export const tooltipOpts = () => ({
 export const toolboxOpts = {
     toolbox: {
         itemSize: 13,
-        right: '5%',
+        right: '25%',
         feature: {
             saveAsImage: {
                 show: true,

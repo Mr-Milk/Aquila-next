@@ -114,21 +114,36 @@ const GraphGL = ({title, cx, cy, ct, p1, p2, weights, rotate, community}) => {
 
         const option = {
             ...titleOpts(title),
-            ...toolboxOpts,
+            toolbox: {
+                itemSize: 13,
+                top: '0%',
+                right: '25%',
+                feature: {
+                    saveAsImage: {
+                        show: true,
+                        title: 'Save',
+                    },
+                }
+            },
             legend: {
+                type: "scroll",
+                align: "left",
+                right: '0%',
+                left: 410,
+                top: 'middle',
+                height: '75%',
+                width: 80,
+                icon: "circle",
                 data: categories,
                 orient: 'vertical',
-                left: '77%',
-                top: 'middle',
                 itemHeight: 8,
-                itemWidth: 8
-            },
-            grid: {
-                show: false,
-                left: '10%',
-                right: '25%',
-                top: '10%',
-                bottom: '10%'
+                itemWidth: 8,
+                formatter: function (name) {
+                    return echarts.format.truncateText(name, 140, '14px Microsoft Yahei', '…');
+                },
+                tooltip: {
+                    show: true
+                },
             },
             series: [
                 {
@@ -143,6 +158,10 @@ const GraphGL = ({title, cx, cy, ct, p1, p2, weights, rotate, community}) => {
                     //     color: "#0D5661",
                     //     opacity: 1
                     // },
+                    left: '0%',
+                    bottom: '0%',
+                    width: 400,
+                    height: 400,
                     lineStyle: {
                         color: "#72636E",
                         opacity: 0.8,
@@ -159,11 +178,12 @@ const GraphGL = ({title, cx, cy, ct, p1, p2, weights, rotate, community}) => {
         return <Echarts
             echarts={echarts}
             option={option}
-            style={{width: "750px", height: "450px"}}
+            style={{width: "550px", height: "500px"}}
         />
     } else {
         return <Stack direction="column" alignItems="center">
-            <Typography variant="caption">GPU support not available, render more than 100K elements may crash your browser.</Typography>
+            <Typography variant="caption">GPU support not available, render more than 100K elements may crash your
+                browser.</Typography>
             <Button onClick={() => setShow(true)}>Render</Button>
         </Stack>
     }

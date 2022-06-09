@@ -11,6 +11,7 @@ import OneItemCenter from "../../Layout/OneItemCenter";
 import {runRipley} from "../../../data/post";
 import axios from "axios";
 import LineChart from "../../Viz/LineChart";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const ExpViz = ({data}) => {
@@ -73,7 +74,10 @@ const RipleyTab = ({cellData}) => {
         <form onSubmit={handleSubmit(handleRun)}>
             <LeftPanel>
 
-                <SectionTitleWrap title={"Profiling the distribution pattern at different distance basis"}/>
+                <SectionExplainer title={"Distance basis spatial pattern"}
+                    details={"The Ripley functions are a series of cumulative distribution functions describe " +
+                        "the underlying spatial process given the spatial interval."}
+                />
                 <ParamWrap>
                     <Controller
                         name="method"

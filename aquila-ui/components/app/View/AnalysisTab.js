@@ -18,10 +18,18 @@ import RipleyTab from "../share/RipleyTab";
 import SpatialCoExpTab from "../share/SpatialCoExpTab";
 import CellCentralityTab from "../share/CellCentralityTab";
 import SpatialCommunityTab from "../share/SpatialCommunityTab";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import DangerousSharpIcon from '@mui/icons-material/DangerousSharp';
+import LockSharpIcon from '@mui/icons-material/LockSharp';
+
+import create from 'zustand'
 
 
 const noCellTypeHelp = "Cell type annotation unavailable in this dataset"
 const noNeighborsHelp = "Run Find neighbors before proceeding";
+
+
 
 const findNeighborsHelp = (neighborsReady, hasCellType) => {
     if (!neighborsReady && !hasCellType) {
@@ -36,12 +44,21 @@ const findNeighborsHelp = (neighborsReady, hasCellType) => {
 }
 
 
-const TabTitle = ({label, disabled, disabledText, ...other}) => {
+const TabTitle = ({label, disabled, disabledText, disabledType, ...other}) => {
     if (disabled) {
         return (
             <Tooltip title={disabledText}>
                 <span style={{textAlign: 'center'}}>
-                    <Tab label={label} disabled={disabled} {...other} />
+                    <Tab disabled={disabled}
+                         label={
+                             <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+                                 {label}
+                                 {(disabledType === "permanent") ?
+                                     <DangerousSharpIcon sx={{ ml: 0.5 }} fontSize="inherit" color="disabled"/> :
+                                         <LockSharpIcon sx={{ ml: 0.5 }} fontSize="inherit" color="info"/>}
+                             </div>
+                         }
+                         {...other} />
                 </span>
             </Tooltip>
         )
@@ -94,30 +111,33 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
                     aria-label="Analysis tab"
                     sx={{borderRight: 1, borderColor: 'divider', minWidth: "240px", minHeight: '700px',}}
                 >
-                    <TabTitle id="tab-b-0" label="Cell components" disabled={!hasCellType}
-                              disabledText={noCellTypeHelp}/>
-                    <TabTitle id="tab-b-1" label="Cell density" disabled={!hasCellType} disabledText={noCellTypeHelp}/>
-
-                    <TabTitle id="tab-b-2" label="Cell expression" disabled={!hasCellType}
-                              disabledText={noCellTypeHelp}/>
+                    <TabTitle id="tab-b-0" label="Cell components" disabled={!hasCellType} disabledType="permanent" disabledText={noCellTypeHelp}/>
+                    <TabTitle id="tab-b-1" label="Cell density" disabled={!hasCellType} disabledType="permanent" disabledText={noCellTypeHelp}/>
+                    <TabTitle id="tab-b-2" label="Cell expression" disabled={!hasCellType} disabledType="permanent" disabledText={noCellTypeHelp}/>
                     <Tab id="tab-b-3" label="Co-Expression"/>
+                    <TabTitle id="tab-b-4" label="Cell distribution" disabled={!hasCellType} disabledType="permanent" disabledText={noCellTypeHelp}/>
+                    <TabTitle id="tab-b-5" label="Ripley Statistics" disabled={!hasCellType} disabledType="permanent" disabledText={noCellTypeHelp}/>
+                    <TabTitle id="tab-b-6" label="Spatial Entropy" disabled={!hasCellType} disabledType="permanent" disabledText={noCellTypeHelp}/>
 
-                    <TabTitle id="tab-b-4" label="Cell distribution" disabled={!hasCellType}
-                              disabledText={noCellTypeHelp}/>
-                    <TabTitle id="tab-b-5" label="Ripley Statistics" disabled={!hasCellType}
-                              disabledText={noCellTypeHelp}/>
-                    <TabTitle id="tab-b-6" label="Spatial Entropy" disabled={!hasCellType}
-                              disabledText={noCellTypeHelp}/>
-
-                    <Tab id="tab-b-7" label="Find Neighbors"/>
-                    <TabTitle id="tab-b-8" label="Spatial Community" disabled={!neighborsReady}
-                              disabledText={noNeighborsHelp}/>
+                    <Tab id="tab-b-7" label={
+                        <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+                            {"Find Neighbors"}
+                            {neighborsReady ?
+                             <CheckCircleIcon sx={{ ml: 0.5 }} fontSize="inherit" color="success"/> :
+                             <NewReleasesIcon sx={{ ml: 0.5 }} fontSize="inherit" color="error"/>
+                    }
+                        </div>
+                    }
+                    />
+                    <TabTitle id="tab-b-8" label="Spatial Community" disabled={!neighborsReady} disabledText={noNeighborsHelp}/>
                     <TabTitle id="tab-b-9" label="Cell Centrality" disabled={(!hasCellType) || (!neighborsReady)}
-                              disabledText={findNeighborsHelp(neighborsReady, hasCellType)}/>
+                              disabledText={findNeighborsHelp(neighborsReady, hasCellType)} disabledType={(!hasCellType) ? "permanent" : "temporal"}/>
 
                     <TabTitle id="tab-b-10" label="Cell-Cell Interaction"
                               disabled={(!hasCellType) || (!neighborsReady)}
-                              disabledText={findNeighborsHelp(neighborsReady, hasCellType)}/>
+                              disabledText={findNeighborsHelp(neighborsReady, hasCellType)}
+                              disabledType={(!hasCellType) ? "permanent" : "temporal"}
+                    />
                     <TabTitle id="tab-b-11"
                               label="Spatial co-expression" disabled={!neighborsReady} disabledText={noNeighborsHelp}
                     />

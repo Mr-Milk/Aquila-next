@@ -102,7 +102,7 @@ const getSeriesTN = (cx, cy, ct) => {
 
 export const CellMap2DThumbNail = ({cx, cy, ct}) => {
     const series = getSeriesTN(cx, cy, ct)
-    console.log('cell map TN', series.map((s) =>  s.name ))
+    // console.log('cell map TN', series.map((s) =>  s.name ))
     const option = {
         color: CAT_COLORS,
         // To maintain the x-y at same ratio
@@ -132,7 +132,7 @@ export const CellMap2DThumbNail = ({cx, cy, ct}) => {
 export const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
 
     const series = getSeries(cx, cy, ct, symbolSize)
-    console.log('cell map', series.map((s) =>  s.name ))
+    // console.log('cell map', series.map((s) =>  s.name ))
     const option = {
         color: CAT_COLORS,
         title: {
@@ -145,7 +145,7 @@ export const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
         },
         toolbox: {
             itemSize: 13,
-            right: '5%',
+            right: '25%',
             feature: {
                 saveAsImage: {
                     show: true,
@@ -157,7 +157,7 @@ export const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
         legend: {
             type: "scroll",
             align: "left",
-            left: '75%',
+            right: '0%',
             top: 'middle',
             height: '75%',
             // itemSymbol: "circle",

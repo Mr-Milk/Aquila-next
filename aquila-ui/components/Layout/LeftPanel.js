@@ -6,7 +6,7 @@ const innerSX = {
     borderRight: 1,
     borderColor: 'divider',
     minWidth: "280px",
-    minHeight: '100%'
+    minHeight: '100%',
 }
 
 const LeftPanel = ({sx, children}) => (

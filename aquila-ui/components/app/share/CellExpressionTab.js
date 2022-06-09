@@ -14,6 +14,7 @@ import groupBy from "loadsh/groupBy"
 import meanBy from "loadsh/meanBy"
 import max from "loadsh/max"
 import min from "loadsh/min"
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const defaultValues = {
@@ -81,7 +82,10 @@ const CellExpressionTab = ({roiID, recordData, cellData, getCellExpBatch}) => {
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Expression in different cell types"}/>
+                    <SectionExplainer title={"Expression in different cell types"}
+                        details={"To visualize the expression of different markers in " +
+                            "different cell tyeps."}
+                    />
                     <ParamWrap>
                         <Controller
                             name="markers"

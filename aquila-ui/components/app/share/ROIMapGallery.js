@@ -63,11 +63,11 @@ const ROIMapThumbNail = ({roiID, roiMeta, setCurrentROI, getCellData}) => {
 const MemoROIMapThumbNail = memo(ROIMapThumbNail)
 
 
-const ROIPreviewItem = ({roiID, roiMeta, setCurrentROI, deleteROI, getCellData, key}) => {
+const ROIPreviewItem = ({roiID, roiMeta, setCurrentROI, deleteROI, getCellData}) => {
 
     const [showDelete, setShowDelete] = useState(false);
 
-    return <Grid item key={key}>
+    return <Grid item>
         <Stack
             direction="row"
             alignItems="flex-start"

@@ -15,6 +15,7 @@ import SubmitButton from "../../InputComponents/SubmitButton";
 import Tree from "../../Viz/Tree";
 import LeftPanel from "../../Layout/LeftPanel";
 import {getDefaultR} from "../../compute/geo";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const getRunBody = (cellData, userData) => {
@@ -144,11 +145,10 @@ const CellDistributionTab = ({cellData, bbox}) => {
         <Stack direction="row" sx={{height: '100%'}}>
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-
-
-                    {/*<Typography variant="subtitle2">{"Profiling the distribution pattern of cells"}</Typography>*/}
-                    {/*<Divider/>*/}
-                    <SectionTitleWrap title={"Profiling the distribution pattern of cells"}/>
+                    <SectionExplainer title={"Distribution pattern of cells"}
+                                      details={"The distribution pattern suggests the spatial feature of a certain cell type. " +
+                                          "The null hypothesis is that the cells are distributed randomly, " +
+                                          "3 methods are provided to test it. Results in random, aggregation or uniform pattern."}/>
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -160,9 +160,9 @@ const CellDistributionTab = ({cellData, bbox}) => {
                                         options={methods}
                                         description={
                                             <>
-                                                <li>Index of dispersion: Random Sampling</li>
+                                                <li>Index of dispersion: Random sampling</li>
                                                 <li>Morisita of index: Quadratic statistic</li>
-                                                <li>Clark-Evans Index: Nearest Neighbors based</li>
+                                                <li>Clark-Evans Index: Nearest neighbors</li>
                                             </>
                                         }
                                         {...field}/>
@@ -205,7 +205,7 @@ const CellDistributionTab = ({cellData, bbox}) => {
                     </ParamWrap>
 
                     <ParamWrap show={watchMethod === 'morisita'}>
-                        <Stack direction="row" spacing={2} sx={{ minWidth: "300px" }}>
+                        <Stack direction="row" spacing={2} sx={{minWidth: "300px"}}>
                             <Controller
                                 name="quad1"
                                 control={control}

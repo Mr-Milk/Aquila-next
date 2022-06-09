@@ -16,6 +16,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import OneItemCenter from "../components/Layout/OneItemCenter";
+import Grid from "@mui/material/Grid";
 
 
 const FieldItem = ({title, content}) => (
@@ -39,35 +40,37 @@ const DataSetButton = ({name, href}) => (
 )
 
 
-const PubCard = ({key, record}) => {
+const PubCard = ({record}) => {
     return (
-        <Box key={key} sx={{
-            border: 1,
-            borderColor: 'divider',
-            borderRadius: '5px',
-            p: 3
-        }}>
-            {/*Title*/}
-            <Link sx={{textDecoration: 'none'}} href={record.url} target="blank_">
-                <Typography variant="h6" color="grass">{record.title}</Typography>
-            </Link>
-            {/*Journal and Year*/}
-            <Typography fontStyle="italic" color="gray">{`${record.journal}, ${record.year}`}</Typography>
-            {/*Other fields*/}
-            <FieldItem title={"Technology:"} content={record.technology.join(", ")}/>
-            <FieldItem title={"Species:"} content={record.species.join(", ")}/>
-            <FieldItem title={"Tissue:"} content={record.tissue.join(", ")}/>
-            <FieldItem title={"Disease:"} content={record.disease.join(", ")}/>
-            <Stack direction="row" spacing={2} sx={{mt: 1}}>
-                {
-                    (record.data_uuids.length === 1) ?
-                        <DataSetButton name={"Dataset"} href={`/view/${record.data_uuids[0]}`}/> :
-                        record.data_uuids.map((id, i) => (
-                            <DataSetButton key={i} name={`Dataset ${i + 1}`} href={`/view/${id}`}/>
-                        ))
-                }
-            </Stack>
-        </Box>
+        <Grid item>
+            <Box sx={{
+                border: 1,
+                borderColor: 'divider',
+                borderRadius: '5px',
+                p: 3
+            }}>
+                {/*Title*/}
+                <Link sx={{textDecoration: 'none'}} href={record.url} target="blank_">
+                    <Typography variant="h6" color="grass">{record.title}</Typography>
+                </Link>
+                {/*Journal and Year*/}
+                <Typography fontStyle="italic" color="gray">{`${record.journal}, ${record.year}`}</Typography>
+                {/*Other fields*/}
+                <FieldItem title={"Technology:"} content={record.technology.join(", ")}/>
+                <FieldItem title={"Species:"} content={record.species.join(", ")}/>
+                <FieldItem title={"Tissue:"} content={record.tissue.join(", ")}/>
+                <FieldItem title={"Disease:"} content={record.disease.join(", ")}/>
+                <Stack direction="row" spacing={2} sx={{mt: 1}}>
+                    {
+                        (record.data_uuids.length === 1) ?
+                            <DataSetButton name={"Dataset"} href={`/view/${record.data_uuids[0]}`}/> :
+                            record.data_uuids.map((id, i) => (
+                                <DataSetButton key={i} name={`Dataset ${i + 1}`} href={`/view/${id}`}/>
+                            ))
+                    }
+                </Stack>
+            </Box>
+        </Grid>
     )
 }
 
@@ -142,8 +145,8 @@ const PublicationPage = ({pubData}) => {
                 <SearchPubs data={pubData} updateDataFn={setDisplayData}/>
                 {
                     displayData.length === 0 ? <OneItemCenter>
-                        <Typography variant="h6" sx={{ my: 6 }}>No Data is Found</Typography>
-                    </OneItemCenter> : <Stack direction="column" justifyContent="flex-start" spacing={2} sx={{
+                        <Typography variant="h6" sx={{my: 6}}>No Data is Found</Typography>
+                    </OneItemCenter> : <Grid container direction="column" justifyContent="flex-start" spacing={2} sx={{
                         mt: 4
                     }}>
                         {
@@ -151,7 +154,7 @@ const PublicationPage = ({pubData}) => {
                                 <MemoPubCard record={record} key={record.url}/>
                             ))
                         }
-                    </Stack>
+                    </Grid>
                 }
             </Container>
         </>

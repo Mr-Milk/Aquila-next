@@ -14,10 +14,10 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 
 
-const ExpPreviewItem = ({roiID, cellData, marker, getExpDataFn, setCurrentMarker, key}) => {
+const ExpPreviewItem = ({roiID, cellData, marker, getExpDataFn, setCurrentMarker}) => {
     const {data: expData} = getExpDataFn(roiID, marker);
     return (
-        <Grid item key={key}>
+        <Grid item>
             <Stack alignItems="center" spacing={1} onClick={() => {
                 setCurrentMarker(marker)
             }}
@@ -171,7 +171,7 @@ export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
                 </ParamWrap>
             </LeftPanel>
 
-            <OneItemCenter>
+            <OneItemCenter sx={{ p: 4 }}>
                 <CellMap2D
                     cx={cellData.cell_x}
                     cy={cellData.cell_y}
