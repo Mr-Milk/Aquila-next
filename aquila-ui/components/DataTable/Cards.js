@@ -10,15 +10,27 @@ import Typography from "@mui/material/Typography";
 import {toHumanString} from "../humanize";
 import MUILink from "@mui/material/Link";
 import Tooltip from "@mui/material/Tooltip";
+import { GiDna2 } from 'react-icons/gi';
+import { SiMoleculer } from 'react-icons/si';
 
 export const SpeciesChip = ({species}) => {
     if (species === 'Mouse') {
-        return <Chip size="small" icon={<GiSeatedMouse color="#5c6bc0" fontSize="small"/>} label='Mouse'
-                     variant="outlined"
-                     sx={{color: "#5c6bc0", borderColor: "#5c6bc0"}}/>
+        return <Chip
+            size="small"
+            icon={<GiSeatedMouse fontSize="small"/>}
+            label='Mouse'
+            variant="outlined"
+            color="secondary"
+                     //sx={{color: "#5c6bc0", borderColor: "#5c6bc0"}}
+        />
+    } else if (species === 'Human') {
+        return <Chip color="secondary" size="small" icon={<IoIosMan fontSize="small"/>} label={species} variant="outlined"
+                     //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+        />
     } else {
-        return <Chip size="small" icon={<IoIosMan color="#42a5f5" fontSize="small"/>} label={species} variant="outlined"
-                     sx={{color: "#42a5f5", borderColor: "#42a5f5"}}/>
+        return <Chip size="small" label={species} variant="outlined"
+                     //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+        />
     }
 }
 
@@ -46,9 +58,9 @@ export const DimChip = ({is3d}) => {
 
 export const MoleculeChip = ({molecule}) => {
     if (molecule === 'RNA') {
-        return <Chip label={"RNA"} avatar={<DNA/>} size="small"></Chip>
+        return <Chip label={"RNA"} avatar={<GiDna2/>} size="small"></Chip>
     } else {
-        return <Chip label={"Protein"} avatar={<Molecule/>} size="small"></Chip>
+        return <Chip label={"Protein"} avatar={<SiMoleculer/>} size="small"></Chip>
     }
 }
 
@@ -95,7 +107,7 @@ const getJournal = (journal) => {
 
 export const JournalText = ({record}) => {
     return <Tooltip title={record.source_name}>
-        <MUILink href={record.source_url} target="_blank" color="#757575">
+        <MUILink href={record.source_url} target="_blank" color="#757575" sx={{ fontStyle: 'italic' }}>
             {`${getJournal(record.journal)}, ${record.year}`.toUpperCase()}
         </MUILink>
     </Tooltip>

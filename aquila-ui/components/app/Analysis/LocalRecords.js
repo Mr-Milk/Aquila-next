@@ -67,7 +67,7 @@ const Record = ({record, onDelete}) => {
                 <Stack direction="row" justifyContent="space-between" sx={{my: 2}}>
                     <StatsText count={record.cell_count} unit={'Cells'}/>
                     <StatsText count={record.marker_count} unit={'Markers'}/>
-                    <StatsText count={record.roi_count} unit={'ROI'}/>
+                    <StatsText count={record.roi_count} unit={record.roi_count === 1 ? 'ROI' : 'ROIs'}/>
                 </Stack>
 
 

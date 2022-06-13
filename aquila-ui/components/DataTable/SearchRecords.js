@@ -64,10 +64,11 @@ const SearchRecords = ({data, updateDataFn}) => {
     }
 
     return <Stack direction="row" alignItems="center" sx={{ width: '100%' }}>
+        <Search color="action"/>
         <Button
-            startIcon={<Search/>}
+            size="large"
             endIcon={<ExpandMoreIcon/>}
-            sx={{mr: 1, my: 0.5, textTransform: 'none', color: 'action.active'}}
+            sx={{ml: 1, mr: 2, my: 0.5, textTransform: 'none', color: 'action.active'}}
             onClick={handleClick}
         >
             {(searchMethod === "fuzz") ? 'Keywords' : 'Markers'}
@@ -82,9 +83,10 @@ const SearchRecords = ({data, updateDataFn}) => {
         </Menu>
         {/*<Search sx={{color: 'action.active', mr: 1, my: 0.5}}/>*/}
         <TextField fullWidth
+                   size="medium"
                    variant="standard"
                    sx={{ minWidth: '400px' }}
-                   placeholder={(searchMethod === "fuzz") ? "Any keywords..." : "Markers/Genes..."}
+                   placeholder={(searchMethod === "fuzz") ? "Search keywords..." : "Search markers..."}
                    onChange={(e) => {
                        (searchMethod === "fuzz") ? runSearch(e.target.value) : runMarkerSearch(e.target.value)
                    }}

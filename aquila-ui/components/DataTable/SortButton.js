@@ -66,7 +66,15 @@ const SortButton = ({displayData, updateDataFn}) => {
     return (
         <Stack direction="row" alignItems="center" sx={{minWidth: "180px", ml: 2, md: {mb: 2}}}>
 
-            <Button startIcon={<SortIcon/>} onClick={handleClick} sx={{textTransform: 'none',}}>{sortMethod}</Button>
+            <Button
+                size="large"
+                startIcon={<SortIcon/>}
+                onClick={handleClick}
+                color="secondary"
+                sx={{textTransform: 'none'}}
+            >
+                {sortMethod}
+            </Button>
             <Menu
                 anchorEl={anchorEl}
                 open={open}
@@ -86,8 +94,12 @@ const SortButton = ({displayData, updateDataFn}) => {
                 }
             </Menu>
 
-            <IconButton onClick={handleOrderClick}>
-                {order ? <ArrowDownwardIcon color="primary"/> : <ArrowUpwardIcon color="primary"/>}
+            <IconButton
+                size="large"
+                color="secondary"
+                onClick={handleOrderClick}
+            >
+                {order ? <ArrowDownwardIcon/> : <ArrowUpwardIcon/>}
             </IconButton>
         </Stack>
     )

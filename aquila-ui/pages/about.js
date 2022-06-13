@@ -12,7 +12,7 @@ import Head from "next/head";
 
 
 const Title = ({children}) => {
-    return <Typography variant="h6" sx={{my: 2,}}>{children}</Typography>
+    return <Typography variant="h6" sx={{mt: 4, mb: 2,}}>{children}</Typography>
 }
 
 const Content = ({children}) => {
@@ -80,8 +80,17 @@ const AboutPage = ({images}) => {
                 <Link href="https://github.com/Mr-Milk">
                     <Avatar src="https://avatars.githubusercontent.com/u/23433306?v=4"/>
                 </Link>
-                <Typography variant={"subtitle1"}>{"Mr-Milk"}</Typography>
+                <Stack>
+                    <Typography variant={"subtitle1"}>{"Milk"}</Typography>
+                    <Typography variant={"caption"}>yb97643@um.edu.mo</Typography>
+                </Stack>
+
             </Stack>
+
+            <Title>Data Request</Title>
+            <Content>{"If you found a dataset is not included in our database, you can either send an email to me or " +
+                "open an issue on the Aquila GitHub repo. I'll be pleased to add them. Currently, we have no plan in " +
+                "allowing user to upload their own research data as part of the database."}</Content>
 
             <Title>{"Using APIs to access Aquila"}</Title>
             <Content>{"Feel free to use following APIs to get data from Aquila server. Things place in {} are variables " +
@@ -89,28 +98,30 @@ const AboutPage = ({images}) => {
             <Box component="div" sx={{my: 2}}>
                 <API method={"ROOT"}
                      entry={<a href="https://api.aquila.cheunglab.org">https://api.aquila.cheunglab.org</a>}/>
-                <API entry={"/data_ids"} details={"Get all data ID in the database"}/>
-                <API entry={"/records"} details={"Get records and their related information"}/>
-                <API entry={"/record/{data_id}"} details={"Get one record by specifying a data ID"}/>
-                <API entry={"/rois/{data_id}"} details={"Get all ROI information of a data"}/>
-                <API entry={"/roi/{roi_id}"} details={"Get one ROI information by specifying a ROI ID"}/>
-                <API entry={"/cell_info/{roi_id} "} details={"Get all cell information in a ROI"}/>
-                <API entry={"/cell_exp/{roi_id}/{marker}"} details={"Get cell expression of a marker in a ROI"}/>
+                <API entry={"/data_ids"} details={"Get all data ID in the database."}/>
+                <API entry={"/records"} details={"Get records and their related information."}/>
+                <API entry={"/record/{data_id}"} details={"Get one record by specifying a data ID."}/>
+                <API entry={"/rois/{data_id}"} details={"Get all ROI information of a data."}/>
+                <API entry={"/roi/{roi_id}"} details={"Get one ROI information by specifying a ROI ID."}/>
+                <API entry={"/cell_info/{roi_id} "} details={"Get all cell information in a ROI."}/>
+                <API entry={"/cell_exp/{roi_id}/{marker}"} details={"Get cell expression of a marker in a ROI."}/>
+                <API entry={"/static/{data_id}.zip"} details={"Download the dataset by specifying as data ID."}/>
             </Box>
 
 
             <Title>Why we concern about data security?</Title>
-            <Content>{"The source of spatial-omics data may comes from " +
+            <Content>{"The source of spatial omics data may comes from " +
                 "patient samples, and usually you need privacy information from patients to do the" +
                 "spatial analysis. The security of remote server is not guaranteed. To ensure the best privacy, " +
                 "none of the data will be sent to the server before running any of the spatial analysis." +
                 "The data sent to the server only contains location, expression and cell type information. "}</Content>
 
-            <Title>{"I know how to code and want to analyze large dataset"}</Title>
+            <Title>{"Advanced spatial omics analysis on large dataset"}</Title>
             <Content>{"Allow me to shamelessly promote "}<a href="https://github.com/Mr-Milk/SpatialTis" target="_blank"
                                                             rel="noreferrer">SpatialTis</a>
                 {": a spatial single-cell spatial analysis software written in Python and the underlying algorithms are implemented in Rust. " +
-                    "I made it easy to use and extremely fast. If you are interested, try it out!"}</Content>
+                    "It's easy to use and extremely fast. It allows you to perform analysis on hundreds or thousands of ROI simultaneously" +
+                    "and visualize it. If you are interested, try it out!"}</Content>
 
             <Stack direction="column" justifyContent="center" alignItems="center" sx={{my: 4}}>
                 <a href="https://github.com/Mr-Milk/SpatialTis" target="_blank" rel="noreferrer">

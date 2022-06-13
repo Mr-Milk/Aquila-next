@@ -8,14 +8,13 @@ import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 
-const SectionExplainer = (props) => {
+const SectionExplainer = ({title, details, vizTips, sx, ...other}) => {
 
-    const {title, details, vizTips, ...other} = props;
     const [open, setOpen] = useState(false);
 
     return (
         <>
-            <Box component={"div"} sx={{my: 2}} {...other}>
+            <Box component={"div"} sx={{my: 2, ...sx}} {...other}>
                 <Stack direction="row" alignItems="center" spacing={1} onClick={() => setOpen(!open)}>
                     <Typography variant="subtitle2" sx={{whiteSpace: 'nowrap'}}>{title}</Typography>
                     <ExpandMoreIcon color="action" sx={{
@@ -26,7 +25,7 @@ const SectionExplainer = (props) => {
                 {
                     open ?
                         <>
-                            <Typography variant="body2" sx={{maxWidth: '350px'}}>{details}</Typography>
+                            <Typography variant="body2">{details}</Typography>
                             {
                                 vizTips !== undefined ? <Alert icon={<BubbleChartIcon fontSize="inherit"/>}
                                 sx={{ mt: 1, }}>

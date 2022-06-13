@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
-import {useState} from "react";
+import {useId, useState} from "react";
 import {getPlaiceholder} from "plaiceholder";
 import Divider from "@mui/material/Divider";
 import Accordion from "@mui/material/Accordion";
@@ -24,52 +24,35 @@ import IconButton from "@mui/material/IconButton";
 import OneItemCenter from "../components/Layout/OneItemCenter";
 import HelpOutline from "@mui/icons-material/HelpOutline";
 import SubmitButton from "../components/InputComponents/SubmitButton";
+import Link from "@mui/material/Link";
 
+
+const createID = (id, title) => {
+    return `${id}-${title}`
+}
 
 const Title = ({sx, children}) => {
     return <Typography variant="h5" sx={{fontWeight: 600, ...sx}}>{children}</Typography>
 }
 
 
-function VerticalLinearStepper({title, steps}) {
-    const [activeStep, setActiveStep] = useState(-1);
-
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleReset = () => {
-        setActiveStep(0);
-    };
-
-    const stepsCount = steps.length - 1;
-
+function VerticalLinearStepper({title, steps, id}) {
     return (
-        <Box sx={{maxWidth: 800, mb: 2}}>
-            <Stack direction="row" spacing={1} sx={{mb: 2}} alignItems="center">
-                <Title>{title}</Title>
-                {activeStep === -1 && (
-                    <Button startIcon={<PlayCircleFilledIcon/>} onClick={handleReset} color="primary">
-                        Start
-                    </Button>
-                )}
-            </Stack>
+        <Box sx={{maxWidth: '900px', mb: 2}}>
+            <Typography
+                variant="h5"
+                fontFamily="Plus Jakarta Sans"
+                sx={{mb: 2}}
+                id={createID(id, title)}
+            >
+                {title}
+            </Typography>
 
-            <Stepper activeStep={activeStep} orientation="vertical">
+            <Stepper orientation="vertical">
                 {steps.map((step, index) => (
-                    <Step key={step.label}>
-                        <StepLabel
-                            optional={
-                                index === stepsCount ? (
-                                    <Typography variant="caption">Last step</Typography>
-                                ) : null
-                            }
-                        >
-                            {step.label}
+                    <Step key={step.label} active={true}>
+                        <StepLabel>
+                            <Typography variant="h6" fontFamily="Plus Jakarta Sans">{step.label}</Typography>
                         </StepLabel>
                         <StepContent>
                             <Typography sx={{my: 2}}>{step.description}</Typography>
@@ -78,38 +61,11 @@ function VerticalLinearStepper({title, steps}) {
                                     // eslint-disable-next-line jsx-a11y/alt-text
                                     <Image {...step.imageProps} placeholder="blur"/> : null
                             }
-                            <Box sx={{mb: 2}}>
-                                <div>
-                                    <Button
-                                        variant="contained"
-                                        disableElevation
-                                        onClick={handleNext}
-                                        sx={{mt: 1, mr: 1}}
-                                    >
-                                        {index === stepsCount ? 'Finish' : 'Continue'}
-                                    </Button>
-                                    <Button
-                                        disabled={index === 0}
-                                        onClick={handleBack}
-                                        sx={{mt: 1, mr: 1}}
-                                    >
-                                        Back
-                                    </Button>
-                                </div>
-                            </Box>
                         </StepContent>
                     </Step>
                 ))}
             </Stepper>
-            {activeStep === steps.length && (
-                <Paper square elevation={0} sx={{p: 1}}>
-                    <Typography sx={{fontWeight: 500}}>🎉 Congratulation! You complete it!</Typography>
-                    <Button size="small" onClick={handleReset} sx={{mt: 1, mr: 1}}>
-                        View again
-                    </Button>
-                </Paper>
-            )}
-            <Divider/>
+            <Divider sx={{mb: 4}}/>
         </Box>
     );
 }
@@ -166,25 +122,47 @@ function StackAccordion({items}) {
     )
 }
 
+const TOCItem = ({refTitle, id}) => {
+    return <Link underline="none" color="inherit" href={`#${createID(id, refTitle)}`}
+                 sx={{
+                     "&:hover": {
+                         textDecoration: 'underline'
+                     }
+                 }}>#{refTitle}</Link>
+}
+
 
 const TutorialPage = ({images}) => {
     const browseSteps = [
         {
             label: 'Find the entry to view all datasets',
-            description: `The entry point for browse is at the header panel. It's available to all pages`,
+            description: `There are two ways to view datasets in Aquila. 
+            You can view all the dataset at once. Or by publications.`,
             imageProps: images.browse.step1,
         },
         {
-            label: 'Select a dataset that you interested',
-            description: `After you enter the browse page, you can filter, search, or sort to find the dataset that you want.
-        Click the view button to view that dataset.`,
+            label: 'Find your interested datasets',
+            description: <div>{`After you enter the dataset page, 
+            you can search, filter, or sort to find the dataset that you want.`}
+                <ul>
+                    <li><b>Search:</b> You can search by any keywords or search by marker or gene name</li>
+                    <li><b>Filter:</b> Use the filter panel below to select the conditions.</li>
+                    <li><b>Sort:</b> You can sort by number of cells/markers/ROI, year or publications.</li>
+                </ul>
+            </div>,
             imageProps: images.browse.step2,
         },
         {
-            label: 'Brief introduction to data card?',
+            label: `What's in the data card?`,
             description: `For each dataset, You are presented with a data card, which contains lots of information related to
             this data.`,
             //imageProps: images.browse.step2,
+        },
+        {
+            label: 'Download the datasets',
+            description: 'To download one dataset, you can click on the download button in the data card. ' +
+                'To download multiple datasets, add the dataset to the download list. Once you select all' +
+                'the data that you want to download, click the download list and confirm to proceed.'
         },
         {
             label: 'View the data',
@@ -194,7 +172,7 @@ const TutorialPage = ({images}) => {
             label: 'What each section do?',
             description:
                 <div>
-                    <ul style={{lineHeight: 2}}>
+                    <ul>
                         <li>Data summary section: Information related to the dataset.</li>
                         <li>The region of interest (ROI) selection panel: You can switch between different ROI.</li>
                         <li>ROI Viewer: Visualize the spatial distribution of cells and expression.</li>
@@ -205,7 +183,8 @@ const TutorialPage = ({images}) => {
         {
             label: 'Perform spatial analysis',
             description: <Typography>{`Feel free to run all kinds of analysis including advanced spatial analysis. If you don't know what each parameter mean,
-            it's ok to stick with defaults. Or check the`} <HelpOutline fontSize="small"/> {`for reference. Click on the`}
+            it's ok to stick with defaults. Or check the`} <HelpOutline
+                fontSize="small"/> {`for reference. Click on the`}
                 <span style={{
                     color: 'white',
                     backgroundColor: '#FF9800',
@@ -226,6 +205,13 @@ const TutorialPage = ({images}) => {
         }
     ];
 
+    const viewSteps = [
+        {
+            label: 'Selection of ROI',
+            description: 'A table contains all ROI information is presented for you.'
+        }
+    ]
+
     const submitSteps = [
         {
             label: 'Find the entry point for analysis',
@@ -235,12 +221,14 @@ const TutorialPage = ({images}) => {
         {
             label: 'Prepare 3 files',
             description: <div>You need to prepare 3 files to run the analysis, they should all have headers,
-            they should have same number of line, each line represent a cell or a record. Currently, we only
-            support 2D data, support for 3D data is on its way!
-                <ol style={{ lineHeight: 2 }}>
+                they should have same number of line, each line represent a cell or a record. Currently, we only
+                support 2D data, support for 3D data is on its way!
+                <ol style={{lineHeight: 2}}>
                     <li><b>ROI file</b>: Each line annotate the ROI that a cell belongs to.</li>
-                    <li><b>Cell info file</b>: Must have at least 2 columns, coordination X, coordination Y or you can add an extra columns to specify
-            cell type. This will unlock more analysis.</li>
+                    <li><b>Cell info file</b>: Must have at least 2 columns, coordination X, coordination Y or you can
+                        add an extra columns to specify
+                        cell type. This will unlock more analysis.
+                    </li>
                     <li><b>Expression file</b>: Each column is a gene, header is the gene name</li>
                 </ol></div>,
             imageProps: images.analysis.step2,
@@ -254,13 +242,13 @@ const TutorialPage = ({images}) => {
         {
             label: `Submit the files`,
             description: <div>Click <span style={{
-                    color: 'white',
-                    backgroundColor: '#FF9800',
-                    margin: '5px',
-                    padding: '8px',
-                    fontSize: '0.7rem',
-                    borderRadius: '5px'
-                }}>
+                color: 'white',
+                backgroundColor: '#FF9800',
+                margin: '5px',
+                padding: '8px',
+                fontSize: '0.7rem',
+                borderRadius: '5px'
+            }}>
                     GO!
                 </span> {`to start processing your file, it may take a long time
             since everything is running and saved on your local computer, please be patient. 
@@ -425,19 +413,55 @@ const TutorialPage = ({images}) => {
         },
     ]
 
+    const analysisSteps = [];
+
+    const id = useId();
+    const contents = [
+        {title: 'Browse Data', steps: browseSteps},
+        {title: 'Data Viewer', steps: viewSteps},
+        {title: 'Spatial Analysis', steps: analysisSteps},
+        {title: 'Analyze Your Spatial Omics Data', steps: submitSteps}
+    ]
+
     return (
 
-            <Container component="section" maxWidth="xl" sx={{ mt: 2, mb: 2}}>
-<Head>
+        <Container component="section" maxWidth="xl" sx={{mt: 2, mb: 2}}>
+            <Head>
                 <title>Aquila | Tutorial</title>
             </Head>
-                    <VerticalLinearStepper title={"Browse Data"} steps={browseSteps}/>
-                    <VerticalLinearStepper title={"Analyze Your Data"} steps={submitSteps}/>
-                    {/*<VerticalLinearStepper title={"Using Analyze Panel"} steps={dataSteps}/>*/}
-                    <Title sx={{mb: 2}}>What does each analysis do?</Title>
-                    <StackAccordion items={analysisExplanations}/>
+            <OneItemCenter>
+                <Stack spacing={2} sx={{mt: 2, mb: 4}}>
+                    <Typography
+                        variant="h4"
+                        fontFamily="Plus Jakarta Sans"
+                    >
+                        Tutorial
+                    </Typography>
+                    <ul style={{lineHeight: '2rem'}}>
+                        {
+                            contents.map((i) => (
+                                <li><TOCItem refTitle={i.title} id={id} key={i.title}/></li>
+                            ))
+                        }
+                    </ul>
+                </Stack>
+                {
+                    contents.map((i) => (
+                        <VerticalLinearStepper title={i.title} steps={i.steps} id={id} key={i.title}/>
+                    ))
+                }
 
-            </Container>
+
+                {/*<VerticalLinearStepper title={"Browse Data"} steps={browseSteps} id={id}/>*/}
+                {/*<VerticalLinearStepper title={"Data Viewer"} steps={viewSteps} id={id}/>*/}
+                {/*<VerticalLinearStepper title={"Spatial Analysis"} steps={analysisSteps} id={id}/>*/}
+                {/*<VerticalLinearStepper title={"Analyze Your Spatial Omics Data"} steps={submitSteps} id={id}/>*/}
+                {/*<VerticalLinearStepper title={"Using Analyze Panel"} steps={dataSteps}/>*/}
+                <Title sx={{mb: 2}}>What does each analysis do?</Title>
+                <StackAccordion items={analysisExplanations}/>
+            </OneItemCenter>
+
+        </Container>
     )
 }
 

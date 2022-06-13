@@ -27,7 +27,9 @@ const ROITable = ({roiMeta, updateFn}) => {
                     field: 'roi_id',
                     headerName: 'View ROI',
                     renderCell: (params) => {
-                        const currentROIMeta = parseROIDisplay(params.row)
+                        let row = {...params.row};
+                        delete row['id']
+                        const currentROIMeta = parseROIDisplay(row)
                         return (
                             <Button
                                 size="small"

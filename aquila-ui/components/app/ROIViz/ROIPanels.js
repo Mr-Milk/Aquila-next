@@ -266,8 +266,9 @@ export const CoLocPanel = ({roiID, cellData, markers, getExpDataFn}) => {
         <Stack direction="row" sx={{height: '100%'}}>
             <LeftPanel sx={{minWidth: '460px'}}>
                 <SectionExplainer title={"Visualize co-localization of markers"}
-                    details={"It's suggested that you select no more than 2~3 markers. " +
-                        "With more than 3 colors, the color mixing result is not satisfying."}
+                    details={"The color mixing result may not be satisfying if more than 3 markers."}
+                    vizTips={"Hover on the cell to see expression of different markers"}
+                    sx={{ maxWidth: '460px'}}
                 />
                 {
                     [0, 1, 2, 3, 4].map((i) => (

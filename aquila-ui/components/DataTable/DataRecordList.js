@@ -19,7 +19,9 @@ import CreateNewFolderRoundedIcon from '@mui/icons-material/CreateNewFolderRound
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import Tooltip from "@mui/material/Tooltip";
 import DownloadFab from "../app/View/DownloadFab";
-import { FixedSizeList } from 'react-window';
+import {ImBoxAdd, ImBoxRemove, ImDownload} from 'react-icons/im';
+import {CgPlayListRemove, CgPlayListAdd} from 'react-icons/cg';
+import PageviewOutlinedIcon from '@mui/icons-material/PageviewOutlined';
 
 
 const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
@@ -61,7 +63,8 @@ const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
                     </Grid>
                     <Grid item>
                         <Chip size="small" label={tissue} variant="outlined"
-                              sx={{color: '#ec407a', borderColor: '#ec407a'}}></Chip>
+                            //sx={{color: '#ec407a', borderColor: '#ec407a'}}
+                        ></Chip>
                     </Grid>
                     <Grid item>
                         <Chip size="small" label={disease} variant="outlined"
@@ -73,9 +76,9 @@ const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
                 </Grid>
 
                 <Stack direction="row" justifyContent="space-between" spacing={4} sx={{my: 2}}>
-                    <StatsText count={record.cell_count} unit={record.is_single_cell ? 'Cell' : 'Spot'}/>
-                    <StatsText count={record.marker_count} unit={record.molecule === 'RNA' ? 'Gene' : 'Marker'}/>
-                    <StatsText count={record.roi_count} unit={'ROI'}/>
+                    <StatsText count={record.cell_count} unit={record.is_single_cell ? 'Cells' : 'Spots'}/>
+                    <StatsText count={record.marker_count} unit={record.molecule === 'RNA' ? 'Genes' : 'Markers'}/>
+                    <StatsText count={record.roi_count} unit={record.roi_count === 1 ? 'ROI' : 'ROIs'}/>
                 </Stack>
 
                 <Grid container direction="row" spacing={2} alignItems="center">
@@ -88,24 +91,33 @@ const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
                     <Grid item>
                         <MoleculeChip molecule={record.molecule}/>
                     </Grid>
-                    <Grid item>
-                        <Chip label={'Cell Type'}
-                              icon={record.has_cell_type ?
-                                  <CheckIcon sx={{"&&": {color: "#00896C"}}}/> :
-                                  <CloseIcon sx={{"&&": {color: "#CB4042"}}}/>}
-                              variant="filled"
-                              size="small"
-                        />
-                    </Grid>
+                    {
+                        record.has_cell_type ? <Grid item>
+                            <Chip label={'Cell Type'}
+                                  icon={<CheckIcon sx={{"&&": {color: "#00896C"}}}/>}
+                                  variant="filled"
+                                  size="small"
+                            />
+                        </Grid> : <></>
+                    }
+
                 </Grid>
 
                 <Divider sx={{my: 1}}/>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Stack direction="row" alignItems="center">
-                        <Button size="small" endIcon={<ChevronRightIcon/>}>
-                            <Link
-                                href={record.is_3d ? `/view3d/${record.data_uuid}` : `/view/${record.data_uuid}`}>View</Link>
-                        </Button>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+
+                        <Link href={record.is_3d ? `/view3d/${record.data_uuid}` : `/view/${record.data_uuid}`}>
+                            <Button
+                                size="small"
+                                startIcon={<PageviewOutlinedIcon/>}
+                                color="primary"
+                                //sx={{ mr: 1 }}
+                            >
+                                View
+                            </Button>
+                        </Link>
+
                         <Tooltip title={"Download"}>
                             <IconButton
                                 size="small"
@@ -113,7 +125,7 @@ const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
                                 color="primary"
                                 //download={`${record.technology}-${record.is_3d ? '3D' : '2D'}-${record.species}-${record.tissue}-${record.disease}-${record.cell_count}x${record.marker_count}x${record.roi_count}.zip`}
                             >
-                                <DownloadIcon/>
+                                <ImDownload/>
                             </IconButton>
                         </Tooltip>
                         {added ? <Tooltip title={"Remove from download list"}>
@@ -124,9 +136,9 @@ const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
                                         removeDownloadList(record.data_uuid)
                                         setAdded(false)
                                     }}>
-                                    <RemoveCircleOutlineRoundedIcon/>
+                                    <ImBoxRemove/>
                                 </IconButton>
-                        </Tooltip> :
+                            </Tooltip> :
                             <Tooltip title={"Add to download list"}>
                                 <IconButton
                                     size="small"
@@ -135,7 +147,7 @@ const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
                                         addDownloadList(record.data_uuid)
                                         setAdded(true)
                                     }}>
-                                    <CreateNewFolderRoundedIcon/>
+                                    <ImBoxAdd/>
                                 </IconButton>
                             </Tooltip>
                         }
@@ -163,7 +175,7 @@ const DataRecordList = memo(function DataRecordList({data}) {
 
     const removeDownloadList = (id) => {
         startTransition(() => {
-            let newList = downloadList.filter((i) => i!==id)
+            let newList = downloadList.filter((i) => i !== id)
             setDownloadList(newList)
         })
     }

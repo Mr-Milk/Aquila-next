@@ -7,6 +7,8 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import {useState} from "react";
 import DialogContent from "@mui/material/DialogContent";
+import {ImBoxAdd} from "react-icons/im";
+import Typography from "@mui/material/Typography";
 
 
 const DownloadFab = ({ downloadList }) => {
@@ -26,10 +28,10 @@ const DownloadFab = ({ downloadList }) => {
                  }}
                  onClick={() => setOpen(true)}
             >
-                {"Download List"}
+                <Typography variant="subtitle2" sx={{ mr: 1 }}>{"Download List"}</Typography>
                 <Badge badgeContent={downloadList.length}
                        color="error">
-                    <DownloadRoundedIcon/>
+                    <ImBoxAdd/>
                 </Badge>
 
             </Fab>
@@ -46,7 +48,7 @@ const DownloadFab = ({ downloadList }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        href={`http://localhost:8000/download?files=${downloadList.join(",")}`}
+                        href={`https://api.cheunglab.org/download?files=${downloadList.join(",")}`}
                         onClick={() => setOpen(false)}
                     >Confirm</Button>
                 </DialogActions>

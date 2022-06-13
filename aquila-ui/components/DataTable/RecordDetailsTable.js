@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link"
 import Chip from "@mui/material/Chip";
 import {InfoRow, TitleCol} from "./utils";
+import IconButton from "@mui/material/IconButton";
+import {ImDownload} from "react-icons/im";
 
 const LinkPool = {
     MIBI: "https://www.ionpath.com/",
@@ -89,6 +91,18 @@ const RecordDetailsTable = ({dataID}) => {
                         <InfoRow title="ROI Number" info={data.roi_count}/>
                         <InfoRow title="Single Cell" info={data.is_single_cell ? "Yes" : "No"}/>
                         <InfoRow title="Cell Type" info={data.has_cell_type ? "Yes" : "No"}/>
+                        <TableRow>
+                            <TitleCol>Download</TitleCol>
+                            <TableCell>
+                                <IconButton
+                                    size="small"
+                                    color="primary"
+                                    href={`https://api.aquila.cheunglab.org/static/${data.data_uuid}.zip`}
+                                >
+                                    <ImDownload/>
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
