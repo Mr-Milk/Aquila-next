@@ -47,7 +47,7 @@ const DownloadFab = ({downloadList}) => {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        href={`https://api.cheunglab.org/download?files=${downloadList.join(",")}`}
+                        href={`https://api.aquila.cheunglab.org/download?files=${downloadList.join(",")}`}
                         onClick={() => setOpen(false)}
                     >Confirm</Button>
                 </DialogActions>
