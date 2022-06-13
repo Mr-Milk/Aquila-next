@@ -1,10 +1,20 @@
 import logging
-from typing import List, Union
+import shutil
+import zipfile
+from uuid import uuid4
+from functools import lru_cache
+from typing import List
+
+from pathlib import Path
 
 import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from starlette.background import BackgroundTask
+from starlette.responses import FileResponse
+
+from config import Settings
 
 from aquila_spatial import run_spatialde, run_sepal, run_ripley, run_community, run_centrality
 
@@ -26,9 +36,43 @@ app.add_middleware(
 )
 
 
+@lru_cache()
+def get_settings():
+    return Settings()
+
+
 @app.get("/")
 async def index():
     return "The aquila FastAPI server is running"
+
+
+class RequestFiles(BaseModel):
+    files: List[str]
+
+
+def delete_temp(temp_dir):
+    if Path(temp_dir).exists():
+        shutil.rmtree(temp_dir)
+
+
+@app.get("/download")
+async def zip_multiple_files(
+        files: str,
+        settings: Settings = Depends(get_settings)
+):
+    temp_dir = Path(f"/{uuid4().hex}")
+    temp_dir.mkdir(exist_ok=True)
+    log.info(f"Creating temp folder at {temp_dir}")
+    temp_zip = temp_dir / "Aquila-download.zip"
+
+    static_dir = Path(settings.static_dir)
+    with zipfile.ZipFile(temp_zip, 'w') as fp:
+        for request_zip in files.split(","):
+            fp.write(static_dir / f"{request_zip}.zip", arcname=f"{request_zip}.zip")
+
+    delete_after = BackgroundTask(delete_temp, temp_dir)
+
+    return FileResponse(path=temp_zip, filename="Aquila-download.zip", background=delete_after)
 
 
 class ExpVec(BaseModel):
@@ -126,5 +170,3 @@ async def centrality(params: CentralityParams):
         measure=params.method
     )
     return response
-
-

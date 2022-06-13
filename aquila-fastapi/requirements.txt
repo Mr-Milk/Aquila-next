@@ -9,3 +9,4 @@ python-igraph
 pointpats
 fastapi[full]
 uvicorn
+python-dotenv
