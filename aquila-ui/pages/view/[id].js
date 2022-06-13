@@ -12,15 +12,15 @@ import {Container} from "@mui/material";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import ROITable from "components/DataTable/ROISelector";
 import RecordDetailsTable from "components/DataTable/RecordDetailsTable";
-import ROIMaps from "components/app/share/ROIMaps";
+import ROIMaps from "components/app/ROIViz/ROIMaps";
 import Typography from "@mui/material/Typography";
 import Head from 'next/head';
 import Stack from "@mui/material/Stack";
 import ContentBox from "../../components/Layout/ContentBox";
-import AnalysisTab from "../../components/app/View/AnalysisTab";
+import AnalysisTab from "../../components/app/share/AnalysisTab";
 import {getBBox} from "../../components/compute/geo";
 import {parseROIDisplay} from "../../components/humanize";
-import ROIMapGallery from "../../components/app/share/ROIMapGallery";
+import ROIMapGallery from "../../components/app/ROIViz/ROIMapGallery";
 
 
 const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
@@ -108,6 +108,7 @@ const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
                          recordData={recordData}
                          cellData={cellData}
                          getExpDataFn={useExpData}
+                         getExpBatch={getCellExpBatch}
                          bbox={bbox}
                 />
                 <AnalysisTab roiID={currentROI}

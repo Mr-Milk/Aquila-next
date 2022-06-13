@@ -7,130 +7,24 @@ import Button from "@mui/material/Button";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import {GiSeatedMouse} from "react-icons/gi";
-import ViewInArOutlinedIcon from '@mui/icons-material/ViewInArOutlined';
-import {IoIosMan} from 'react-icons/io'
-import MUILink from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
-import DNA from "../icons/DNA";
-import Molecule from "../icons/Molecule";
-import {memo, useState} from "react";
+import {memo, startTransition, useState} from "react";
 import Link from "../Link";
-import {toHumanString} from "../humanize";
-import Tooltip from "@mui/material/Tooltip";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from "@mui/material/IconButton";
 import DownloadIcon from '@mui/icons-material/Download';
-import SquareIcon from '@mui/icons-material/Square';
+import {DimChip, JournalText, MoleculeChip, SpeciesChip, StatsText, TechChip} from "./Cards";
+import CreateNewFolderRoundedIcon from '@mui/icons-material/CreateNewFolderRounded';
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
+import Tooltip from "@mui/material/Tooltip";
+import DownloadFab from "../app/View/DownloadFab";
+import { FixedSizeList } from 'react-window';
 
 
-const SpeciesChip = ({species}) => {
-    if (species === 'Mouse') {
-        return <Chip size="small" icon={<GiSeatedMouse color="#5c6bc0" fontSize="small"/>} label='Mouse' variant="outlined"
-                     sx={{color: "#5c6bc0", borderColor: "#5c6bc0"}}/>
-    } else {
-        return <Chip size="small" icon={<IoIosMan color="#42a5f5" fontSize="small"/>} label={species} variant="outlined"
-                     sx={{color: "#42a5f5", borderColor: "#42a5f5"}}/>
-    }
-}
+const DataRecordCard = ({record, addDownloadList, removeDownloadList}) => {
 
-const DimChip = ({is3d}) => {
-    if (is3d) {
-        return <Chip size="small" icon={<ViewInArOutlinedIcon color="inherit" fontSize="small"/>} label='3D'/>
-    } else {
-        return <Chip size="small" icon={<SquareIcon color="inherit" fontSize="small"/>} label={'2D'}/>
-    }
-}
-
-// const MoleculeChip = ({molecule}) => {
-//     if (molecule === 'RNA') {
-//         return <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
-//             <DNA/>
-//             <Typography>RNA</Typography>
-//         </Stack>
-//     } else {
-//         return <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
-//             <Molecule/>
-//             <Typography>Protein</Typography>
-//         </Stack>
-//     }
-// }
-
-const MoleculeChip = ({molecule}) => {
-    if (molecule === 'RNA') {
-        return <Chip label={"RNA"} avatar={<DNA/>} size="small"></Chip>
-    } else {
-        return <Chip label={"Protein"} avatar={<Molecule/>} size="small"></Chip>
-    }
-}
-
-const ReadMore = ({text, wordcount}) => {
-
-    const [expand, setExpand] = useState(false);
-    return <Box sx={{display: 'flex', my: 2}}>
-        <Typography sx={{fontSize: "0.8rem", lineClamp: 1,}}>{text}</Typography>
-        <Typography sx={{fontSize: "0.8rem", color: "#757575"}}
-                    onClick={() => setExpand(!expand)}>{expand ? '<' : '>>'}</Typography>
-    </Box>
-}
-
-const techColor = {
-    'Visium': '#0043A4',
-    'IMC': '#7C0072',
-    'CyCIF': '#9e9d24',
-    'MIBI': '#0C0C7C',
-    'seqFISH': '#66C2A5',
-    'CODEX': '#B62232',
-    'MERFISH': '#212121',
-    // 'seq-scope': '',
-    'STARmap': '#F06292',
-    // 'DBiT-seq': '',
-    // 'osmFISH': '',
-    // 'pciSeq': '',
-    // 'sci-Space': ''
-}
-
-const getTechColor = (tech) => {
-    if (techColor.hasOwnProperty(tech)) {
-        return techColor[tech]
-    } else {
-        return '#ff9800'
-    }
-}
-
-const shortJournal = {
-    "COMMUNICATIONS BIOLOGY": "COMMS BIOLOGY",
-    "NATURE COMMUNICATIONS": "NATURE COMMS",
-    "JOURNAL OF THE AMERICAN SOCIETY OF NEPHROLOGY": "JASN",
-    "PROCEEDINGS OF THE NATIONAL ACADEMY OF SCIENCES": "PNAS",
-    "ELIFE SCIENCES PUBLICATIONS, LTD": "eLife"
-}
-
-const getJournal = (journal) => {
-    journal = journal.toUpperCase()
-    if (shortJournal.hasOwnProperty(journal)) {
-        return shortJournal[journal]
-    } else {
-        return journal
-    }
-}
-
-const TechChip = ({tech}) => {
-    return <Chip size={"small"} label={tech} sx={{color: 'white', bgcolor: getTechColor(tech)}}></Chip>
-}
-
-
-const StatsText = ({count, unit}) => {
-    return <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-
-        <Typography variant="h5">{toHumanString(count)}</Typography>
-        <Typography variant="caption" fontSize={14} sx={{ml: 0.5}}>{unit}</Typography>
-    </Box>
-}
-
-
-const DataRecordCard = ({record}) => {
+    const [added, setAdded] = useState(false);
 
     let tissue;
     let disease;
@@ -147,89 +41,133 @@ const DataRecordCard = ({record}) => {
     }
 
     return <Grid item xs={4} md={6}>
-    <Container maxWidth="400px">
-        <Paper square elevation={0} sx={{
-            my: 2,
-            pt: 2,
-            pb: 1,
-            px: 4,
-            border: 1,
-            borderRadius: '8px',
-            borderColor: 'divider',
-            '&:hover': {
-                backgroundColor: 'rgba(255,204,128,0.05)',
-                transition: 'background 0.3s'
-            }
-        }}>
-            <Grid container direction="row" spacing={2} justifyContent="flex-start">
-                <Grid item>
-                    <SpeciesChip species={record.species}/>
-                </Grid>
-                <Grid item>
-                    <Chip size="small" label={tissue} variant="outlined"
-                          sx={{color: '#ec407a', borderColor: '#ec407a'}}></Chip>
-                </Grid>
-                <Grid item>
-                    <Chip size="small" label={disease} variant="outlined"
-                          color={(disease === 'Normal') ? 'success' : 'error'}></Chip>
-                </Grid>
-                <Grid item>
+        <Container maxWidth="400px">
+            <Paper square elevation={0} sx={{
+                my: 2,
+                pt: 2,
+                pb: 1,
+                px: 4,
+                border: 1,
+                borderRadius: '8px',
+                borderColor: 'divider',
+                '&:hover': {
+                    backgroundColor: 'rgba(255,204,128,0.05)',
+                    transition: 'background 0.3s'
+                }
+            }}>
+                <Grid container direction="row" spacing={2} justifyContent="flex-start">
+                    <Grid item>
+                        <SpeciesChip species={record.species}/>
+                    </Grid>
+                    <Grid item>
+                        <Chip size="small" label={tissue} variant="outlined"
+                              sx={{color: '#ec407a', borderColor: '#ec407a'}}></Chip>
+                    </Grid>
+                    <Grid item>
+                        <Chip size="small" label={disease} variant="outlined"
+                              color={(disease === 'Normal') ? 'success' : 'error'}></Chip>
+                    </Grid>
+                    <Grid item>
 
+                    </Grid>
                 </Grid>
-            </Grid>
 
-            <Stack direction="row" justifyContent="space-between" spacing={4} sx={{my: 2}}>
-                <StatsText count={record.cell_count} unit={record.is_single_cell ? 'Cell' : 'Spot'}/>
-                <StatsText count={record.marker_count} unit={record.molecule === 'RNA' ? 'Gene' : 'Marker'}/>
-                <StatsText count={record.roi_count} unit={'ROI'}/>
-            </Stack>
+                <Stack direction="row" justifyContent="space-between" spacing={4} sx={{my: 2}}>
+                    <StatsText count={record.cell_count} unit={record.is_single_cell ? 'Cell' : 'Spot'}/>
+                    <StatsText count={record.marker_count} unit={record.molecule === 'RNA' ? 'Gene' : 'Marker'}/>
+                    <StatsText count={record.roi_count} unit={'ROI'}/>
+                </Stack>
 
-            <Grid container direction="row" spacing={2} alignItems="center">
-                <Grid item>
-                    <TechChip tech={record.technology}/>
+                <Grid container direction="row" spacing={2} alignItems="center">
+                    <Grid item>
+                        <TechChip tech={record.technology}/>
+                    </Grid>
+                    <Grid item>
+                        <DimChip is3d={record.is_3d}/>
+                    </Grid>
+                    <Grid item>
+                        <MoleculeChip molecule={record.molecule}/>
+                    </Grid>
+                    <Grid item>
+                        <Chip label={'Cell Type'}
+                              icon={record.has_cell_type ?
+                                  <CheckIcon sx={{"&&": {color: "#00896C"}}}/> :
+                                  <CloseIcon sx={{"&&": {color: "#CB4042"}}}/>}
+                              variant="filled"
+                              size="small"
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item>
-                    <DimChip is3d={record.is_3d}/>
-                </Grid>
-                <Grid item>
-                    <MoleculeChip molecule={record.molecule}/>
-                </Grid>
-                <Grid item>
-                    <Chip label={'Cell Type'}
-                          icon={record.has_cell_type ?
-                              <CheckIcon sx={{"&&": {color: "#00896C"}}}/> :
-                              <CloseIcon sx={{"&&": {color: "#CB4042"}}}/>}
-                          variant="filled"
-                          size="small"
-                    />
-                </Grid>
-            </Grid>
 
-            <Divider sx={{my: 1}}/>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Stack direction="row" alignItems="center">
-                <Button size="small" endIcon={<ChevronRightIcon/>}>
-                    <Link href={record.is_3d ? `/view3d/${record.data_uuid}` : `/view/${record.data_uuid}`}>View</Link>
-                </Button>
-                <IconButton size="small" href={`https://api.aquila.cheunglab.org/static/${record.data_uuid}.zip`} color="primary">
-                    <DownloadIcon/>
-                </IconButton>
+                <Divider sx={{my: 1}}/>
+                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack direction="row" alignItems="center">
+                        <Button size="small" endIcon={<ChevronRightIcon/>}>
+                            <Link
+                                href={record.is_3d ? `/view3d/${record.data_uuid}` : `/view/${record.data_uuid}`}>View</Link>
+                        </Button>
+                        <Tooltip title={"Download"}>
+                            <IconButton
+                                size="small"
+                                href={`https://api.aquila.cheunglab.org/static/${record.data_uuid}.zip`}
+                                color="primary"
+                                //download={`${record.technology}-${record.is_3d ? '3D' : '2D'}-${record.species}-${record.tissue}-${record.disease}-${record.cell_count}x${record.marker_count}x${record.roi_count}.zip`}
+                            >
+                                <DownloadIcon/>
+                            </IconButton>
+                        </Tooltip>
+                        {added ? <Tooltip title={"Remove from download list"}>
+                                <IconButton
+                                    size="small"
+                                    color="error"
+                                    onClick={() => {
+                                        removeDownloadList(record.data_uuid)
+                                        setAdded(false)
+                                    }}>
+                                    <RemoveCircleOutlineRoundedIcon/>
+                                </IconButton>
+                        </Tooltip> :
+                            <Tooltip title={"Add to download list"}>
+                                <IconButton
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => {
+                                        addDownloadList(record.data_uuid)
+                                        setAdded(true)
+                                    }}>
+                                    <CreateNewFolderRoundedIcon/>
+                                </IconButton>
+                            </Tooltip>
+                        }
                     </Stack>
-                <Tooltip title={record.source_name}>
-                    <MUILink href={record.source_url} target="_blank" color="#757575">
-                        {`${getJournal(record.journal)}, ${record.year}`.toUpperCase()}
-                    </MUILink>
-                </Tooltip>
+                    <JournalText record={record}/>
 
-            </Stack>
-        </Paper>
-    </Container>
+                </Stack>
+            </Paper>
+        </Container>
     </Grid>
 }
 
 const MemoDataRecordCard = memo(DataRecordCard);
 
-const DataRecordList = ({data}) => {
+const DataRecordList = memo(function DataRecordList({data}) {
+
+    const [downloadList, setDownloadList] = useState([]);
+
+    const addDownloadList = (id) => {
+        startTransition(() => {
+            let newList = new Set([...downloadList, id])
+            setDownloadList([...newList])
+        })
+    }
+
+    const removeDownloadList = (id) => {
+        startTransition(() => {
+            let newList = downloadList.filter((i) => i!==id)
+            setDownloadList(newList)
+        })
+    }
+
     return <Container maxWidth={'xl'} sx={{minHeight: '1vh'}}>
 
         {
@@ -248,11 +186,15 @@ const DataRecordList = ({data}) => {
                 :
                 <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, md: 12}}>
                     {data.map((r) => (
-                        <MemoDataRecordCard record={r} key={r.data_uuid}/>
+                        <MemoDataRecordCard record={r}
+                                            addDownloadList={addDownloadList}
+                                            removeDownloadList={removeDownloadList}
+                                            key={r.data_uuid}/>
                     ))}
                 </Grid>
         }
+        <DownloadFab downloadList={downloadList}/>
     </Container>
-}
+})
 
 export default DataRecordList;

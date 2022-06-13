@@ -1,6 +1,6 @@
 import {useDropzone} from 'react-dropzone';
 import Container from "@mui/material/Container";
-import {memo, useEffect, useRef, useState} from "react";
+import {memo, useCallback, useEffect, useRef, useState} from "react";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import {v4 as uuid4} from 'uuid';
@@ -9,14 +9,15 @@ import LocalRecords from "components/app/Analysis/LocalRecords";
 import ClientOnly from "components/Layout/ClientOnly";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import MetaExample from "components/app/Analysis/MetaExample";
-import FileExampleHelper from "components/app/Analysis/FileExampleHelper";
+import {
+    CellExpFileExample,
+    CellInfoFileExample,
+    ROIFileExample
+} from "components/app/Analysis/FileExampleHelper";
 import LooksOne from "@mui/icons-material/LooksOne";
 import LooksTwo from "@mui/icons-material/LooksTwo";
 import Looks3 from "@mui/icons-material/Looks3";
 import Chip from "@mui/material/Chip";
-import CellInfoExample from "components/app/Analysis/CellInfoExample";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
@@ -26,147 +27,213 @@ import Snackbar from "@mui/material/Snackbar";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import * as Comlink from "comlink";
-import Switch from '@mui/material/Switch';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import ExpExample from "../../components/app/Analysis/ExpExample";
 import {humanFileSize} from "../../components/humanize";
-import IconButton from "@mui/material/IconButton";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import Head from "next/head";
+import sum from 'loadsh/sum';
 import Grid from "@mui/material/Grid";
+import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
+import HelpOutline from "@mui/icons-material/HelpOutline";
+import FolderZipOutlinedIcon from '@mui/icons-material/FolderZipOutlined';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import PostAddRoundedIcon from '@mui/icons-material/PostAddRounded';
+import CircleIcon from '@mui/icons-material/Circle';
+import {createExample} from "../../db/createExample";
 
-const InfoSection = () => {
+
+const InfoSection = memo(
+    function InfoSection() {
+
+        const [openExampleExistWarning, setOpen] = useState(false);
+
+        return (
+            <Box component="div"
+                 sx={{
+                     mt: 2,
+                     mb: 4,
+                 }}
+            >
+                <Alert severity="info" icon={false} sx={{mb: 2}}>
+                    <AlertTitle>File Preparation</AlertTitle>
+                    <ul>
+                        <li>
+                            {`Prepare three files with same number of lines.`}
+                        </li>
+                        <li>
+                            {`Each line represent a cell (single-cell data) or a dot (non single-cell data) record.`}
+                        </li>
+                        <li>
+                            {`Click on the `}{<HelpOutline fontSize="inherit"
+                                                           color="action"/>}{` to check the details.`}
+                        </li>
+                    </ul>
+                </Alert>
+
+                <Alert severity="info" icon={false} sx={{mb: 2}}>
+                    <AlertTitle>Data Privacy</AlertTitle>
+                    <ul>
+                        <li>
+                            {`All your data will be kept on this computer.`}
+                        </li>
+                        <li>
+                            {`If you run the analysis, only cell location and cell expression data will be sent to the remote server.`}
+                        </li>
+                        <li>
+                            {`Our server does not preserve any user data.`}
+                        </li>
+                    </ul>
+                </Alert>
+
+                <Grid container direction="row" spacing={2}>
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            disableElevation
+                            sx={{textTransform: 'none'}}
+                            href="/example_data.zip"
+                            startIcon={<FolderZipOutlinedIcon/>}
+                        >Download Example Files</Button>
+                    </Grid>
+
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            disableElevation
+                            sx={{textTransform: 'none'}}
+                            startIcon={<AddCircleOutlineRoundedIcon/>}
+                            onClick={async () => {
+                                const exists = await db.DataRecords.get("Example Data (mini seqFISH data)");
+                                if (!exists) {
+                                    createExample()
+                                } else {
+                                    setOpen(true)
+                                }
+                            }}
+                        >Create Example Record</Button>
+                        <Snackbar open={openExampleExistWarning} autoHideDuration={2000} onClose={() => setOpen(false)}>
+                            <Alert onClose={() => setOpen(false)} severity="warning" sx={{width: '100%'}}>
+                                The example is already in your record!
+                            </Alert>
+                        </Snackbar>
+                    </Grid>
+                </Grid>
+
+            </Box>
+        )
+    })
+
+const FileUploadRegion = ({startIcon, exampleHelper, file, onDeleteFile, rootProps, inputProps, helperText}) => {
     return (
-        <Box component="div"
-             sx={{
-                 p: 2,
-                 my: 4,
-                 maxWidth: "500px",
-                 borderRadius: 2,
-                 borderStyle: 'solid',
-                 borderColor: "primary.main",
-             }}
-        >
-            <Alert severity="info" icon={false} sx={{mb: 2}}>
-                <AlertTitle>File Preparation</AlertTitle>
-                {`You need to prepare three files with same line number to run analysis on Aquila.
-                    Each line represent a cell (single-cell data) or a dot (non single-cell data) record.
-                    You can click on the ❔ to check the details.`}
-            </Alert>
+        <Box>
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+                {startIcon}
+                {exampleHelper}
+                <Tooltip title={"Please upload a file"} disableHoverListener={!!file}>
+                    <Chip
+                        size="small"
+                        label={file ? `${file.path}, ${humanFileSize(file.size)}` : "No File"}
+                        variant="outlined"
+                        color={file ? "success" : "error"}
+                        onDelete={file ? onDeleteFile : null}
+                    />
+                </Tooltip>
+            </Stack>
+            <Stack direction="row" alignItems="center" justifyContent="center" sx={{
+                mt: 1,
+                p: 6,
+                borderWidth: 2,
+                borderRadius: 2,
+                borderColor: 'primary.main',
+                borderStyle: 'dashed',
+                color: "#58513e",
+                outline: 'none',
+                cursor: 'pointer',
+            }} {...rootProps}>
 
-            <Alert severity="info" icon={false}>
-                <AlertTitle>Data Privacy</AlertTitle>
-                All your data will be kept on this computer, only
-                when you run the analysis will send data to server. None of the information from
-                ROI File will be sent.</Alert>
-
-            <Button
-                variant="outlined"
-                disableElevation
-                sx={{mt: 2}}
-                href="/example_data.zip"
-            >Download examples</Button>
+                <input {...inputProps} />
+                <PostAddRoundedIcon fontSize="large" sx={{mr: 1}}/>
+                <Typography component="span" sx={{
+                    display: 'flex',
+                    flexDirection: "column",
+                    justifyContent: 'flex-start',
+                    overflow: 'hidden',
+                }}>
+                    {helperText}
+                    <Typography variant="body1" sx={{
+                        color: "darkgrey",
+                        display: {xs: 'none', sm: 'block'}
+                    }}>{`Drop here or click`}</Typography>
+                    <Typography variant="body1" sx={{
+                        color: "darkgrey",
+                        display: {xs: 'block', sm: 'none'}
+                    }}>{`Press to select`}</Typography>
+                </Typography>
+            </Stack>
         </Box>
     )
 }
 
-const MemoInfoSection = memo(InfoSection);
 
-const ShowFile = ({file, onDelete}) => {
-
-    if (file) {
-        return (
-            <Chip
-                label={`${file.path}, ${humanFileSize(file.size)}`}
-                sx={{ml: 2}}
-                onDelete={onDelete}
-                variant="outlined"
-                color="success"
-            />
-        )
-    } else {
-        return (
-            <Tooltip title={"Please upload a file"}>
-                <Chip
-                    sx={{ml: 2}}
-                    label={"No File"}
-                    variant="outlined"
-                    color="error"
-                />
-            </Tooltip>
-        )
-    }
+const DotProgress = ({step, total}) => {
+    return (
+        <div style={{display: 'inline-block'}}>
+            {
+                [...Array(total).keys()].map((i) => {
+                    // if finished, show finished icon
+                    if ((i + 1) < step) {
+                        return <CheckCircleOutlineIcon color="success" key={i}/>
+                    }
+                    // if working on it, show orange circle
+                    else if ((i + 1) === step) {
+                        return <CircleIcon color={"warning"} key={i}/>
+                    }
+                    // if having reach the step yet, show gray circle
+                    else {
+                        return <CircleIcon color={"disabled"} key={i}/>
+                    }
+                })
+            }
+        </div>
+    )
 }
 
-const FileUploadRegion = ({rootProps, inputProps, helperText}) => {
+const stepText = {
+    1: "Splitting ROI",
+    2: "Reading cell location and cell type",
+    3: "Parsing expression data, may take a while",
+    4: "Finished"
+}
+
+const StatusBar = ({step}) => {
+    // if it's not running don't show status bar
+    if (step === 0) {
+        return null
+    }
+    // if it's error, ask user to check input
+    if (step === -1) {
+        return <Alert severity="error" sx={{mb: 4, maxWidth: '500px'}}>Error occurs when processing files! Check your
+            input files.</Alert>
+    }
+    // if running, show the status bar
     return (
-        <Stack direction="row" alignItems="center" justifyContent="center" sx={{
-            p: {xs: 1, sm: 2},
-            borderWidth: 2,
-            borderRadius: 2,
-            borderColor: 'primary.main',
-            borderStyle: 'dashed',
-            color: "#58513e",
-            outline: 'none',
-            cursor: 'pointer',
-        }} {...rootProps}>
-
-            <input {...inputProps} />
-            <FileUploadIcon sx={{mr: 0.5}}/>
-            <Typography component="span" sx={{
-                display: 'flex',
-                flexDirection: "column",
-                justifyContent: 'flex-start',
-                overflow: 'hidden',
-            }}>
-                {helperText}
-                <Typography variant="body2" sx={{
-                    color: "darkgrey",
-                    display: {xs: 'none', sm: 'block'}
-                }}>{`Drop here or click`}</Typography>
-                <Typography variant="body2" sx={{
-                    color: "darkgrey",
-                    display: {xs: 'block', sm: 'none'}
-                }}>{`Press to select`}</Typography>
-            </Typography>
-
-
+        <Stack direction="row" spacing={2} alignItems="center" sx={{mb: 2}}>
+            <Stack>
+                <DotProgress step={step} total={3}/>
+                <Typography color={step === 4 ? "green" : "darkorange"}>{stepText[step]}</Typography>
+            </Stack>
+            <CircularProgress color="success" sx={{display: step === 4 ? "none" : "block"}}/>
         </Stack>
     )
 }
 
+const dataIDHelperText = (error) => {
 
-const StatusBar = ({status, text}) => {
-    if (status === 'loading') {
-        return (
-            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 2}}>
-                <CircularProgress color="success" size={25}/>
-                <Typography color="green">{text}</Typography>
-            </Stack>
-        )
-    } else if (status === 'finished') {
-        return (
-            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 2}}>
-                <CheckCircleOutlineIcon color="success"/>
-                <Typography color="green">{`Finished`}</Typography>
-            </Stack>
-        )
-
-    } else if (status === 'error') {
-        return (
-            <>
-                <ErrorOutline color='error' sx={{ml: 2, mt: 1}}/>
-                <Snackbar open={true} autoHideDuration={6000}>
-                    <Alert severity="error" sx={{width: '100%'}}>
-                        Error occurs when processing files!
-                    </Alert>
-                </Snackbar>
-            </>
-
-        )
+    if (error === 0) {
+        return 'Better use a meaningful name for future reference'
+    } else if (error === 1) {
+        return 'ID already exists'
     } else {
-        return <></>
+        return 'ID cannot be empty'
     }
 }
 
@@ -174,10 +241,9 @@ const StatusBar = ({status, text}) => {
 const AnalysisPage = () => {
 
     const [dataID, setDataID] = useState(uuid4().slice(0, 8));
-    const [loadingText, setLoadingText] = useState("Working on it");
-    const [status, setStatus] = useState("waiting"); // "waiting", "loading", "finished", "error"
-    const [openHelp, setOpenHelp] = useState("none"); // "meta", "info", "exp", "none"
-    const [errorID, setErrorID] = useState(false);
+    const [processStep, setProcessStep] = useState(0);
+    const [allowStart, setAllowStart] = useState(false);
+    const [errorID, setErrorID] = useState(0); // 0: correct 1: duplicated, 2: empty
     const [files, setFiles] = useState({
         metaFile: "",
         infoFile: "",
@@ -186,8 +252,8 @@ const AnalysisPage = () => {
 
     const handleReset = () => {
         setDataID(uuid4().slice(0, 8))
-        setLoadingText("Working on it")
-        setStatus("waiting")
+        setProcessStep(0)
+        setAllowStart(false)
         setErrorID(false)
         setFiles({
             metaFile: "",
@@ -196,11 +262,11 @@ const AnalysisPage = () => {
         })
     }
 
-    const [isSingleCell, setIsSingleCell] = useState(true);
+    // const [isSingleCell, setIsSingleCell] = useState(true);
     // const handleSwitch = (e) => setIsSingleCell(e.target.checked)
 
     // workers state
-    const [comlinkMessage, setComlinkMessage] = useState("");
+    // const [comlinkMessage, setComlinkMessage] = useState("");
     const comlinkWorkerRef = useRef();
     const comlinkWorkerApiRef = useRef();
 
@@ -213,14 +279,32 @@ const AnalysisPage = () => {
         }
     }, [])
 
-    const checkIDExist = async (_, v) => {
-        const exists = await db.DataRecords.get(v);
-        if (exists) {
-            setErrorID(true);
-        } else {
-            setErrorID(false);
-            setDataID(v);
+    const checkReady = useCallback(() => {
+        let fileStatus = sum(Object.values(files).map((i) => i === "" ? 0 : 1));
+        if (fileStatus === 3) {
+            setAllowStart(true)
         }
+    }, [files])
+
+    useEffect(() => checkReady(), [checkReady, files])
+
+    const checkIDValidate = async (e) => {
+        let v = e.target.value;
+        setDataID(v);
+        if (v.length === 0) {
+            setErrorID(2);
+            setAllowStart(false);
+        } else {
+            const exists = await db.DataRecords.get(e.target.value);
+            if (exists) {
+                setErrorID(1);
+                setAllowStart(false);
+            } else {
+                setErrorID(0);
+                checkReady();
+            }
+        }
+
     }
 
     const onMetaDrop = (fs) => setFiles({...files, metaFile: fs[0]})
@@ -244,16 +328,16 @@ const AnalysisPage = () => {
 
 
     const handleRun = async () => {
-        setStatus("loading")
+        setAllowStart(false)
         // db.DataRecords.add({id: dataID.current, created_at: new Date().getTime()})
         try {
-            setLoadingText("Processing ROI File")
+            setProcessStep(1)
             const result = await comlinkWorkerApiRef.current.roiRecord(files.metaFile, dataID)
             //console.log(result)
-            setLoadingText("Processing Cell Info File")
+            setProcessStep(2)
             const hasCellType = await comlinkWorkerApiRef.current.cellInfo(files.infoFile, dataID, result.roiCellCount, result.roiMapper)
             //console.log(hasCellType)
-            setLoadingText("Processing Exp File")
+            setProcessStep(3)
             const expResult = await comlinkWorkerApiRef.current.expInfo(files.expFile, dataID, result.roiCellCount, result.roiMapper)
             //console.log(expResult)
 
@@ -265,15 +349,17 @@ const AnalysisPage = () => {
                 cell_count: result.cellCount,
                 marker_count: expResult.markerCount,
                 markers: expResult.markers,
-                is_single_cell: isSingleCell,
+                is_single_cell: true,
             }
 
             db.DataRecords.add(dataRecord)
-            setStatus("finished")
+            setProcessStep(4)
+            setDataID(uuid4().slice(0, 8))
+            setAllowStart(true)
 
         } catch (e) {
-            setStatus("error")
-            setLoadingText(e)
+            setProcessStep(-1)
+            checkReady()
         }
 
 
@@ -285,135 +371,105 @@ const AnalysisPage = () => {
                 <title>Aquila | Analysis</title>
             </Head>
             <Container component="section" maxWidth="xl" sx={{mt: 4}}>
-                {/*<Grid container direction="row" alignItems="center" justifyContent="center">*/}
-                {/*    <Grid item>*/}
-                        <MemoInfoSection/>
-                        <Typography variant="h4" sx={{mb: 3}}>Upload Files</Typography>
-                        <Stack alignItems="top" justifyContent="flex-start" spacing={4}>
 
-                            <Stack direction="row" alignItems="center">
-                                <LooksOne sx={{mr: {sm: 1}, color: "secondary.main"}}/>
-                                <FileExampleHelper
-                                    title={'ROI File Example'}
-                                    open={(openHelp === 'meta')}
-                                    onClose={() => setOpenHelp("none")}
-                                    onClick={() => setOpenHelp("meta")}
-                                >
-                                    <Typography sx={{mb: 2, maxWidth: "300px"}}>
-                                        Each line should annotate the ROI that a cell belongs to
-                                    </Typography>
-                                    <MetaExample/>
-                                </FileExampleHelper>
-                                <FileUploadRegion
-                                    rootProps={metaRootProps()}
-                                    inputProps={metaInputProps()}
-                                    helperText={"ROI File"}
-                                />
+                <Typography variant="h4" sx={{mb: 3}} fontFamily='Plus Jakarta Sans'>Submit Files</Typography>
+                <InfoSection/>
+                <Grid container direction="row" alignItems="top" justifyContent="flex-start" spacing={4}>
+                    <Grid item>
+                        <FileUploadRegion
+                            startIcon={<LooksOne color="secondary"/>}
+                            exampleHelper={<ROIFileExample/>}
+                            file={files.metaFile}
+                            onDeleteFile={() => setFiles({...files, metaFile: ""})}
+                            rootProps={metaRootProps()}
+                            inputProps={metaInputProps()}
+                            helperText={"ROI File"}
+                        />
+                    </Grid>
 
-                                <ShowFile file={files.metaFile}
-                                          onDelete={() => setFiles({...files, metaFile: ""})}
-                                />
-                            </Stack>
+                    <Grid item>
+                        <FileUploadRegion
+                            startIcon={<LooksTwo color="secondary"/>}
+                            exampleHelper={<CellInfoFileExample/>}
+                            file={files.infoFile}
+                            onDeleteFile={() => setFiles({...files, infoFile: ""})}
+                            rootProps={infoRootProps()}
+                            inputProps={infoInputProps()}
+                            helperText={"Cell Info File"}
+                        />
+                    </Grid>
 
-                            <Stack direction="row" alignItems="center">
-                                <LooksTwo sx={{mr: {sm: 1}, color: "secondary.main"}}/>
-                                <FileExampleHelper
-                                    title={'Cell Info File Example'}
-                                    open={(openHelp === 'info')}
-                                    onClose={() => setOpenHelp("none")}
-                                    onClick={() => setOpenHelp("info")}
-                                >
-                                    <Typography sx={{mb: 2, maxWidth: "400px"}}>
-                                        {`Must have following columns, if you are spatial transcriptome
-                                data, you don't need to specify cell type. Remember the order 
-                                must match exact as listed beneath.`}
-                                    </Typography>
-                                    <ul style={{lineHeight: "35px"}}>
-                                        <li>Cell coordination X: <Chip label="Cell X" size='small'/></li>
-                                        <li>Cell coordination Y: <Chip label="Cell Y" size='small'/></li>
-                                        <li>Cell Type <i>(Optional)</i>: <Chip label="Cell Type" size='small'/></li>
-                                    </ul>
-                                    <CellInfoExample/>
-                                </FileExampleHelper>
+                    <Grid item>
+                        <FileUploadRegion
+                            startIcon={<Looks3 color="secondary"/>}
+                            exampleHelper={<CellExpFileExample/>}
+                            file={files.expFile}
+                            onDeleteFile={() => setFiles({...files, expFile: ""})}
+                            rootProps={expRootProps()}
+                            inputProps={expInputProps()}
+                            helperText={"Expression File"}
+                        />
+                    </Grid>
 
-                                <FileUploadRegion
-                                    rootProps={infoRootProps()}
-                                    inputProps={infoInputProps()}
-                                    helperText={"Cell Info File"}
-                                />
 
-                                <ShowFile file={files.infoFile}
-                                          onDelete={() => setFiles({...files, infoFile: ""})}
-                                />
-                            </Stack>
-
-                            <Stack direction="row" alignItems="center">
-                                <Looks3 sx={{mr: {sm: 1}, color: "secondary.main"}}/>
-                                <FileExampleHelper
-                                    title={'Expression File Example'}
-                                    open={(openHelp === 'exp')}
-                                    onClose={() => setOpenHelp("none")}
-                                    onClick={() => setOpenHelp("exp")}
-                                >
-                                    <Typography sx={{mb: 2, maxWidth: "300px"}}>
-                                        Each column represents a marker, each line is a cell record
-                                    </Typography>
-                                    <ExpExample/>
-                                </FileExampleHelper>
-
-                                <FileUploadRegion
-                                    rootProps={expRootProps()}
-                                    inputProps={expInputProps()}
-                                    helperText={"Expression File"}
-                                />
-
-                                <ShowFile file={files.expFile}
-                                          onDelete={() => setFiles({...files, expFile: ""})}
-                                />
-                            </Stack>
-
-                        </Stack>
-
-                        {/*<FormGroup sx={{ mt: 2 }}>*/}
-                        {/*  <FormControlLabel*/}
-                        {/*      control={<Switch*/}
-                        {/*          disabled={(status === 'loading')}*/}
-                        {/*          checked={isSingleCell}*/}
-                        {/*          onChange={handleSwitch}/>}*/}
-                        {/*      label="Single Cell Data" />*/}
-                        {/*</FormGroup>*/}
-
-                        <Stack direction="row" alignItems="center" justifyContent="flex-start" sx={{mt: 2, mb: 2}}>
-                            <TextField
-                                label="Data ID (Optional)"
-                                variant="standard"
-                                value={dataID}
-                                onChange={checkIDExist}
-                                error={errorID}
-                                helperText={errorID ? 'ID already exists' : 'Better give it a meaningful name'}
-                                sx={{width: "200px", mb: {xs: 1, sm: 0}, mr: {xs: 1, sm: 0}}}
-                            />
-                            <Button
+                </Grid>
+                <Grid container direction="row" alignItems="center" justifyContent="flex-start" spacing={2}
+                      sx={{my: 4}}>
+                    <Grid item>
+                        <TextField
+                            label="Data ID (Optional)"
+                            variant="standard"
+                            value={dataID}
+                            onChange={checkIDValidate}
+                            error={errorID !== 0}
+                            helperText={dataIDHelperText(errorID)}
+                            sx={{maxWidth: "300px"}}
+                        />
+                    </Grid>
+                    <Grid item>
+                        {
+                            allowStart ? <Button
                                 onClick={handleRun}
                                 variant="contained"
                                 disableElevation
-                                disabled={(status === 'loading')}
-                                sx={{ml: {sm: 2}, color: "common.white"}}>
-                                GO!
+                                color="success"
+                                sx={{color: "common.white"}}
+                                startIcon={<BoltRoundedIcon/>}
+                            >
+                                Start
+                            </Button> : <Tooltip title={"Please upload required files"}><span>
+                             <Button
+                                 onClick={handleRun}
+                                 variant="contained"
+                                 disableElevation
+                                 color="success"
+                                 disabled={true}
+                                 sx={{color: "common.white"}}
+                                 startIcon={<BoltRoundedIcon/>}
+                             >
+                                Start
                             </Button>
-                            <IconButton onClick={handleReset}>
-                                <AutorenewIcon color="primary"/>
-                            </IconButton>
-                        </Stack>
+                            </span></Tooltip>
 
-                        <StatusBar status={status} text={loadingText}/>
+                        }
+                    </Grid>
+                    <Grid item>
+                        <Button onClick={handleReset}
+                                variant="contained"
+                                color="error"
+                                disableElevation
+                                sx={{color: "common.white"}}
+                                startIcon={<AutorenewIcon/>}
+                        >Reset</Button>
+                    </Grid>
+                </Grid>
 
-                        <Typography variant="h4">Analysis Records</Typography>
-                        <ClientOnly>
-                            <LocalRecords/>
-                        </ClientOnly>
-                {/*    </Grid>*/}
-                {/*</Grid>*/}
+                <StatusBar step={processStep}/>
+
+                <Typography variant="h4" fontFamily='Plus Jakarta Sans'>Finished Analysis</Typography>
+                <ClientOnly>
+                    <LocalRecords/>
+                </ClientOnly>
             </Container>
         </>
     )

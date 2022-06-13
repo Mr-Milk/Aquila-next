@@ -20,8 +20,9 @@
     "@mui/x-data-grid": "^5.9.0",
     "@next/bundle-analyzer": "12.1.0",
     "@plaiceholder/next": "^2.3.0",
-    "@react-three/fiber": "^8.0.22",
+    "@zip.js/zip.js": "^2.4.15",
     "axios": "0.26.0",
+    "chroma-js": "^2.4.2",
     "clsx": "^1.1.1",
     "comlink": "^4.3.1",
     "dexie": "3.2.1-beta.2",
@@ -45,18 +46,17 @@
     "react-dropzone": "^11.4.2",
     "react-hook-form": "^7.30.0",
     "react-icons": "^4.3.1",
-    "react-lines-ellipsis": "^0.15.0",
     "react-timeago": "^6.2.1",
     "react-window": "^1.8.6",
     "sharp": "^0.30.2",
     "swr": "^1.1.0",
-    "three": "^0.141.0",
     "uuid": "^8.3.2",
     "worker-plugin": "^5.0.1",
     "yup": "^0.32.11"
   },
   "devDependencies": {
     "eslint": "8.4.1",
-    "eslint-config-next": "12.1.0"
+    "eslint-config-next": "12.1.0",
+    "prettier": "^2.6.2"
   }
 }

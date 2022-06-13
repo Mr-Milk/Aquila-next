@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 import {TabPanel} from "components/Layout/TabPanel";
-import {CellMapPanel3D, ExpPanel3D} from "components/app/share/ROIPanels3D";
+import {CellMapPanel3D, ExpPanel3D} from "components/app/ROIViz/ROIPanels3D";
 
 
 const ROIMaps3D = ({roiID, roiMeta, recordData, cellData, bbox}) => {

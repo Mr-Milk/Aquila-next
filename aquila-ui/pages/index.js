@@ -39,7 +39,7 @@ const LinkButton = ({href, children, ...props}) => {
 const Home = ({dbStats}) => {
 
     const theme = useTheme();
-    const matches = useMediaQuery(theme.breakpoints.down('sm'))
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true})
 
     return (
         <Container component="section" maxWidth="xl">

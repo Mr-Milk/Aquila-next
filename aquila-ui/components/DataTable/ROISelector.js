@@ -6,11 +6,15 @@ import {parseROIDisplay} from "../humanize";
 
 const ROITable = ({roiMeta, updateFn}) => {
 
+    console.log(roiMeta)
+
     const [pageSize, setPageSize] = useState(10);
 
     const renderData = [];
-    roiMeta.map((d) => {
-        renderData.push(JSON.parse(d["meta"]));
+    roiMeta.map((d, i) => {
+        let row = JSON.parse(d["meta"]);
+        row['id'] = i
+        renderData.push(row);
     });
 
     const getColumns = useCallback((data) => {
@@ -57,7 +61,7 @@ const ROITable = ({roiMeta, updateFn}) => {
         }}
         rows={renderData}
         columns={columns}
-        getRowId={(row) => row.roi_id}
+        //getRowId={(row) => row.roi_id}
         pageSize={pageSize}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         rowsPerPageOptions={[10, 20, 50]}

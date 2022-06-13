@@ -12,7 +12,7 @@ import {Container} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import RecordDetailsTable from "../../components/DataTable/RecordDetailsTable";
 import ROITable from "../../components/DataTable/ROISelector";
-import ROIMaps3D from "../../components/app/View/ROIMaps3D";
+import ROIMaps3D from "../../components/app/ROIViz/ROIMaps3D";
 import {useEffect, useState} from "react";
 import ContentBox from "../../components/Layout/ContentBox";
 import Stack from "@mui/material/Stack";

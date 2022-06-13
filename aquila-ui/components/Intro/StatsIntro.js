@@ -32,8 +32,8 @@ const StatsCard = ({title, data, startIcon}) => {
 const StatsIntro = ({data}) => {
 
     const theme = useTheme();
-    const downSM = useMediaQuery(theme.breakpoints.down('sm'))
-    const downMD = useMediaQuery(theme.breakpoints.down('md'))
+    const downSM = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true })
+    const downMD = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true })
 
     const [width, height] = [65, 65];
 

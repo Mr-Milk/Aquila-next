@@ -10,10 +10,8 @@ const ViewPage = ({ recordData }) => {
         <>
             <Head>
                 <title>Aquila | Browse</title>
-                {/*<link rel="preload" href={getRecordsURL} as="fetch" crossOrigin="anonymous"/>*/}
             </Head>
                 <Container maxWidth={"xl"} sx={{my: 4, display: 'flex', justifyContent: 'center' }}>
-                    {/*<Table/>*/}
                     <Typography variant="h3" sx={{ mx: 2 }} fontFamily='Plus Jakarta Sans'>Datasets</Typography>
                 </Container>
                 <RecordsPanel data={recordData}/>
@@ -21,28 +19,6 @@ const ViewPage = ({ recordData }) => {
 
     )
 }
-
-// const Table = () => {
-//     const {data, _} = useSWR(getRecordsURL, fetcher);
-//
-//     if (data !== undefined) {
-//         return <DataTable data={data}/>
-//     } else {
-//         return <Skeleton variant={"rectangular"} width={200} height={20}/>
-//     }
-//
-// }
-
-// const RecordList = () => {
-//     const {data, _} = useSWR(getRecordsURL, fetcher);
-//
-//     if (data !== undefined) {
-//         return <DataRecordList data={data}/>
-//     } else {
-//         return <Skeleton variant={"rectangular"} width={200} height={20}/>
-//     }
-//
-// }
 
 export async function getStaticProps() {
     const data = await fetcher(getRecordsURL);

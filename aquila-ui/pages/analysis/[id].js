@@ -16,14 +16,14 @@ import {styled} from "@mui/styles";
 import AnalysisRecordTable from "components/DataTable/AnalysisRecordTable";
 import useSWR from "swr";
 import {getCellExpBatchDB, useCellDataDB, useDataInfoDB, useExpDataDB, useROIMetaDB} from "../../data/get";
-import ROIMaps from "../../components/app/share/ROIMaps";
-import AnalysisTab from "../../components/app/View/AnalysisTab";
+import ROIMaps from "../../components/app/ROIViz/ROIMaps";
+import AnalysisTab from "../../components/app/share/AnalysisTab";
 import ContentBox from "../../components/Layout/ContentBox";
 import RecordDetailsTable from "../../components/DataTable/RecordDetailsTable";
 import Stack from "@mui/material/Stack";
 import {parseROIDisplay} from "../../components/humanize";
 import {getBBox} from "../../components/compute/geo";
-import ROIMapGallery from "../../components/app/share/ROIMapGallery";
+import ROIMapGallery from "../../components/app/ROIViz/ROIMapGallery";
 
 
 const promptKey = "sharingPrompt";

@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 import {TabPanel} from "components/Layout/TabPanel";
-import {CellMapPanel, ExpPanel} from "components/app/share/ROIPanels";
+import {CellMapPanel, CoLocPanel, ExpPanel} from "components/app/ROIViz/ROIPanels";
 
 
 const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn, bbox}) => {
@@ -18,6 +18,7 @@ const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn, bbox}) => 
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     <Tab label="Cell Map"/>
                     <Tab label="Expression Map"/>
+                    <Tab label="Markers Co-Localization"/>
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
@@ -25,6 +26,14 @@ const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn, bbox}) => 
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <ExpPanel
+                    roiID={roiID}
+                    cellData={cellData}
+                    markers={recordData.markers}
+                    getExpDataFn={getExpDataFn}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                <CoLocPanel
                     roiID={roiID}
                     cellData={cellData}
                     markers={recordData.markers}
