@@ -1,8 +1,5 @@
 import {useLiveQuery} from "dexie-react-hooks";
 import {db} from "db/schema";
-import IconButton from "@mui/material/IconButton";
-import OpenInNew from "@mui/icons-material/OpenInNew";
-import Delete from "@mui/icons-material/Delete";
 import {memo, useRef, useState} from "react";
 
 import Dialog from '@mui/material/Dialog';
@@ -11,13 +8,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from "@mui/material/Button";
 import TimeAgo from "react-timeago";
 import Alert from "@mui/material/Alert";
-import Paper from "@mui/material/Paper";
-import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import {StatsText} from "../../DataTable/Cards";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import AssessmentRoundedIcon from '@mui/icons-material/AssessmentRounded';
 import DialogContent from "@mui/material/DialogContent";

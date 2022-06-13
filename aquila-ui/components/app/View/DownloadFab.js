@@ -1,6 +1,5 @@
 import Fab from "@mui/material/Fab";
 import Badge from "@mui/material/Badge";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
@@ -11,13 +10,13 @@ import {ImBoxAdd} from "react-icons/im";
 import Typography from "@mui/material/Typography";
 
 
-const DownloadFab = ({ downloadList }) => {
+const DownloadFab = ({downloadList}) => {
 
     const [open, setOpen] = useState(false);
 
     return (
         <>
-        <Fab variant="extended"
+            <Fab variant="extended"
                  color="secondary"
                  sx={{
                      color: 'white',
@@ -28,7 +27,7 @@ const DownloadFab = ({ downloadList }) => {
                  }}
                  onClick={() => setOpen(true)}
             >
-                <Typography variant="subtitle2" sx={{ mr: 1 }}>{"Download List"}</Typography>
+                <Typography variant="subtitle2" sx={{mr: 1}}>{"Download List"}</Typography>
                 <Badge badgeContent={downloadList.length}
                        color="error">
                     <ImBoxAdd/>
@@ -37,7 +36,7 @@ const DownloadFab = ({ downloadList }) => {
             </Fab>
 
             <Dialog
-                open={ downloadList.length === 0 ? false : open}
+                open={downloadList.length === 0 ? false : open}
                 onClose={() => setOpen(false)}
             >
                 <DialogTitle>
@@ -53,7 +52,7 @@ const DownloadFab = ({ downloadList }) => {
                     >Confirm</Button>
                 </DialogActions>
             </Dialog>
-            </>
+        </>
     )
 }
 

@@ -63,7 +63,7 @@ const SearchRecords = ({data, updateDataFn}) => {
         })
     }
 
-    return <Stack direction="row" alignItems="center" sx={{ width: '100%' }}>
+    return <Stack direction="row" alignItems="center" sx={{width: '100%'}}>
         <Search color="action"/>
         <Button
             size="large"
@@ -78,14 +78,20 @@ const SearchRecords = ({data, updateDataFn}) => {
             open={open}
             onClose={() => setAnchorEl(null)}
         >
-            <MenuItem onClick={() => {setAnchorEl(null); setSearchMethod("fuzz")}}>Search Keywords</MenuItem>
-            <MenuItem onClick={() => {setAnchorEl(null); setSearchMethod("marker")}}>Search Markers</MenuItem>
+            <MenuItem onClick={() => {
+                setAnchorEl(null);
+                setSearchMethod("fuzz")
+            }}>Search Keywords</MenuItem>
+            <MenuItem onClick={() => {
+                setAnchorEl(null);
+                setSearchMethod("marker")
+            }}>Search Markers</MenuItem>
         </Menu>
         {/*<Search sx={{color: 'action.active', mr: 1, my: 0.5}}/>*/}
         <TextField fullWidth
                    size="medium"
                    variant="standard"
-                   sx={{ minWidth: '400px' }}
+                   sx={{minWidth: '400px'}}
                    placeholder={(searchMethod === "fuzz") ? "Search keywords..." : "Search markers..."}
                    onChange={(e) => {
                        (searchMethod === "fuzz") ? runSearch(e.target.value) : runMarkerSearch(e.target.value)

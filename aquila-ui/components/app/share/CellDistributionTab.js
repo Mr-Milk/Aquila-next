@@ -10,7 +10,6 @@ import ParamWrap from "../../InputComponents/ParamWrap";
 import {Controller, useForm} from "react-hook-form";
 import {number, object} from "yup";
 import {yupResolver} from '@hookform/resolvers/yup';
-import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import SubmitButton from "../../InputComponents/SubmitButton";
 import Tree from "../../Viz/Tree";
 import LeftPanel from "../../Layout/LeftPanel";

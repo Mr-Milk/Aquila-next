@@ -33,7 +33,7 @@ const FeaturesCard = ({title, content, icon}) => {
 const FeaturesIntro = () => {
 
     const theme = useTheme();
-    const downSM = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true })
+    const downSM = useMediaQuery(theme.breakpoints.down('sm'), {noSsr: true})
 
     return (
         <Grid container

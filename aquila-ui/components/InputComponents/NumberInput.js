@@ -18,7 +18,7 @@ const NumericField = forwardRef(function NumericField(
         <TextField error={error}
                    variant="standard"
                    placeholder={placeholder}
-                   //inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
+            //inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
                    helperText={error ? helperText : ""}
                    ref={ref}
                    {...other} />

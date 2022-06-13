@@ -32,8 +32,8 @@ const StatsCard = ({title, data, startIcon}) => {
 const StatsIntro = ({data}) => {
 
     const theme = useTheme();
-    const downSM = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true })
-    const downMD = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true })
+    const downSM = useMediaQuery(theme.breakpoints.down('sm'), {noSsr: true})
+    const downMD = useMediaQuery(theme.breakpoints.down('md'), {noSsr: true})
 
     const [width, height] = [65, 65];
 
@@ -85,11 +85,12 @@ const StatsIntro = ({data}) => {
 
             </Grid>
             <Grid item>
-                <Grid container direction={downSM ? "column" : "row"} alignItems={downSM ? "flex-start" : "center"} spacing={spacingRow2}>
+                <Grid container direction={downSM ? "column" : "row"} alignItems={downSM ? "flex-start" : "center"}
+                      spacing={spacingRow2}>
                     <Grid item>
-                    <StatsCard title={"Disease"} data={data.disease_count} startIcon={
-                        <Image alt="disease" src="/icons/Disease.svg" width={width} height={height}/>
-                    }/>
+                        <StatsCard title={"Disease"} data={data.disease_count} startIcon={
+                            <Image alt="disease" src="/icons/Disease.svg" width={width} height={height}/>
+                        }/>
                     </Grid>
 
                     <Grid item>

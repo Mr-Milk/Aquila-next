@@ -7,7 +7,6 @@ import ParamWrap from "../../InputComponents/ParamWrap";
 import Stack from "@mui/material/Stack";
 import LeftPanel from "../../Layout/LeftPanel";
 import SubmitButton from "../../InputComponents/SubmitButton";
-import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import OneItemCenter from "../../Layout/OneItemCenter";
 import Heatmap from "../../Viz/Heatmap";
 import groupBy from "loadsh/groupBy"
@@ -83,8 +82,8 @@ const CellExpressionTab = ({roiID, recordData, cellData, getCellExpBatch}) => {
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
                     <SectionExplainer title={"Expression in different cell types"}
-                        details={"To visualize the expression of different markers in " +
-                            "different cell tyeps."}
+                                      details={"To visualize the expression of different markers in " +
+                                          "different cell tyeps."}
                     />
                     <ParamWrap>
                         <Controller

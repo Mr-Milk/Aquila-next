@@ -2,7 +2,7 @@ import ExpDist from "../../Viz/ExpDist";
 import {ExpMap2D, ExpMap2DThumbNail} from "../../Viz/ExpMap2D";
 import {CellMap2D} from "../../Viz/CellMap2D";
 import VirtualizedAutoComplete from "../../InputComponents/VirtualizedAutoComplete";
-import {memo, useEffect, useRef, useState} from "react";
+import {memo, useEffect, useState} from "react";
 import Stack from "@mui/material/Stack";
 import {responsiveSymbolSize} from "../../Viz/responsiveSize";
 import Ranger from "../../InputComponents/Ranger";
@@ -266,9 +266,9 @@ export const CoLocPanel = ({roiID, cellData, markers, getExpDataFn}) => {
         <Stack direction="row" sx={{height: '100%'}}>
             <LeftPanel sx={{minWidth: '460px'}}>
                 <SectionExplainer title={"Visualize co-localization of markers"}
-                    details={"The color mixing result may not be satisfying if more than 3 markers."}
-                    vizTips={"Hover on the cell to see expression of different markers"}
-                    sx={{ maxWidth: '460px'}}
+                                  details={"The color mixing result may not be satisfying if more than 3 markers."}
+                                  vizTips={"Hover on the cell to see expression of different markers"}
+                                  sx={{maxWidth: '460px'}}
                 />
                 {
                     [0, 1, 2, 3, 4].map((i) => (

@@ -28,7 +28,7 @@ const SectionExplainer = ({title, details, vizTips, sx, ...other}) => {
                             <Typography variant="body2">{details}</Typography>
                             {
                                 vizTips !== undefined ? <Alert icon={<BubbleChartIcon fontSize="inherit"/>}
-                                sx={{ mt: 1, }}>
+                                                               sx={{mt: 1,}}>
                                     <AlertTitle>Visualization Tips</AlertTitle>
                                     {vizTips}
                                 </Alert> : null

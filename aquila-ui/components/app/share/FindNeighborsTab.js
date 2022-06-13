@@ -14,7 +14,6 @@ import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import LeftPanel from "../../Layout/LeftPanel";
 import SubmitButton from "../../InputComponents/SubmitButton";
-import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
@@ -113,8 +112,8 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
                     <SectionExplainer title={"Neighbors network embedding"}
-                        details={"This is the basis step for other analysis. It tells whether " +
-                            "two cells are neighbors to each other."}
+                                      details={"This is the basis step for other analysis. It tells whether " +
+                                          "two cells are neighbors to each other."}
                                       vizTips={"Hover to the link between two cells to find the distance between them."}
                     />
                     <ParamWrap>
@@ -129,9 +128,12 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
                                         description={
                                             <>
                                                 <li>KD Tree: Search nearest K neighbors (KNN) and/or
-                                                    neighbors within radius (Radius).</li>
-                                                <li>Delaunay Triangulation: Filled the space with triangles while using cells
-                                                as vertices.</li>
+                                                    neighbors within radius (Radius).
+                                                </li>
+                                                <li>Delaunay Triangulation: Filled the space with triangles while using
+                                                    cells
+                                                    as vertices.
+                                                </li>
                                             </>
                                         }
                                         {...field}/>

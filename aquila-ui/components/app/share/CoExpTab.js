@@ -4,7 +4,6 @@ import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import Stack from "@mui/material/Stack";
 import LeftPanel from "../../Layout/LeftPanel";
-import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import ParamWrap from "../../InputComponents/ParamWrap";
 import VirtualizedAutoComplete from "../../InputComponents/VirtualizedAutoComplete";
 import SubmitButton from "../../InputComponents/SubmitButton";

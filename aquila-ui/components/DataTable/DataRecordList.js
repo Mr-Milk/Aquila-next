@@ -4,23 +4,17 @@ import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
 import {memo, startTransition, useState} from "react";
 import Link from "../Link";
 import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import IconButton from "@mui/material/IconButton";
-import DownloadIcon from '@mui/icons-material/Download';
 import {DimChip, JournalText, MoleculeChip, SpeciesChip, StatsText, TechChip} from "./Cards";
-import CreateNewFolderRoundedIcon from '@mui/icons-material/CreateNewFolderRounded';
-import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import Tooltip from "@mui/material/Tooltip";
 import DownloadFab from "../app/View/DownloadFab";
 import {ImBoxAdd, ImBoxRemove, ImDownload} from 'react-icons/im';
-import {CgPlayListRemove, CgPlayListAdd} from 'react-icons/cg';
 import PageviewOutlinedIcon from '@mui/icons-material/PageviewOutlined';
 
 

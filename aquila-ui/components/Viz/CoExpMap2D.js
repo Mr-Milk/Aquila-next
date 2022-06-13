@@ -2,7 +2,6 @@ import max from "loadsh/max"
 import min from "loadsh/min"
 import 'echarts-gl';
 import Echarts from "./echarts-obj";
-import {GRAD_COLORS, ThumbNailSize, toolboxOpts} from "components/Viz/config";
 
 import chroma from "chroma-js";
 import * as echarts from 'echarts/core';

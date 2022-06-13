@@ -2,7 +2,7 @@ import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import 'echarts-gl';
 import {GraphChart} from 'echarts/charts';
-import {titleOpts, toolboxOpts} from "./config";
+import {titleOpts} from "./config";
 import Typography from "@mui/material/Typography";
 import {CanvasRenderer} from "echarts/renderers";
 import {

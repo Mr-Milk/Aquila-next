@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import {Controller, useForm} from "react-hook-form";
 import LeftPanel from "../../Layout/LeftPanel";
-import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import ParamWrap from "../../InputComponents/ParamWrap";
 import Selector from "../../InputComponents/Selector";
 import Ranger from "../../InputComponents/Ranger";
@@ -75,8 +74,8 @@ const RipleyTab = ({cellData}) => {
             <LeftPanel>
 
                 <SectionExplainer title={"Distance basis spatial pattern"}
-                    details={"The Ripley functions are a series of cumulative distribution functions describe " +
-                        "the underlying spatial process given the spatial interval."}
+                                  details={"The Ripley functions are a series of cumulative distribution functions describe " +
+                                      "the underlying spatial process given the spatial interval."}
                 />
                 <ParamWrap>
                     <Controller

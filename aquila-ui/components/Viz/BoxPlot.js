@@ -5,8 +5,11 @@ import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {BoxplotChart} from 'echarts/charts';
 import {
-    GridComponent, TitleComponent, TooltipComponent,
-    DatasetComponent, TransformComponent
+    DatasetComponent,
+    GridComponent,
+    TitleComponent,
+    TooltipComponent,
+    TransformComponent
 } from 'echarts/components';
 
 echarts.use(

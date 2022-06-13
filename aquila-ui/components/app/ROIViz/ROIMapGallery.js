@@ -1,5 +1,4 @@
 import Box from "@mui/material/Box";
-import {useCellData2D} from "../../../data/get";
 import {CellMap2DThumbNail} from "../../Viz/CellMap2D";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
@@ -98,9 +97,9 @@ const ROIMapGallery = ({roiList, roiMetaList, setCurrentROI, deleteROI, getCellD
                     {
                         roiList.map((roiID, i) => {
                             return <MemoROIPreviewItem roiID={roiID} roiMeta={roiMetaList[i]}
-                                                   setCurrentROI={setCurrentROI} deleteROI={deleteROI}
+                                                       setCurrentROI={setCurrentROI} deleteROI={deleteROI}
                                                        getCellData={getCellData}
-                                                   key={roiID}
+                                                       key={roiID}
                             />
                         })
                     }

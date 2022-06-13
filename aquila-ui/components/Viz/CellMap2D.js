@@ -13,7 +13,7 @@ import {
     VisualMapComponent,
     VisualMapContinuousComponent
 } from 'echarts/components';
-import {CAT_COLORS, ThumbNailSize, toolboxOpts} from "./config";
+import {CAT_COLORS, ThumbNailSize} from "./config";
 
 echarts.use([
     CanvasRenderer,

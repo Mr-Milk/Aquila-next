@@ -1,6 +1,6 @@
 import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
-import {VisualMapComponent, LegendComponent, ToolboxComponent} from 'echarts/components';
+import {LegendComponent, ToolboxComponent, VisualMapComponent} from 'echarts/components';
 import 'echarts-gl';
 import {CAT_COLORS, titleOpts, toolboxOpts} from "./config";
 
