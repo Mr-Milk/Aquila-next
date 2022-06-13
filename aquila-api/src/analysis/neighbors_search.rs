@@ -46,7 +46,14 @@ pub fn get_neighbors<const K: usize>(
         .map(|p| {
             if r > 0.0 {
                 if k > 0 {
-                    tree.best_n_within(p, r * r, k, &squared_euclidean).unwrap()
+                    let within = tree.within(p, r * r, &squared_euclidean).unwrap();
+                    let mut neighbors = vec![];
+                    for (ix, (_, i)) in within.iter().enumerate() {
+                        if ix < k {
+                            neighbors.push(**i)
+                        }
+                    }
+                    neighbors
                 } else {
                     let within = tree.within_unsorted(p, r * r, &squared_euclidean).unwrap();
                     within.iter().map(|(_, i)| **i).collect()
