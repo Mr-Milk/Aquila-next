@@ -17,6 +17,7 @@ own image in delete mode `-d`
 ```shell
 docker run -d \
   --name aquila-fastapi-server \
+  --mount type=bind,source=$HOME/projects/aquila-static,target=/code/static
   -p 8000:8000 aquila-fastapi
 ```
 Once built, start the stopped container
