@@ -440,7 +440,7 @@ const TutorialPage = ({images}) => {
                     <ul style={{lineHeight: '2rem'}}>
                         {
                             contents.map((i) => (
-                                <li><TOCItem refTitle={i.title} id={id} key={i.title}/></li>
+                                <li key={i.title}><TOCItem refTitle={i.title} id={id}/></li>
                             ))
                         }
                     </ul>
