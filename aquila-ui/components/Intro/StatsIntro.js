@@ -67,17 +67,17 @@ const StatsIntro = ({data}) => {
                       spacing={downSM ? 2 : 4}>
                     <Grid item>
                         <StatsCard title={"Dataset"} data={data.data_count} startIcon={
-                            <Image alt="data" src="/icons/Data.svg" width={width} height={height}/>
+                            <Image alt="data" src="/icons/Data-min.svg" width={width} height={height}/>
                         }/>
                     </Grid>
                     <Grid item>
                         <StatsCard title={"Publication"} data={data.publication_count} startIcon={
-                            <Image alt="roi" src="/icons/Publication.svg" width={width} height={height}/>
+                            <Image alt="roi" src="/icons/Publication-min.svg" width={width} height={height}/>
                         }/>
                     </Grid>
                     <Grid item>
                         <StatsCard title={"Technology"} data={data.technology_count} startIcon={
-                            <Image alt="tech" src="/icons/Technology.svg" width={width} height={height}/>
+                            <Image alt="tech" src="/icons/Technology-min.svg" width={width} height={height}/>
                         }/>
                     </Grid>
 
@@ -89,25 +89,25 @@ const StatsIntro = ({data}) => {
                       spacing={spacingRow2}>
                     <Grid item>
                         <StatsCard title={"Disease"} data={data.disease_count} startIcon={
-                            <Image alt="disease" src="/icons/Disease.svg" width={width} height={height}/>
+                            <Image alt="disease" src="/icons/Disease-min.svg" width={width} height={height}/>
                         }/>
                     </Grid>
 
                     <Grid item>
                         <StatsCard title={"Tissue"} data={data.tissue_count} startIcon={
-                            <Image alt="tissue" src="/icons/Tissue.svg" width={width} height={height}/>
+                            <Image alt="tissue" src="/icons/Tissue-min.svg" width={width} height={height}/>
                         }/>
                     </Grid>
 
                     <Grid item>
                         <StatsCard title={"Cell/Spot"} data={toHumanString(data.total_cell)} startIcon={
-                            <Image alt="cell" src="/icons/Cell.svg" width={width} height={height}/>
+                            <Image alt="cell" src="/icons/Cell-min.svg" width={width} height={height}/>
                         }/>
                     </Grid>
 
                     <Grid item>
                         <StatsCard title={"ROI"} data={toHumanString(data.total_roi)} startIcon={
-                            <Image alt="roi" src="/icons/ROI.svg" width={width} height={height}/>
+                            <Image alt="roi" src="/icons/ROI-min.svg" width={width} height={height}/>
                         }/>
                     </Grid>
 

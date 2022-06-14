@@ -24,6 +24,8 @@ import Stack from "@mui/material/Stack";
 import {parseROIDisplay} from "../../components/humanize";
 import {getBBox} from "../../components/compute/geo";
 import ROIMapGallery from "../../components/app/ROIViz/ROIMapGallery";
+import Alert from "@mui/material/Alert";
+import {SnackbarContent} from "@mui/material";
 
 
 const promptKey = "sharingPrompt";
@@ -32,6 +34,7 @@ const promptKey = "sharingPrompt";
 const ShareNotWorkingPrompt = () => {
 
     const [open, setOpen] = useState(false)
+    const handleClose = () => setOpen(false)
     const handleNotShown = () => {
         setOpen(false)
         localStorage.setItem(promptKey, "false")
@@ -44,21 +47,20 @@ const ShareNotWorkingPrompt = () => {
     }, [])
 
     return <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={open}
-        autoHideDuration={10000}
-        onClose={() => setOpen(false)}
-        color="success"
+        autoHideDuration={100000}
+        onClose={handleClose}
         message={"This content only available on your local computer, sharing the link won't work."}
         action={
-            <ClientOnly>
-                <Button onClick={handleNotShown}>
+            <>
+                <Button onClick={handleNotShown} size="small">
                     {"Don't show again"}
                 </Button>
-                <IconButton onClick={() => setOpen(false)}>
+                <IconButton onClick={handleClose} color="primary">
                     <CloseIcon/>
                 </IconButton>
-            </ClientOnly>
-        }
+            </>}
     />
 
 }
@@ -183,12 +185,12 @@ const AnalysisResult = () => {
     return (
         <>
             <Head>
-                <title>Aquila | Result {id}</title>
+                <title>Aquila Result | {id}</title>
             </Head>
             <ClientOnly>
                 <PageContent id={id}/>
+                <ShareNotWorkingPrompt/>
             </ClientOnly>
-            <ShareNotWorkingPrompt/>
         </>
     )
 }

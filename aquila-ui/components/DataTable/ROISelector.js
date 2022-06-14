@@ -6,8 +6,6 @@ import {parseROIDisplay} from "../humanize";
 
 const ROITable = ({roiMeta, updateFn}) => {
 
-    console.log(roiMeta)
-
     const [pageSize, setPageSize] = useState(10);
 
     const renderData = [];
