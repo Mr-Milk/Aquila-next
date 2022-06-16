@@ -119,3 +119,10 @@ export const legendOpts = (data) => ({
         },
     },
 })
+
+export const axis3DOptions = {
+        axisTick: {show: false},
+        splitLine: {show: false},
+        axisPointer: {show: false},
+        axisLabel: {show: false}
+    }

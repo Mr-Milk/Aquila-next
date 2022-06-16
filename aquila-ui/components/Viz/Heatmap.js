@@ -9,7 +9,7 @@ import {
     TitleComponent,
     ToolboxComponent,
     TooltipComponent,
-    VisualMapComponent,
+    VisualMapContinuousComponent,
 } from 'echarts/components';
 
 echarts.use([
@@ -19,7 +19,7 @@ echarts.use([
     TitleComponent,
     TooltipComponent,
     ToolboxComponent,
-    VisualMapComponent,
+    VisualMapContinuousComponent,
 ])
 
 const cmap = {

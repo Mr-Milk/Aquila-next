@@ -1,6 +1,6 @@
 import max from "loadsh/max"
 import min from "loadsh/min"
-import 'echarts-gl';
+import dynamic from "next/dynamic";
 import Echarts from "./echarts-obj";
 import {GRAD_COLORS, ThumbNailSize, toolboxOpts} from "components/Viz/config";
 
@@ -15,9 +15,14 @@ import {
     TitleComponent,
     ToolboxComponent,
     TooltipComponent,
-    VisualMapComponent,
     VisualMapContinuousComponent,
 } from 'echarts/components';
+
+dynamic(
+    () => import('echarts-gl/charts').then(
+        (mod) => echarts.use([mod.ScatterGLChart])
+    ),
+    {ssr: false})
 
 echarts.use([
     CanvasRenderer,
@@ -28,7 +33,6 @@ echarts.use([
     TitleComponent,
     TooltipComponent,
     ToolboxComponent,
-    VisualMapComponent,
     VisualMapContinuousComponent
 ])
 
@@ -96,7 +100,7 @@ export const ExpMap2DThumbNail = ({cx, cy, exp}) => {
         series: [
             {
                 type: dataSize < 15000 ? "scatter" : "scatterGL",
-                symbolSize: dataSize < 5000 ? 2 : 1,
+                symbolSize: dataSize < 5000 ? 2 : (dataSize < 10000 ? 1 : 0.5),
                 data: renderData,
                 itemStyle: {
                     borderColor: '#555',

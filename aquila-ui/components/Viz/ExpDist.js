@@ -14,7 +14,6 @@ echarts.use([
     GridComponent,
     LineChart,
     TitleComponent,
-    TooltipComponent,
 ])
 
 // histogram([100, 101, 102, 230, 304, 305, 400], 3) === [3, 1, 3];

@@ -1,8 +1,16 @@
+import dynamic from 'next/dynamic'
+
 import Echarts from "./echarts-obj";
-import 'echarts-gl';
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {ScatterChart} from 'echarts/charts';
+
+dynamic(
+    () => import('echarts-gl/charts').then(
+        (mod) => echarts.use([mod.ScatterGLChart])
+    ),
+    {ssr: false})
+
 import {
     DataZoomComponent,
     GridComponent,
@@ -10,8 +18,6 @@ import {
     TitleComponent,
     ToolboxComponent,
     TooltipComponent,
-    VisualMapComponent,
-    VisualMapContinuousComponent
 } from 'echarts/components';
 import {CAT_COLORS, ThumbNailSize} from "./config";
 
@@ -24,8 +30,6 @@ echarts.use([
     TitleComponent,
     TooltipComponent,
     ToolboxComponent,
-    VisualMapComponent,
-    VisualMapContinuousComponent
 ])
 
 const getSeries = (cx, cy, ct, symbolSize) => {

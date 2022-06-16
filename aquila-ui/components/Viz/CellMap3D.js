@@ -1,8 +1,19 @@
 import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {LegendComponent, ToolboxComponent, VisualMapComponent} from 'echarts/components';
-import 'echarts-gl';
-import {CAT_COLORS, titleOpts, toolboxOpts} from "./config";
+import {CAT_COLORS, ThumbNailSize, titleOpts, toolboxOpts, axis3DOptions} from "./config";
+import dynamic from "next/dynamic";
+
+dynamic(
+    () => {
+        import('echarts-gl/charts').then(
+            (mod) => echarts.use([mod.Scatter3DChart])
+        );
+        import('echarts-gl/components').then(
+            (mod) => echarts.use([mod.Grid3DComponent])
+        );
+    },
+    {ssr: false})
 
 echarts.use([
     VisualMapComponent,
@@ -10,26 +21,12 @@ echarts.use([
     ToolboxComponent
 ])
 
-const CellMap3D = ({cx, cy, cz, ct, symbolSize, canvasSize}) => {
-
+const getSeries = (cx, cy, cz, ct, symbolSize) => {
     let hasCellType = (ct !== undefined);
     if (hasCellType && (ct.length === 0)) {
         hasCellType = false
     }
     const categories = hasCellType ? [...new Set(ct)] : ['unknown'];
-    // const pieces = categories.map((c, i) => {
-    //     return {
-    //         value: c,
-    //         label: c,
-    //         color: CAT_COLORS[i]
-    //     }
-    // })
-
-    // const renderData = cx.map((d, i) => {
-    //     return {
-    //         value: [d, cy[i], cz[i], hasCellType ? ct[i] : "unknown"],
-    //     }
-    // })
 
     const series = {}
     categories.forEach((c) => {
@@ -51,36 +48,40 @@ const CellMap3D = ({cx, cy, cz, ct, symbolSize, canvasSize}) => {
         )
     })
 
-    const axisOptions = {
-        axisTick: {show: false},
-        splitLine: {show: false},
-        axisPointer: {show: false},
-        axisLabel: {show: false}
+    return series
+}
+
+export const CellMap3DThumbNail = ({cx, cy, cz, ct}) => {
+
+    const dataSize = cx.length;
+    const symbolSize = dataSize < 5000 ? 2 : ( dataSize < 10000 ? 1 : 0.5);
+    const series = getSeries(cx, cy, cz, ct, symbolSize);
+
+    const options = {
+        color: CAT_COLORS,
+        grid3D: {
+            show: false,
+            top: 'middle',
+        },
+        xAxis3D: {name: '', ...axis3DOptions},
+        yAxis3D: {name: '', ...axis3DOptions},
+        zAxis3D: {name: '', ...axis3DOptions},
+        series: Object.values(series)
+
     }
+
+    return <Echarts echarts={echarts} option={options} style={{height: ThumbNailSize, width: ThumbNailSize}}/>
+}
+
+
+export const CellMap3D = ({cx, cy, cz, ct, symbolSize, canvasSize}) => {
+
+    const series = getSeries(cx, cy, cz, ct, symbolSize);
 
     const options = {
         color: CAT_COLORS,
         ...titleOpts("3D Cell Map"),
         ...toolboxOpts,
-        // visualMap: {
-        //     type: "piecewise",
-        //     top: 'middle',
-        //     // categories: categories,
-        //     min: 0,
-        //     max: categories.length,
-        //     left: 0,
-        //     splitNumber: categories.length,
-        //     dimension: 3,
-        //     pieces: pieces,
-        //     itemSymbol: 'circle',
-        //     itemHeight: 10,
-        //     textGap: 5,
-        //     textStyle: {
-        //         width: 5,
-        //         fontSize: 12,
-        //         overflow: 'breakAll'
-        //     }
-        // },
         legend: {
             type: "scroll",
             align: "left",
@@ -113,14 +114,12 @@ const CellMap3D = ({cx, cy, cz, ct, symbolSize, canvasSize}) => {
             position: 'top',
             formatter: '{a}',
         },
-        xAxis3D: {...axisOptions},
-        yAxis3D: {...axisOptions},
-        zAxis3D: {...axisOptions},
+        xAxis3D: {...axis3DOptions},
+        yAxis3D: {...axis3DOptions},
+        zAxis3D: {...axis3DOptions},
         series: Object.values(series)
 
     }
 
     return <Echarts echarts={echarts} option={options} style={{height: canvasSize, width: canvasSize}}/>
 }
-
-export default CellMap3D;

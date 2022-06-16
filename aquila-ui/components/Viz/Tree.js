@@ -4,13 +4,14 @@ import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {TreeChart} from 'echarts/charts';
-import {GridComponent, TooltipComponent} from 'echarts/components';
+import {GridComponent, ToolboxComponent, TooltipComponent} from 'echarts/components';
 
 echarts.use([
     CanvasRenderer,
     GridComponent,
     TreeChart,
     TooltipComponent,
+    ToolboxComponent
 ])
 
 const Tree = ({data}) => {

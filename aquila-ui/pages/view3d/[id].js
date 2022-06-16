@@ -5,32 +5,76 @@ import {
     getOneROIMetaURL,
     useDataInfo,
     useCellData3D,
-    useROIMeta
+    useROIMeta, useExpData,
 } from "../../data/get";
 import Head from "next/head";
 import {Container} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import RecordDetailsTable from "../../components/DataTable/RecordDetailsTable";
 import ROITable from "../../components/DataTable/ROISelector";
-import ROIMaps3D from "../../components/app/ROIViz/ROIMaps3D";
+// import ROIMaps3D from "../../components/app/ROIViz/ROIMaps3D";
 import {useEffect, useState} from "react";
 import ContentBox from "../../components/Layout/ContentBox";
 import Stack from "@mui/material/Stack";
 import {getBBox3D} from "../../components/compute/geo";
 import {parseROIDisplay} from "../../components/humanize";
+import ROIMaps from "../../components/app/ROIViz/ROIMaps";
+import ROIMapGallery from "../../components/app/ROIViz/ROIMapGallery";
 
 
 const ViewerPage3D = ({id, initROI, initROIMeta, initRecordData}) => {
 
     const [currentROI, setROI] = useState(initROI);
     const [currentROIMeta, setROIMeta] = useState(initROIMeta);
+    const [roiList, setROIList] = useState([initROI]);
+    const [roiMetaList, setROIMetaList] = useState([initROIMeta]);
+    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20, z1: 10, z2: 10})
+
     const updateROI = (roiID, roiMeta) => {
+        let update = true;
+        setROI(roiID);
+        setROIMeta(roiMeta);
+        setROIList((prev) => {
+            update = prev.includes(roiID)
+            if (update) {
+                return prev
+            } else {
+                return [...prev, roiID]
+            }
+            })
+        setROIMetaList((prev) => {
+            if (update) {
+                return prev
+            } else {
+                return [...prev, roiMeta]
+            }
+        })
+    };
+
+    const setCurrentROI = (roiID, roiMeta) => {
         setROI(roiID);
         setROIMeta(roiMeta);
     };
 
+    const deleteROI = (roiID) => {
+
+        let newROIList = [];
+        let newROIMetaList = [];
+
+        for (let i=0; i < roiList.length; i++) {
+            let ele = roiList[i];
+            if (ele !== roiID) {
+                newROIList.push(roiList[i])
+                newROIMetaList.push(roiMetaList[i])
+            }
+        }
+
+        setROIList(() => newROIList)
+        setROIMetaList(() => newROIMetaList)
+
+    };
+
     const {data: recordData} = useDataInfo(id, initRecordData);
-    const [bbox, setBBox] = useState({x1: 10, x2: 20, y1: 10, y2: 20, z1: 10, z2: 10})
     const {data: roiMeta} = useROIMeta(id);
     const {data: cellData} = useCellData3D(currentROI);
 
@@ -40,7 +84,7 @@ const ViewerPage3D = ({id, initROI, initROIMeta, initRecordData}) => {
 
     return (<>
         <Head>
-            <title>Aquila | 3D Data Details</title>
+            <title>Aquila | 3D Data</title>
         </Head>
         <Container maxWidth={"xl"} sx={{mt: 4, mb: 4}}>
             <Stack direction="row" justifyContent="flex-start" spacing={4}>
@@ -53,9 +97,20 @@ const ViewerPage3D = ({id, initROI, initROIMeta, initRecordData}) => {
                     <ROITable roiMeta={roiMeta} updateFn={updateROI}/>
                 </ContentBox>
             </Stack>
-            <ROIMaps3D roiID={currentROI} roiMeta={currentROIMeta}
-                       recordData={recordData} cellData={cellData}
-                       bbox={bbox}
+            <ROIMapGallery roiList={roiList}
+                           roiMetaList={roiMetaList}
+                           setCurrentROI={setCurrentROI}
+                           deleteROI={deleteROI}
+                           getCellData={useCellData3D}
+                           is3D={true}
+                />
+            <ROIMaps roiID={currentROI}
+                     roiMeta={currentROIMeta}
+                     recordData={recordData}
+                     cellData={cellData}
+                     getExpDataFn={useExpData}
+                     bbox={bbox}
+                     is3D={true}
             />
         </Container>
     </>)

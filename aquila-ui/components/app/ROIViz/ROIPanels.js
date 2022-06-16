@@ -16,9 +16,12 @@ import ColorMapSelect from "../../InputComponents/ColorMapSelect";
 import {CoExpMap2D} from "../../Viz/CoExpMap2D";
 import Checkbox from "@mui/material/Checkbox";
 import SectionExplainer from "../../InputComponents/SectionExplainer";
+import {ExpMap3D, ExpMap3DThumbNail} from "../../Viz/ExpMap3D";
+import {CoExpMap3D} from "../../Viz/CoExpMap3D";
+import {CellMap3D} from "../../Viz/CellMap3D";
 
 
-const ExpPreviewItem = ({roiID, cellData, marker, getExpDataFn, setCurrentMarker}) => {
+const ExpPreviewItem = ({roiID, cellData, marker, is3D, getExpDataFn, setCurrentMarker}) => {
     const {data: expData} = getExpDataFn(roiID, marker);
     return (
         <Grid item>
@@ -37,12 +40,19 @@ const ExpPreviewItem = ({roiID, cellData, marker, getExpDataFn, setCurrentMarker
                            transition: 'background 0.5s, border-color 0.5s',
                        }
                    }}>
+                {
+                    is3D ? <ExpMap3DThumbNail
+                        cx={cellData.cell_x}
+                        cy={cellData.cell_y}
+                        cz={cellData.cell_z}
+                        exp={expData.expression}
+                    /> : <ExpMap2DThumbNail
+                        cx={cellData.cell_x}
+                        cy={cellData.cell_y}
+                        exp={expData.expression}
+                    />
+                }
 
-                <ExpMap2DThumbNail
-                    cx={cellData.cell_x}
-                    cy={cellData.cell_y}
-                    exp={expData.expression}
-                />
                 <Typography variant="caption" sx={{color: '#3F1C4F'}}>{marker}</Typography>
             </Stack>
         </Grid>
@@ -52,13 +62,13 @@ const ExpPreviewItem = ({roiID, cellData, marker, getExpDataFn, setCurrentMarker
 const MemoExpPreviewItem = memo(ExpPreviewItem)
 
 
-const ExpGallery = ({roiID, cellData, markers, getExpDataFn, setCurrentMarker}) => {
+const ExpGallery = ({roiID, cellData, markers, is3D, getExpDataFn, setCurrentMarker}) => {
     return <Grid container spacing={1}
                  alignItems="center" justifyContent="center"
                  sx={{mb: 2}}
     >{
         markers.map((m) => {
-            return <MemoExpPreviewItem roiID={roiID} key={m} marker={m}
+            return <MemoExpPreviewItem roiID={roiID} key={m} marker={m} is3D={is3D}
                                        setCurrentMarker={setCurrentMarker}
                                        getExpDataFn={getExpDataFn} cellData={cellData}
             />
@@ -67,7 +77,7 @@ const ExpGallery = ({roiID, cellData, markers, getExpDataFn, setCurrentMarker}) 
 }
 
 
-export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
+export const ExpPanel = ({roiID, cellData, markers, is3D, getExpDataFn}) => {
 
     const cellCount = cellData.cell_x.length;
     const [userMarkers, setUserMarkers] = useState([markers[0]]);
@@ -76,7 +86,7 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
     const {data: expData} = getExpDataFn(roiID, currentMarker);
 
     const [symbolSize, setSymbolSize] = useState(1);
-    const [canvasSize, setCanvasSize] = useState(450);
+    const [canvasSize, setCanvasSize] = useState(is3D ? 650 : 450);
 
     useEffect(() => {
         setSymbolSize(responsiveSymbolSize(cellCount))
@@ -116,14 +126,25 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
             <Grid container direction="column" alignItems="center" justifyContent="center"
                   sx={{mt: 2}}>
                 <Grid item>
-                    <ExpMap2D
-                        cx={cellData.cell_x}
-                        cy={cellData.cell_y}
-                        exp={expData.expression}
-                        markerName={currentMarker}
-                        symbolSize={symbolSize}
-                        canvasSize={canvasSize}
-                    />
+                    {
+                        is3D ? <ExpMap3D
+                            cx={cellData.cell_x}
+                            cy={cellData.cell_y}
+                            cz={cellData.cell_z}
+                            exp={expData.expression}
+                            markerName={currentMarker}
+                            symbolSize={symbolSize}
+                            canvasSize={canvasSize}
+                        /> : <ExpMap2D
+                            cx={cellData.cell_x}
+                            cy={cellData.cell_y}
+                            exp={expData.expression}
+                            markerName={currentMarker}
+                            symbolSize={symbolSize}
+                            canvasSize={canvasSize}
+                        />
+                    }
+
                 </Grid>
                 <Grid item sx={{borderTop: 1, borderColor: 'divider', pt: 4}}>
                     <ExpGallery
@@ -132,6 +153,7 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
                         markers={userMarkers}
                         getExpDataFn={getExpDataFn}
                         setCurrentMarker={setCurrentMarker}
+                        is3D={is3D}
                     />
                 </Grid>
             </Grid>
@@ -139,12 +161,15 @@ export const ExpPanel = ({roiID, cellData, markers, getExpDataFn}) => {
     )
 }
 
-export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
+export const CellMapPanel = ({cellData, roiMeta, bbox, is3D}) => {
 
     const cellCount = cellData.cell_x.length;
-    const bboxText = `${Math.abs(bbox.x2 - bbox.x1).toFixed(0)} × ${Math.abs(bbox.y2 - bbox.y1).toFixed(0)}`
+    let bboxText = `${Math.abs(bbox.x2 - bbox.x1).toFixed(0)} × ${Math.abs(bbox.y2 - bbox.y1).toFixed(0)}`
+    if (is3D) {
+        bboxText = `${bboxText} × ${Math.abs(bbox.z2 - bbox.z1).toFixed(0)}`
+    }
     const [symbolSize, setSymbolSize] = useState(1);
-    const [canvasSize, setCanvasSize] = useState(450);
+    const [canvasSize, setCanvasSize] = useState(is3D ? 650 : 450);
 
     useEffect(() => {
         setSymbolSize(responsiveSymbolSize(cellCount))
@@ -179,13 +204,22 @@ export const CellMapPanel = ({cellData, roiMeta, bbox}) => {
             </LeftPanel>
 
             <OneItemCenter sx={{p: 4}}>
-                <CellMap2D
-                    cx={cellData.cell_x}
-                    cy={cellData.cell_y}
-                    ct={cellData.cell_type}
-                    symbolSize={symbolSize}
-                    canvasSize={canvasSize}
-                />
+                {
+                    is3D ? <CellMap3D
+                        cx={cellData.cell_x}
+                        cy={cellData.cell_y}
+                        cz={cellData.cell_z}
+                        ct={cellData.cell_type}
+                        symbolSize={symbolSize}
+                        canvasSize={canvasSize}
+                    /> : <CellMap2D
+                        cx={cellData.cell_x}
+                        cy={cellData.cell_y}
+                        ct={cellData.cell_type}
+                        symbolSize={symbolSize}
+                        canvasSize={canvasSize}
+                    />
+                }
             </OneItemCenter>
 
         </Stack>
@@ -202,7 +236,7 @@ const fallbackCoExp = [{
 }]
 
 
-export const CoLocPanel = ({roiID, cellData, markers, getExpDataFn}) => {
+export const CoLocPanel = ({roiID, cellData, markers, is3D, getExpDataFn}) => {
 
     const cellCount = cellData.cell_x.length;
     const [disableCheck, setDisableCheck] = useState(false);
@@ -317,13 +351,23 @@ export const CoLocPanel = ({roiID, cellData, markers, getExpDataFn}) => {
 
             </LeftPanel>
             <OneItemCenter sx={{p: 4}}>
-                <CoExpMap2D
-                    cx={cellData.cell_x}
-                    cy={cellData.cell_y}
-                    exp={currentExp}
-                    symbolSize={symbolSize}
-                    canvasSize={canvasSize}
-                />
+                {
+                    is3D ? <CoExpMap3D
+                        cx={cellData.cell_x}
+                        cy={cellData.cell_y}
+                        cz={cellData.cell_z}
+                        exp={currentExp}
+                        symbolSize={symbolSize}
+                        canvasSize={canvasSize}
+                    /> : <CoExpMap2D
+                        cx={cellData.cell_x}
+                        cy={cellData.cell_y}
+                        exp={currentExp}
+                        symbolSize={symbolSize}
+                        canvasSize={canvasSize}
+                    />
+                }
+
             </OneItemCenter>
 
         </Stack>

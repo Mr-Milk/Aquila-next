@@ -4,13 +4,14 @@ import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {ScatterChart} from 'echarts/charts';
-import {GridComponent, TooltipComponent} from 'echarts/components';
+import {GridComponent, ToolboxComponent, TooltipComponent} from 'echarts/components';
 
 echarts.use([
     CanvasRenderer,
     GridComponent,
     ScatterChart,
     TooltipComponent,
+    ToolboxComponent
 ])
 
 const VolcanoPlot = ({x, y, label, xrange = [-1, 1], yrange = [0, 1], xtitle, ytitle, xthresh, ythresh}) => {

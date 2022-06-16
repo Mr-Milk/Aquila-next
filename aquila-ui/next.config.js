@@ -5,40 +5,26 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 const withTranspileModules = require("next-transpile-modules")(["echarts", "zrender", "echarts-gl"]);
 const withPWA = require("next-pwa");
-//const withWorker = require('worker-plugin');
-
-// const nextConfig = {
-//     webpack: (config, {isServer}) => {
-//
-//         config.reactStrictMode = true
-//         config.images.domains.push('www.um.edu.mo')
-//
-//         // if (!isServer) {
-//         //     config.plugins.push(
-//         //         new withWorker({
-//         //             // use "self" as the global object when receiving hot updates.
-//         //             globalObject: "self",
-//         //         })
-//         //     );
-//         // }
-//
-//
-//         return config;
-//     },
-// };
 
 module.exports = withPlugins(
     [
+        withTranspileModules,
         withPlaiceholder,
         withBundleAnalyzer,
-        withTranspileModules,
         [withPWA, {
-                pwa: {
-                    mode: 'production',
-                    dest: 'public',
-                    disable: process.env.NODE_ENV === 'development',
-                },
-    }]],
+            pwa: {
+                mode: 'production',
+                dest: 'public',
+                disable: process.env.NODE_ENV === 'development',
+                buildExcludes: [
+                    /\/*server\/middleware-chunks\/[0-9]*[a-z]*[A-Z]*\.js$/,
+                    /middleware-manifest\.json$/,
+                    /middleware-runtime\.js$/,
+                    /_middleware\.js$/,
+                    /^.+\\_middleware\.js$/,
+                ],
+            },
+        }]],
     {
         reactStrictMode: true,
         compiler: {

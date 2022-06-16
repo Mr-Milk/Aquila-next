@@ -4,13 +4,14 @@ import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {BarChart as BChart} from 'echarts/charts';
-import {GridComponent, TitleComponent, TooltipComponent} from 'echarts/components';
+import {GridComponent, TitleComponent, TooltipComponent, ToolboxComponent} from 'echarts/components';
 
 echarts.use(
     [
         BChart,
         GridComponent,
         TooltipComponent,
+        ToolboxComponent,
         TitleComponent,
         CanvasRenderer,
     ]

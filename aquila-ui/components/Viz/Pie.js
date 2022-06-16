@@ -6,7 +6,7 @@ import {counter} from "components/compute/math";
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {PieChart} from 'echarts/charts';
-import {GridComponent, LegendComponent, TitleComponent, TooltipComponent} from 'echarts/components';
+import {GridComponent, LegendComponent, ToolboxComponent, TitleComponent, TooltipComponent} from 'echarts/components';
 
 echarts.use([
     CanvasRenderer,
@@ -14,6 +14,7 @@ echarts.use([
     PieChart,
     TitleComponent,
     TooltipComponent,
+    ToolboxComponent,
     LegendComponent,
 ])
 

@@ -6,9 +6,10 @@ import Typography from "@mui/material/Typography";
 import {memo, useState} from "react";
 import IconButton from "@mui/material/IconButton";
 import Clear from "@mui/icons-material/Clear";
+import {CellMap3DThumbNail} from "../../Viz/CellMap3D";
 
 
-const ROIMapThumbNail = ({roiID, roiMeta, setCurrentROI, getCellData}) => {
+const ROIMapThumbNail = ({roiID, roiMeta, is3D, setCurrentROI, getCellData}) => {
 
     const {data: cellData} = getCellData(roiID);
 
@@ -32,11 +33,17 @@ const ROIMapThumbNail = ({roiID, roiMeta, setCurrentROI, getCellData}) => {
                 transition: 'background 0.5s, border-color 0.5s',
             }
         }}>
-        <CellMap2DThumbNail
+        {is3D ? <CellMap3DThumbNail
+            cx={cellData.cell_x}
+            cy={cellData.cell_y}
+            cz={cellData.cell_z}
+            ct={cellData.cell_type}
+        /> : <CellMap2DThumbNail
             cx={cellData.cell_x}
             cy={cellData.cell_y}
             ct={cellData.cell_type}
-        />
+        />}
+
         <Stack sx={{
             maxWidth: '200px',
             inlineSize: '150px',
@@ -62,7 +69,7 @@ const ROIMapThumbNail = ({roiID, roiMeta, setCurrentROI, getCellData}) => {
 const MemoROIMapThumbNail = memo(ROIMapThumbNail)
 
 
-const ROIPreviewItem = ({roiID, roiMeta, setCurrentROI, deleteROI, getCellData}) => {
+const ROIPreviewItem = ({roiID, roiMeta, is3D, setCurrentROI, deleteROI, getCellData}) => {
 
     const [showDelete, setShowDelete] = useState(false);
 
@@ -72,7 +79,7 @@ const ROIPreviewItem = ({roiID, roiMeta, setCurrentROI, deleteROI, getCellData})
             alignItems="flex-start"
             onMouseOver={() => setShowDelete(true)}
             onMouseOut={() => setShowDelete(false)}>
-            <MemoROIMapThumbNail roiID={roiID} roiMeta={roiMeta}
+            <MemoROIMapThumbNail roiID={roiID} roiMeta={roiMeta} is3D={is3D}
                                  setCurrentROI={setCurrentROI}
                                  getCellData={getCellData}
             />
@@ -88,7 +95,7 @@ const ROIPreviewItem = ({roiID, roiMeta, setCurrentROI, deleteROI, getCellData})
 const MemoROIPreviewItem = memo(ROIPreviewItem)
 
 
-const ROIMapGallery = ({roiList, roiMetaList, setCurrentROI, deleteROI, getCellData}) => {
+const ROIMapGallery = ({roiList, roiMetaList, is3D=false, setCurrentROI, deleteROI, getCellData}) => {
     return (
         <Box sx={{width: '100%', mt: 4, border: 1, borderColor: 'divider', p: 2}}>
             <Stack alignItems="flex-start" direction="column">
@@ -96,7 +103,7 @@ const ROIMapGallery = ({roiList, roiMetaList, setCurrentROI, deleteROI, getCellD
                 <Grid container justifyContent="flex-start" spacing={2} alignItems="center">
                     {
                         roiList.map((roiID, i) => {
-                            return <MemoROIPreviewItem roiID={roiID} roiMeta={roiMetaList[i]}
+                            return <MemoROIPreviewItem roiID={roiID} roiMeta={roiMetaList[i]} is3D={is3D}
                                                        setCurrentROI={setCurrentROI} deleteROI={deleteROI}
                                                        getCellData={getCellData}
                                                        key={roiID}

@@ -180,7 +180,7 @@ const ExpFallback = {
 
 
 export const useExpData = (roiID, marker) => {
-    const {data, error} = useSWR(`${getCellExpURL}/${roiID}/${marker}`, fetcher, {
+    const {data, error} = useSWR(`${getCellExpURL}/${roiID}/${encodeURIComponent(marker)}`, fetcher, {
         revalidateOnFocus: false
     })
 

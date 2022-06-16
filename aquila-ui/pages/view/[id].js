@@ -84,7 +84,7 @@ const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
     return (
         <>
             <Head>
-                <title>Aquila | Data Details</title>
+                <title>Aquila | Data</title>
             </Head>
             <Container maxWidth={"xl"} sx={{ mb: 4 }}>
                 <Stack direction="row" justifyContent="flex-start" spacing={4} sx={{ mt : 4 }}>
@@ -108,7 +108,6 @@ const DetailsPage = ({id, initROI, initROIMeta, initRecordData}) => {
                          recordData={recordData}
                          cellData={cellData}
                          getExpDataFn={useExpData}
-                         getExpBatch={getCellExpBatch}
                          bbox={bbox}
                 />
                 <AnalysisTab roiID={currentROI}

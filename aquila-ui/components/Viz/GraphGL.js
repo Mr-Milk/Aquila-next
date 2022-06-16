@@ -1,6 +1,5 @@
 import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
-import 'echarts-gl';
 import {GraphChart} from 'echarts/charts';
 import {titleOpts} from "./config";
 import Typography from "@mui/material/Typography";
@@ -8,6 +7,7 @@ import {CanvasRenderer} from "echarts/renderers";
 import {
     GridComponent,
     TitleComponent,
+    LegendComponent,
     ToolboxComponent,
     TooltipComponent,
     VisualMapComponent
@@ -20,11 +20,11 @@ import {useEffect, useState} from "react";
 echarts.use([
     CanvasRenderer,
     GraphChart,
+    LegendComponent,
     GridComponent,
     TitleComponent,
     TooltipComponent,
     ToolboxComponent,
-    VisualMapComponent,
 ])
 
 
@@ -182,7 +182,7 @@ const GraphGL = ({title, cx, cy, ct, p1, p2, weights, rotate, community}) => {
         />
     } else {
         return <Stack direction="column" alignItems="center">
-            <Typography variant="caption">GPU support not available, render more than 100K elements may crash your
+            <Typography variant="caption">Render more than 100K elements may crash your
                 browser.</Typography>
             <Button onClick={() => setShow(true)}>Render</Button>
         </Stack>

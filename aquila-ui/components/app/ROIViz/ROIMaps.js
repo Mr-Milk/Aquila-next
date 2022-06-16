@@ -7,7 +7,7 @@ import {TabPanel} from "components/Layout/TabPanel";
 import {CellMapPanel, CoLocPanel, ExpPanel} from "components/app/ROIViz/ROIPanels";
 
 
-const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn, bbox}) => {
+const ROIMaps = ({roiID, roiMeta, recordData, cellData, bbox, is3D=false, getExpDataFn}) => {
 
     const [value, setValue] = useState(0);
     const handleChange = (e, v) => setValue(v);
@@ -22,12 +22,13 @@ const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn, bbox}) => 
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <CellMapPanel cellData={cellData} roiMeta={roiMeta} bbox={bbox}/>
+                <CellMapPanel cellData={cellData} roiMeta={roiMeta} bbox={bbox} is3D={is3D}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <ExpPanel
                     roiID={roiID}
                     cellData={cellData}
+                    is3D={is3D}
                     markers={recordData.markers}
                     getExpDataFn={getExpDataFn}
                 />
@@ -36,6 +37,7 @@ const ROIMaps = ({roiID, roiMeta, recordData, cellData, getExpDataFn, bbox}) => 
                 <CoLocPanel
                     roiID={roiID}
                     cellData={cellData}
+                    is3D={is3D}
                     markers={recordData.markers}
                     getExpDataFn={getExpDataFn}
                 />

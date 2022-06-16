@@ -16,12 +16,19 @@ import {
     VisualMapComponent,
     VisualMapContinuousComponent,
 } from 'echarts/components';
+import {mixingColors} from "./CoExpMap2D";
+import {axis3DOptions} from "./config";
 import dynamic from "next/dynamic";
 
 dynamic(
-    () => import('echarts-gl/charts').then(
-        (mod) => echarts.use([mod.ScatterGLChart])
-    ),
+    () => {
+        import('echarts-gl/charts').then(
+            (mod) => echarts.use([mod.Scatter3DChart])
+        );
+        import('echarts-gl/components').then(
+            (mod) => echarts.use([mod.Grid3DComponent])
+        );
+    },
     {ssr: false})
 
 echarts.use([
@@ -37,35 +44,7 @@ echarts.use([
     VisualMapContinuousComponent
 ])
 
-
-export const mixingColors = (colors) => {
-    const [colorsCount, expCount] = [colors[0].length, colors.length];
-    const mixture = [];
-    for (let i = 0; i < colorsCount; i++) {
-        let cellColors = [];
-        let recordColors = [];
-        for (let k = 0; k < expCount; k++) {
-            let c = colors[k][i];
-            // if the value is 0, the color will not be added
-            if (c.value !== 0) {
-                cellColors.push(c.color)
-            }
-            recordColors.push(c.color)
-        }
-        // if all color is zero, return arbitrary color map to the scale
-        if (cellColors.length === 0) {
-            mixture.push(recordColors[0].hex())
-        } else if (cellColors.length === 1) {
-            mixture.push(cellColors[0].hex())
-        } else {
-            // if more than two colors, average them
-            mixture.push(chroma.average(cellColors).hex())
-        }
-    }
-    return mixture;
-};
-
-export const CoExpMap2D = ({cx, cy, exp, symbolSize, canvasSize, ...leftProps}) => {
+export const CoExpMap3D = ({cx, cy, cz, exp, symbolSize, canvasSize, ...leftProps}) => {
     const dataSize = cx.length;
     const colors = []
     const labels = cx.map(() => [])
@@ -92,11 +71,9 @@ export const CoExpMap2D = ({cx, cy, exp, symbolSize, canvasSize, ...leftProps}) 
     const renderData = cx.map((x, i) => {
         return {
             name: labels[i].join(""),
-            value: [x, cy[i]],
+            value: [x, cy[i], cz[i]],
             itemStyle: {
                 color: renderColors[i],
-                borderColor: '#555',
-                borderWidth: (symbolSize < 3) ? 0 : 0.5,
             }
         }
     });
@@ -133,20 +110,15 @@ export const CoExpMap2D = ({cx, cy, exp, symbolSize, canvasSize, ...leftProps}) 
                 yAxisIndex: [0],
             },
         ],
-        grid: {
-            show: true,
+        grid3D: {
             top: 'middle',
-            width: canvasSize,
-            height: canvasSize,
-            containLabel: true,
-            left: '0%',
-            right: '0%',
         },
-        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
-        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        xAxis3D: {...axis3DOptions},
+        yAxis3D: {...axis3DOptions},
+        zAxis3D: {...axis3DOptions},
         series: [
             {
-                type: dataSize < 15000 ? "scatter" : "scatterGL",
+                type: "scatter3D",
                 symbolSize: symbolSize,
                 data: renderData,
             },
@@ -157,7 +129,7 @@ export const CoExpMap2D = ({cx, cy, exp, symbolSize, canvasSize, ...leftProps}) 
         <Echarts
             echarts={echarts}
             option={options}
-            style={{height: canvasSize + 50, width: canvasSize + 50}}
+            style={{height: canvasSize, width: canvasSize}}
         />
     )
 }
