@@ -18,18 +18,7 @@ import {
 } from 'echarts/components';
 import {mixingColors} from "./CoExpMap2D";
 import {axis3DOptions} from "./config";
-import dynamic from "next/dynamic";
-
-dynamic(
-    () => {
-        import('echarts-gl/charts').then(
-            (mod) => echarts.use([mod.Scatter3DChart])
-        );
-        import('echarts-gl/components').then(
-            (mod) => echarts.use([mod.Grid3DComponent])
-        );
-    },
-    {ssr: false})
+import 'echarts-gl';
 
 echarts.use([
     CanvasRenderer,

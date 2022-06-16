@@ -1,16 +1,7 @@
-import dynamic from 'next/dynamic'
-
 import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
 import {ScatterChart} from 'echarts/charts';
-
-dynamic(
-    () => import('echarts-gl/charts').then(
-        (mod) => echarts.use([mod.ScatterGLChart])
-    ),
-    {ssr: false})
-
 import {
     DataZoomComponent,
     GridComponent,
@@ -19,6 +10,8 @@ import {
     ToolboxComponent,
     TooltipComponent,
 } from 'echarts/components';
+import 'echarts-gl';
+
 import {CAT_COLORS, ThumbNailSize} from "./config";
 
 echarts.use([

@@ -1,6 +1,5 @@
 import max from "loadsh/max"
 import min from "loadsh/min"
-import dynamic from "next/dynamic";
 import Echarts from "./echarts-obj";
 import {GRAD_COLORS, ThumbNailSize, toolboxOpts} from "components/Viz/config";
 
@@ -17,12 +16,7 @@ import {
     TooltipComponent,
     VisualMapContinuousComponent,
 } from 'echarts/components';
-
-dynamic(
-    () => import('echarts-gl/charts').then(
-        (mod) => echarts.use([mod.ScatterGLChart])
-    ),
-    {ssr: false})
+import 'echarts-gl';
 
 echarts.use([
     CanvasRenderer,

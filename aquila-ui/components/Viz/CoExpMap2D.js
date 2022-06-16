@@ -16,13 +16,7 @@ import {
     VisualMapComponent,
     VisualMapContinuousComponent,
 } from 'echarts/components';
-import dynamic from "next/dynamic";
-
-dynamic(
-    () => import('echarts-gl/charts').then(
-        (mod) => echarts.use([mod.ScatterGLChart])
-    ),
-    {ssr: false})
+import 'echarts-gl';
 
 echarts.use([
     CanvasRenderer,

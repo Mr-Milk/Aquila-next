@@ -4,18 +4,7 @@ import {GRAD_COLORS, titleOpts, toolboxOpts, ThumbNailSize, axis3DOptions} from 
 import Echarts from "./echarts-obj";
 import * as echarts from "echarts/core";
 import {GridComponent, VisualMapContinuousComponent} from 'echarts/components';
-import dynamic from "next/dynamic";
-
-dynamic(
-    () => {
-        import('echarts-gl/charts').then(
-            (mod) => echarts.use([mod.Scatter3DChart])
-        );
-        import('echarts-gl/components').then(
-            (mod) => echarts.use([mod.Grid3DComponent])
-        );
-    },
-    {ssr: false})
+import 'echarts-gl';
 
 echarts.use([GridComponent, VisualMapContinuousComponent]);
 

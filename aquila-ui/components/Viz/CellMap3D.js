@@ -2,18 +2,7 @@ import Echarts from "./echarts-obj";
 import * as echarts from 'echarts/core';
 import {LegendComponent, ToolboxComponent, VisualMapComponent} from 'echarts/components';
 import {CAT_COLORS, ThumbNailSize, titleOpts, toolboxOpts, axis3DOptions} from "./config";
-import dynamic from "next/dynamic";
-
-dynamic(
-    () => {
-        import('echarts-gl/charts').then(
-            (mod) => echarts.use([mod.Scatter3DChart])
-        );
-        import('echarts-gl/components').then(
-            (mod) => echarts.use([mod.Grid3DComponent])
-        );
-    },
-    {ssr: false})
+import 'echarts-gl';
 
 echarts.use([
     VisualMapComponent,
