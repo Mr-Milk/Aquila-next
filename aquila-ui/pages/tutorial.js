@@ -5,11 +5,8 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Image from 'next/image';
-import {useId, useState} from "react";
 import {getPlaiceholder} from "plaiceholder";
 import Divider from "@mui/material/Divider";
 import Accordion from "@mui/material/Accordion";
@@ -19,31 +16,24 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Stack from "@mui/material/Stack";
 import CheckIcon from '@mui/icons-material/Check';
 import Head from "next/head";
-import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
-import IconButton from "@mui/material/IconButton";
 import OneItemCenter from "../components/Layout/OneItemCenter";
 import HelpOutline from "@mui/icons-material/HelpOutline";
-import SubmitButton from "../components/InputComponents/SubmitButton";
 import Link from "@mui/material/Link";
 
-
-const createID = (id, title) => {
-    return `${id}-${title}`
-}
 
 const Title = ({sx, children}) => {
     return <Typography variant="h5" sx={{fontWeight: 600, ...sx}}>{children}</Typography>
 }
 
 
-function VerticalLinearStepper({title, steps, id}) {
+function VerticalLinearStepper({title, steps}) {
     return (
         <Box sx={{maxWidth: '900px', mb: 2}}>
             <Typography
                 variant="h5"
                 fontFamily="Plus Jakarta Sans"
                 sx={{mb: 2}}
-                id={createID(id, title)}
+                id={title}
             >
                 {title}
             </Typography>
@@ -55,7 +45,7 @@ function VerticalLinearStepper({title, steps, id}) {
                             <Typography variant="h6" fontFamily="Plus Jakarta Sans">{step.label}</Typography>
                         </StepLabel>
                         <StepContent>
-                            <Typography sx={{my: 2}}>{step.description}</Typography>
+                            <Box sx={{my: 2}}>{step.description}</Box>
                             {
                                 step.imageProps ?
                                     // eslint-disable-next-line jsx-a11y/alt-text
@@ -65,7 +55,7 @@ function VerticalLinearStepper({title, steps, id}) {
                     </Step>
                 ))}
             </Stepper>
-            <Divider sx={{mb: 4}}/>
+            <Divider sx={{mt: 4, mb: 6}}/>
         </Box>
     );
 }
@@ -122,8 +112,8 @@ function StackAccordion({items}) {
     )
 }
 
-const TOCItem = ({refTitle, id}) => {
-    return <Link underline="none" color="inherit" href={`#${createID(id, refTitle)}`}
+const TOCItem = ({refTitle}) => {
+    return <Link underline="none" color="inherit" href={`#${refTitle}`}
                  sx={{
                      "&:hover": {
                          textDecoration: 'underline'
@@ -141,11 +131,11 @@ const TutorialPage = ({images}) => {
             imageProps: images.browse.step1,
         },
         {
-            label: 'Find your interested datasets',
+            label: 'Find your interesting datasets',
             description: <div>{`After you enter the dataset page, 
             you can search, filter, or sort to find the dataset that you want.`}
                 <ul>
-                    <li><b>Search:</b> You can search by any keywords or search by marker or gene name</li>
+                    <li><b>Search:</b> You can search by any keywords or search by marker or gene name.</li>
                     <li><b>Filter:</b> Use the filter panel below to select the conditions.</li>
                     <li><b>Sort:</b> You can sort by number of cells/markers/ROI, year or publications.</li>
                 </ul>
@@ -154,32 +144,21 @@ const TutorialPage = ({images}) => {
         },
         {
             label: `What's in the data card?`,
-            description: `For each dataset, You are presented with a data card, which contains lots of information related to
+            description: `For each dataset, You are presented with a data card containing lots of information related to
             this data.`,
-            //imageProps: images.browse.step2,
+            imageProps: images.browse.step3,
         },
         {
             label: 'Download the datasets',
-            description: 'To download one dataset, you can click on the download button in the data card. ' +
-                'To download multiple datasets, add the dataset to the download list. Once you select all' +
-                'the data that you want to download, click the download list and confirm to proceed.'
+            description: 'You can click on the download button on the data card to download one dataset. ' +
+                'To download multiple datasets, add the dataset to the download list. ' +
+                'Once you select enough datasets, click the download list button, and confirm to proceed.'
         },
         {
             label: 'View the data',
-            description: `Now click on the view button to view the dataset.`,
+            description: `Click on the view button to view the dataset.`,
         },
-        {
-            label: 'What each section do?',
-            description:
-                <div>
-                    <ul>
-                        <li>Data summary section: Information related to the dataset.</li>
-                        <li>The region of interest (ROI) selection panel: You can switch between different ROI.</li>
-                        <li>ROI Viewer: Visualize the spatial distribution of cells and expression.</li>
-                    </ul>
-                    Finally, we get to the amazing part of Aquila. The analysis panel.
-                </div>,
-        },
+
         {
             label: 'Perform spatial analysis',
             description: <Typography>{`Feel free to run all kinds of analysis including advanced spatial analysis. If you don't know what each parameter mean,
@@ -207,96 +186,138 @@ const TutorialPage = ({images}) => {
 
     const viewSteps = [
         {
-            label: 'Selection of ROI',
-            description: 'A table contains all ROI information is presented for you.'
+            label: 'What each section do?',
+            description:
+                <div>
+                    <ul>
+                        <li>Data summary section: Information related to the dataset.</li>
+                        <li>Select ROI: You can switch between different ROIs.</li>
+                        <li>ROI Preview: Visualize the spatial distribution of cells and expression.</li>
+                    </ul>
+                </div>,
+            imageProps: images.data.step1,
+        },
+        {
+            label: 'Select an ROI',
+            description: 'Click the view to select an ROI. ' +
+                'This ROI is then added to the ROI preview panel and the following ROI visualization panel. ' +
+                'Delete the unwanted ROI if you add many ROIs in the ROI preview panel.',
+        },
+        {
+            label: 'Cell Map',
+            description: 'When you select an ROI, here is where you view its details. ' +
+                'You can click the legend item to mute a particular cell type. ' +
+                'Use the two sliders to adjust the point size and canvas size.',
+            imageProps: images.data.step2
+        },
+        {
+            label: 'Expression Map',
+            description: 'You can select multiple markers and view their expressions at the same time. ' +
+                'An expression distribution profile is presented for you. ' +
+                'This work similarly with ROI panels.',
+            imageProps: images.data.step3
+        },
+        {
+            label: 'Markers Co-localization',
+            description: 'As a mocking visualization of experiments like IF or FISH, ' +
+                'you can visualize more than one marker in one ROI by mixing different colors.',
+            imageProps: images.data.step4
         }
     ]
 
+    const analysisSteps = [
+        {
+        label: 'Analysis panel',
+        description: 'You can select different analyses on the left side panel. ' +
+            'Notice that some analysis is locked at first ' +
+            'because they require the information from step `Find Neighbors`. ' +
+            'After embedding the neighbor network, the locks are gone. ' +
+            'If you found other analyses unavailable, ' +
+            'some analyses rely on cell type information, ' +
+            'which is missed in the dataset.',
+        imageProps: images.spatial.step1},
+        {
+            label: 'Prompts in analysis',
+            description: <Typography>{'You likely have no idea what an analysis does. ' +
+                'Hence, we provide you with a brief introduction to each analysis. ' +
+                'Click on the expand arrow to view the details of each analysis. ' +
+                'You can hover on the'}<span><HelpOutline fontSize="small" sx={{ mx: 1 }}/></span>
+            {'to get a tip if you don\'t know what a parameter does. ' +
+                        'Don\'t want to mess with your brain? ' +
+                'Stick with default values is always great.'}</Typography>
+        },
+        {
+            label: 'Run the analysis',
+            description: <Typography>{`Click on the`}
+                <span style={{
+                    color: 'white',
+                    backgroundColor: '#FF9800',
+                    margin: '5px',
+                    padding: '8px',
+                    fontSize: '0.7rem',
+                    borderRadius: '5px'
+                }}>
+                    RUN
+                </span>
+                {`to run the analysis, the visualization will
+                be automatically shown or updated.`}</Typography>,
+        }
+    ];
+
     const submitSteps = [
         {
-            label: 'Find the entry point for analysis',
-            description: `Check the analysis tab at the header panel. It\'s available to all pages.`,
+            label: 'Prepare 3 files',
+            description: <div>You need to prepare 3 files to run the analysis.
+                They should all have headers and the same number of lines representing cells.
+                Currently, we only support 2D data.
+                Support for 3D data is on its way!
+                <ol style={{lineHeight: 2}}>
+                    <li><b>ROI file</b>: Each line annotates the ROI that the cell belongs to.</li>
+                    <li><b>Cell info file</b>: Must have at least 2 columns,
+                        coordination X and coordination Y,
+                        or you can add an extra column to specify cell type.
+                    </li>
+                    <li><b>Expression file</b>: Each column is a gene, and the header is the gene name.</li>
+                </ol></div>,
             imageProps: images.analysis.step1,
         },
         {
-            label: 'Prepare 3 files',
-            description: <div>You need to prepare 3 files to run the analysis, they should all have headers,
-                they should have same number of line, each line represent a cell or a record. Currently, we only
-                support 2D data, support for 3D data is on its way!
-                <ol style={{lineHeight: 2}}>
-                    <li><b>ROI file</b>: Each line annotate the ROI that a cell belongs to.</li>
-                    <li><b>Cell info file</b>: Must have at least 2 columns, coordination X, coordination Y or you can
-                        add an extra columns to specify
-                        cell type. This will unlock more analysis.
-                    </li>
-                    <li><b>Expression file</b>: Each column is a gene, header is the gene name</li>
-                </ol></div>,
+            label: 'Specify a Data ID',
+            description: `Although a random Data ID is generated for you, 
+            it's highly recommended that you put a meaningful name instead of a meaningless Data ID. 
+            In case you don't remember the content of that data a few days later. 
+            Click the start to run the analysis.`,
             imageProps: images.analysis.step2,
         },
         {
-            label: 'Specify a Data ID',
-            description: `Although a random dataID is generated for you, it's highly recommended that you specify a meaningful name
-            for the Data ID. In case you don't remember what that data is few days later.`,
-            imageProps: images.analysis.step3,
-        },
-        {
-            label: `Submit the files`,
+            label: `Run the analysis`,
             description: <div>Click <span style={{
                 color: 'white',
-                backgroundColor: '#FF9800',
+                backgroundColor: 'green',
                 margin: '5px',
                 padding: '8px',
                 fontSize: '0.7rem',
                 borderRadius: '5px'
             }}>
-                    GO!
-                </span> {`to start processing your file, it may take a long time
-            since everything is running and saved on your local computer, please be patient. 
-            Some people may submit a ROI file with patient information that are privacy, thus it's better to save
-            all your data locally. Plus, you don't need to worry that it gets expired. But if you clear you browser 
-                history or open in clock mode. It will be disappeared next time you open the site. Be careful!`}</div>,
-            imageProps: images.analysis.step4,
+                    START
+                </span> {`to start processing your file, it may take a while. 
+                A status bar would show you which step is currently on. 
+                Every data is saved on your local computer for your data privacy! 
+                The analysis record will never get expired if you don't delete it. 
+                But if you clear your browser cache. 
+                It will be disappeared. Be careful!`}</div>,
+            imageProps: images.analysis.step3,
         },
         {
             label: `Check your result`,
-            description: `When the processing is finished, you should be about to see the newest one
-            from the records, open it to run analysis freely on your own dataset. The usage is exactly the same as 
-            any other datasets in Aquila.`,
-            imageProps: images.analysis.step5,
+            description: `When the processing is finished, 
+            you should be about to see the newest one from the records 
+            and open it to run analysis freely on your dataset. 
+            The usage is the same as any other datasets in Aquila.`,
+            imageProps: images.analysis.step4,
         }
     ]
 
-    // const dataSteps = [
-    //     {
-    //         label: 'Overview',
-    //         description: `Now you enter the details page of a dataset, you should be able to see four parts`,
-    //         //imageProps: images.browseStep1,
-    //     },
-    //     {
-    //         label: 'Data Summary',
-    //         description: `This part gives a summarize information of the dataset`,
-    //         imageProps: images.data.step2,
-    //     },
-    //     {
-    //         label: 'Select ROI',
-    //         description: `A dataset usually contains multiple ROI, you can select different ROI
-    //     using this table.`,
-    //         imageProps: images.data.step3,
-    //     },
-    //     {
-    //         label: 'ROI Viewer',
-    //         description: `You can view spatial distribution of cells and the spatial expression of
-    //         different markers using this panel`,
-    //         imageProps: images.data.step4,
-    //     },
-    //     {
-    //         label: 'Run spatial aquila_spatial',
-    //         description: `Here, you are allowed to run various of advanced analysis. You check the
-    //         help button if you don't know what that analysis is or what a parameters will do.
-    //         To know more about each analysis, check the section below.`,
-    //         imageProps: images.data.step5,
-    //     }
-    // ];
 
     const analysisExplanations = [
         {
@@ -413,9 +434,6 @@ const TutorialPage = ({images}) => {
         },
     ]
 
-    const analysisSteps = [];
-
-    const id = useId();
     const contents = [
         {title: 'Browse Data', steps: browseSteps},
         {title: 'Data Viewer', steps: viewSteps},
@@ -440,14 +458,14 @@ const TutorialPage = ({images}) => {
                     <ul style={{lineHeight: '2rem'}}>
                         {
                             contents.map((i) => (
-                                <li key={i.title}><TOCItem refTitle={i.title} id={id}/></li>
+                                <li key={i.title}><TOCItem refTitle={i.title}/></li>
                             ))
                         }
                     </ul>
                 </Stack>
                 {
                     contents.map((i) => (
-                        <VerticalLinearStepper title={i.title} steps={i.steps} id={id} key={i.title}/>
+                        <VerticalLinearStepper title={i.title} steps={i.steps} key={i.title}/>
                     ))
                 }
 
@@ -465,61 +483,48 @@ const TutorialPage = ({images}) => {
     )
 }
 
+const createBlur = async (images) => {
+    const container = {};
+    await Promise.all(images.map(async (im, i) => {
+        const {base64, img} = await getPlaiceholder(im)
+        container[`step${i + 1}`] = {...img, blurDataURL: base64, width: img.width * 0.5, height: img.height * 0.5}
+    }))
+    return container;
+}
+
 export const getStaticProps = async () => {
-    const {base64: blurBrowse1, img: imgBrowse1} = await getPlaiceholder("/tutorial_browse_step1.png")
-    const {base64: blurBrowse2, img: imgBrowse2} = await getPlaiceholder("/tutorial_browse_step2.png")
 
-    const {base64: blurAna1, img: imgAna1} = await getPlaiceholder("/tutorial_analysis_step1.png")
-    const {base64: blurAna2, img: imgAna2} = await getPlaiceholder("/tutorial_analysis_step2.png")
-    const {base64: blurAna3, img: imgAna3} = await getPlaiceholder("/tutorial_analysis_step3.png")
-    const {base64: blurAna4, img: imgAna4} = await getPlaiceholder("/tutorial_analysis_step4.png")
-    const {base64: blurAna5, img: imgAna5} = await getPlaiceholder("/tutorial_analysis_step5.png")
+    const browseImages = await createBlur([
+        "/tutorial_browse_step1.png",
+        "/tutorial_browse_step2.png",
+        "/tutorial_browse_step3.png",
+    ])
 
-    const {base64: blurData2, img: imgData2} = await getPlaiceholder("/tutorial_data_step1.png")
-    const {base64: blurData3, img: imgData3} = await getPlaiceholder("/tutorial_data_step2.png")
-    const {base64: blurData4, img: imgData4} = await getPlaiceholder("/tutorial_data_step3.png")
-    const {base64: blurData5, img: imgData5} = await getPlaiceholder("/tutorial_data_step4.png")
+    const dataImages = await createBlur([
+        "/tutorial_data_step1.png",
+        "/tutorial_data_step2.png",
+        "/tutorial_data_step3.png",
+        "/tutorial_data_step4.png",
+    ])
+
+    const spatialImages = await createBlur([
+        "/tutorial_spatial_step1.png",
+    ])
+
+    const analysisImages = await createBlur([
+        "/tutorial_analysis_step1.png",
+        "/tutorial_analysis_step2.png",
+        "/tutorial_analysis_step3.png",
+        "/tutorial_analysis_step4.png",
+    ])
 
     return {
         props: {
             images: {
-                browse: {
-                    step1: {...imgBrowse1, blurDataURL: blurBrowse1},
-                    step2: {...imgBrowse2, blurDataURL: blurBrowse2},
-                },
-                analysis: {
-                    step1: {...imgAna1, blurDataURL: blurAna1},
-                    step2: {...imgAna2, blurDataURL: blurAna2},
-                    step3: {...imgAna3, width: imgAna3.width / 2, height: imgAna3.height / 2, blurDataURL: blurAna3},
-                    step4: {...imgAna4, width: imgAna4.width / 2, height: imgAna4.height / 2, blurDataURL: blurAna4},
-                    step5: {...imgAna5, width: imgAna5.width / 4, height: imgAna5.height / 4, blurDataURL: blurAna5},
-                },
-                data: {
-                    step2: {
-                        ...imgData2,
-                        width: imgData2.width / 2,
-                        height: imgData2.height / 2,
-                        blurDataURL: blurData2
-                    },
-                    step3: {
-                        ...imgData3,
-                        width: imgData3.width / 6,
-                        height: imgData3.height / 6,
-                        blurDataURL: blurData3
-                    },
-                    step4: {
-                        ...imgData4,
-                        width: imgData4.width / 2,
-                        height: imgData4.height / 2,
-                        blurDataURL: blurData4
-                    },
-                    step5: {
-                        ...imgData5,
-                        width: imgData5.width / 2,
-                        height: imgData5.height / 2,
-                        blurDataURL: blurData5
-                    },
-                }
+                browse: browseImages,
+                data: dataImages,
+                spatial: spatialImages,
+                analysis: analysisImages,
             }
         }
     }

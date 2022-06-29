@@ -111,10 +111,11 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionExplainer title={"Neighbors network embedding"}
-                                      details={"This is the basis step for other analysis. It tells whether " +
-                                          "two cells are neighbors to each other."}
-                                      vizTips={"Hover to the link between two cells to find the distance between them."}
+                    <SectionExplainer
+                        title={"Neighbors network embedding"}
+                        details={"This is the primary step for other analyses. " +
+                            "It tells whether two cells are neighbors to each other."}
+                        vizTips={"Hover to the link between two cells to find the distance between them."}
                     />
                     <ParamWrap>
                         <Controller
@@ -151,7 +152,7 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
                                     {...field}
                                     min={1} max={10} step={1}
                                     title={"Number of neighbors (K)"}
-                                    description={"Number of neighbors a cell will have"}
+                                    description={"Number of neighbors a cell has"}
                                     onChange={(_, value) => field.onChange(value)}
                                 />
                             )}
@@ -169,8 +170,8 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
                                     error={!(errors.radius === undefined)}
                                     // placeholder="Sample Radius"
                                     helperText={"Positive Integer"}
-                                    description={"Cells that intersect with the radius range of " +
-                                        "the center cell will be consider as neighbors"}
+                                    description={"Cells intersecting with the center cell's " +
+                                        "radius range are considered neighbors."}
                                     {...field}
                                 />
                             )}
@@ -183,7 +184,7 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
             <OneItemCenter>
                 {
                     showResult ? <GraphGL
-                        title={"Cell Neighobrs"}
+                        title={"Cell Neighbors"}
                         cx={cell_x}
                         cy={cellData.cell_y}
                         ct={cellData.cell_type}

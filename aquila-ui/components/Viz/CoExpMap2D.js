@@ -136,8 +136,8 @@ export const CoExpMap2D = ({cx, cy, exp, symbolSize, canvasSize, ...leftProps}) 
             left: '0%',
             right: '0%',
         },
-        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
-        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        xAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
         series: [
             {
                 type: dataSize < 15000 ? "scatter" : "scatterGL",

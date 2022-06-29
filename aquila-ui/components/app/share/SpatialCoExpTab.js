@@ -13,6 +13,7 @@ import VirtualizedAutoComplete from "../../InputComponents/VirtualizedAutoComple
 import SubmitButton from "../../InputComponents/SubmitButton";
 import OneItemCenter from "../../Layout/OneItemCenter";
 import Heatmap from "../../Viz/Heatmap";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const ExpViz = ({data}) => {
@@ -92,7 +93,10 @@ const SpatialCoExpTab = ({roiID, recordData, getCellExpBatch, getNeighbors}) => 
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Co-Expression among markers"}/>
+                    <SectionExplainer
+                        title={"The expression of pattern similarity spatially"}
+                        details={"The markers' expression similarity within cell neighbor pairs."}
+                    />
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -104,8 +108,8 @@ const SpatialCoExpTab = ({roiID, recordData, getCellExpBatch, getNeighbors}) => 
                                         options={methods}
                                         description={
                                             <>
-                                                <li>Pearson correlation</li>
-                                                <li>Spearman correlation</li>
+                                                <li>Pearson: The linear correlation between the expression of two markers</li>
+                                                <li>Spearman: The rank correlation between the expression of two markers</li>
                                             </>
                                         }
                                         {...field}/>

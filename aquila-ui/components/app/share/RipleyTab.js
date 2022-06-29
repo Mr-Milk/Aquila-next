@@ -73,9 +73,10 @@ const RipleyTab = ({cellData}) => {
         <form onSubmit={handleSubmit(handleRun)}>
             <LeftPanel>
 
-                <SectionExplainer title={"Distance basis spatial pattern"}
-                                  details={"The Ripley functions are a series of cumulative distribution functions describe " +
-                                      "the underlying spatial process given the spatial interval."}
+                <SectionExplainer
+                    title={"Spatial pattern at different distance interval"}
+                    details={"The Ripley functions are a series of cumulative distribution functions that " +
+                                      "describe the underlying spatial process given the spatial interval."}
                 />
                 <ParamWrap>
                     <Controller
@@ -88,10 +89,10 @@ const RipleyTab = ({cellData}) => {
                                     options={methods}
                                     description={
                                         <>
-                                            <li>F: Point-event</li>
-                                            <li>G: Event-to-event</li>
-                                            <li>K: Inter-event</li>
-                                            <li>L: Scaled K</li>
+                                            <li>F: Point-event Function</li>
+                                            <li>G: Event-to-event Function</li>
+                                            <li>K: Inter-event Function</li>
+                                            <li>L: Scaled K Function</li>
                                         </>
                                     }
                                     {...field}/>

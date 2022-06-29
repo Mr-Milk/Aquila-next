@@ -14,6 +14,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import LeftPanel from "../../Layout/LeftPanel";
 import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import SubmitButton from "../../InputComponents/SubmitButton";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const methods = [
@@ -85,7 +86,11 @@ const SpatialEntropyTab = ({cellData, bbox}) => {
         <Stack direction="row" sx={{height: '100%'}}>
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Quantify the heterogeneity of ROI"}/>
+                    <SectionExplainer
+                        title={"Quantify the heterogeneity of ROI"}
+                        details={"Entropy is a metric to quantify the chaos of a system." +
+                            " It can be used to quantify the heterogeneity of cancer."}
+                    />
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -97,8 +102,8 @@ const SpatialEntropyTab = ({cellData, bbox}) => {
                                         options={methods}
                                         description={
                                             <>
-                                                <li>Spatial Entropy</li>
-                                                <li>Shannon Entropy</li>
+                                                <li>Shannon Entropy: The original entropy quantification</li>
+                                                <li>Spatial Entropy: Spatial co-occurrences to determine the entropy</li>
                                             </>
                                         }
                                         {...field}/>

@@ -113,8 +113,8 @@ export const CellMap2DThumbNail = ({cx, cy, ct}) => {
             height: ThumbNailSize,
             containLabel: true,
         },
-        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
-        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        xAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
         series: series
     }
 
@@ -196,8 +196,8 @@ export const CellMap2D = ({cx, cy, ct, symbolSize, canvasSize}) => {
             left: '0%',
             right: '15%'
         },
-        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
-        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        xAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
         series: series
     }
 

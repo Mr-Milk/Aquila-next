@@ -300,8 +300,8 @@ export const CoLocPanel = ({roiID, cellData, markers, is3D, getExpDataFn}) => {
         <Stack direction="row" sx={{height: '100%'}}>
             <LeftPanel sx={{minWidth: '460px'}}>
                 <SectionExplainer title={"Visualize co-localization of markers"}
-                                  details={"The color mixing result may not be satisfying if more than 3 markers."}
-                                  vizTips={"Hover on the cell to see expression of different markers"}
+                                  details={"The color mixing result may not be satisfying if there are more than 3 markers."}
+                                  vizTips={"Hover on the cell to see expression of different markers."}
                                   sx={{maxWidth: '460px'}}
                 />
                 {

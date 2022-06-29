@@ -16,6 +16,7 @@ import LeftPanel from "../../Layout/LeftPanel";
 import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import SubmitButton from "../../InputComponents/SubmitButton";
 import uniq from "loadsh/uniq";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 const patternMap = {'0': 'Non significant', '1': 'Attract', '-1': 'Repeal'}
 
@@ -112,7 +113,11 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Spatial interation between cells"}/>
+                    <SectionExplainer
+                        title={"The likelihood of two cells proximate or avoiding each other"}
+                        details={"This analysis uses bootstrapping method to determine " +
+                            "if the co-occurrences event of two cells is random."}
+                    />
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -122,8 +127,8 @@ const CellCellInteractionTab = ({roiID, cellData, neighborsData}) => {
                                     <Selector
                                         title={"Method"}
                                         options={methods}
-                                        description={"A permutation test will be conducted by shuffling the cell label," +
-                                            "use either pseudo pvalue or zscore to determine significance"}
+                                        description={"A permutation test is conducted by shuffling the cell label and " +
+                                            "using either pseudo p-value or z-score to determine the significance"}
                                         {...field}/>
                                 )
                             }}

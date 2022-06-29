@@ -52,7 +52,11 @@ const Home = ({dbStats}) => {
                     <Stack spacing={2}>
                         <Typography variant="h2" fontFamily="Plus Jakarta Sans" color="grass" fontWeight="700">Exploring Spatial
                             Omics</Typography>
-                        <Typography variant={matches ? "body1" : "h6"} fontWeight="400">{"The spatial omics database with visualization and analysis. From developmental biology to pathology"}</Typography>
+                        <Typography variant={matches ? "body1" : "h6"} fontWeight="400">
+                            {"The spatial omics database and online analysis platform for biologists." +
+                                "Visualize spatial omics data at any scale and " +
+                                "run spatial analysis with zero code."}
+                        </Typography>
                         <Stack direction="row" spacing={2}>
                             <LinkButton href="/view" startIcon={<RocketLaunchRoundedIcon/>}>Explore</LinkButton>
                             <LinkButton href="/analysis" startIcon={<AnalyticsRoundedIcon/>}>Analysis</LinkButton>

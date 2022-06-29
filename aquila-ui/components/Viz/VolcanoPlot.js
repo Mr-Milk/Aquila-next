@@ -53,7 +53,7 @@ const VolcanoPlot = ({x, y, label, xrange = [-1, 1], yrange = [0, 1], xtitle, yt
             max: yrange[1]
         },
         tooltip: {
-            formatter: '{c}'
+            formatter: '{b} {c0}'
         },
         series: [{
             type: 'scatter',

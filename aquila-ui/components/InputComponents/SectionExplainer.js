@@ -25,7 +25,7 @@ const SectionExplainer = ({title, details, vizTips, sx, ...other}) => {
                 {
                     open ?
                         <>
-                            <Typography variant="body2">{details}</Typography>
+                            <Typography variant="body2" sx={{ maxWidth: "450px" }}>{details}</Typography>
                             {
                                 vizTips !== undefined ? <Alert icon={<BubbleChartIcon fontSize="inherit"/>}
                                                                sx={{mt: 1,}}>

@@ -1,5 +1,5 @@
 import Chip from "@mui/material/Chip";
-import {GiDna2, GiSeatedMouse} from "react-icons/gi";
+import {GiDna2, GiSeatedMouse, GiFly, GiHighGrass} from "react-icons/gi";
 import {IoIosMan} from "react-icons/io";
 import ViewInArOutlinedIcon from "@mui/icons-material/ViewInArOutlined";
 import SquareIcon from "@mui/icons-material/Square";
@@ -9,26 +9,68 @@ import {toHumanString} from "../humanize";
 import MUILink from "@mui/material/Link";
 import Tooltip from "@mui/material/Tooltip";
 import {SiMoleculer} from 'react-icons/si';
+import {IoFishOutline} from 'react-icons/io5';
+import {FaMixer} from 'react-icons/fa';
+
 
 export const SpeciesChip = ({species}) => {
-    if (species === 'Mouse') {
-        return <Chip
-            size="small"
-            icon={<GiSeatedMouse fontSize="small"/>}
-            label='Mouse'
-            variant="outlined"
-            color="secondary"
-            //sx={{color: "#5c6bc0", borderColor: "#5c6bc0"}}
-        />
-    } else if (species === 'Human') {
-        return <Chip color="secondary" size="small" icon={<IoIosMan fontSize="small"/>} label={species}
-                     variant="outlined"
-            //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
-        />
-    } else {
-        return <Chip size="small" label={species} variant="outlined"
-            //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
-        />
+    switch (species) {
+        case 'Mouse':
+            return <Chip
+                size="small"
+                icon={<GiSeatedMouse fontSize="small"/>}
+                label='Mouse'
+                variant="outlined"
+                color="secondary"
+                //sx={{color: "#5c6bc0", borderColor: "#5c6bc0"}}
+            />
+        case 'Human':
+            return <Chip
+                color="secondary"
+                size="small"
+                icon={<IoIosMan fontSize="small"/>}
+                label={species}
+                variant="outlined"
+                //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+            />
+        case 'Fruit Fly':
+            return <Chip
+                color="secondary"
+                size="small"
+                icon={<GiFly fontSize="small"/>}
+                label={species}
+                variant="outlined"
+                //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+            />
+        case 'Zebra Fish':
+            return <Chip
+                color="secondary"
+                size="small"
+                icon={<IoFishOutline fontSize="small"/>}
+                label={species}
+                variant="outlined"
+                //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+            />
+        case 'Arabidopsis Leaves':
+            return <Chip
+                color="secondary"
+                size="small"
+                icon={<GiHighGrass fontSize="small"/>}
+                label={species}
+                variant="outlined"
+                //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+            />
+        default:
+            return <Chip size="small" label={species} variant="outlined"/>
+        //         //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+        // }
+        //  else if (species === 'Human') {
+
+        // } else {
+        //     return <Chip size="small" label={species} variant="outlined"
+        //         //sx={{color: "#42a5f5", borderColor: "#42a5f5"}}
+        //     />
+        // }
     }
 }
 
@@ -55,10 +97,15 @@ export const DimChip = ({is3d}) => {
 // }
 
 export const MoleculeChip = ({molecule}) => {
-    if (molecule === 'RNA') {
-        return <Chip label={"RNA"} avatar={<GiDna2/>} size="small"></Chip>
-    } else {
-        return <Chip label={"Protein"} avatar={<SiMoleculer/>} size="small"></Chip>
+    switch (molecule) {
+        case 'RNA':
+            return <Chip label={"RNA"} avatar={<GiDna2/>} size="small"></Chip>
+        case 'Protein':
+            return <Chip label={"Protein"} avatar={<SiMoleculer/>} size="small"></Chip>
+        case 'Protein,RNA':
+            return <>
+                <Chip label={"Protein & RNA"} avatar={<FaMixer/>} size="small"></Chip>
+            </>
     }
 }
 

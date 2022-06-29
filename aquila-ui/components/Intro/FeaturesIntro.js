@@ -48,8 +48,8 @@ const FeaturesIntro = () => {
                 <FeaturesCard
                     icon={<Viewer height={50} width={50}/>}
                     title="Data Viewer"
-                    content={`Navigation through all ROIs in a dataset, 
-                        view the spatial distribution of cells and spatial expression of markers`}
+                    content={`Navigate through all ROIs in a dataset, 
+                    and view cells' spatial distribution and markers' spatial expression.`}
                 />
 
             </Grid>
@@ -57,15 +57,15 @@ const FeaturesIntro = () => {
                 <FeaturesCard
                     icon={<Analysis height={50} width={50}/>}
                     title="Data Analysis"
-                    content={`Free to run all kinds of spatial analysis on any dataset,
-                         or you can even analyze your own data`}/>
+                    content={`Run all kinds of spatial analyses on any dataset or your data. 
+                    No coding skills are required.`}/>
             </Grid>
             <Grid item>
                 <FeaturesCard
                     icon={<Security height={50} width={50}/>}
                     title="Data Security"
-                    content={`All submitted data are stored locally, 
-                        only analysis essential data will be sent to server and will not be stored.`}/>
+                    content={`All submitted data are stored locally. 
+                    Only analysis essential data is sent to the server and not stored.`}/>
             </Grid>
         </Grid>
     )

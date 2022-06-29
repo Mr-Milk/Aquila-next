@@ -15,6 +15,7 @@ import LeftPanel from "../../Layout/LeftPanel";
 import SubmitButton from "../../InputComponents/SubmitButton";
 import VolcanoPlot from "../../Viz/VolcanoPlot";
 import {displayMinMax} from "../../humanize";
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const Viz = ({data, pvalue}) => {
@@ -22,18 +23,20 @@ const Viz = ({data, pvalue}) => {
     const x = [];
     const y = [];
     const label = [];
+    console.log(data)
     data.forEach((record) => {
 
         x.push((record.value === null) ? 0 : record.value.toFixed(2))
         let pvalue;
-        if (record.pvalue === 0) {
-            pvalue = 1e-20
+        if (record.pvalue < 1e-10) {
+            pvalue = 1e-10
         } else if (record.pvalue === null) {
             pvalue = 1
         } else {
             pvalue = record.pvalue
         }
         y.push(-Math.log10(pvalue).toFixed(2))
+        // y.push(-pvalue)
         label.push(record.marker)
     })
 
@@ -108,15 +111,11 @@ const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getCellE
 
         userpValue.current = data.pValue
 
-        //console.log(body)
-
         axios.post(runSpatialAutoCorr, body).then((res) => {
-            //console.log(res.data)
             result.current = res.data
             setShowResult(showResult + 1)
             setRunStatus(false)
         }).catch((e) => {
-            //console.log(e)
             setRunStatus(false)
         })
     }
@@ -128,7 +127,12 @@ const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getCellE
         <Stack direction="row" sx={{height: '100%'}}>
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Correlation between expression and nearby spatial location"}/>
+                    <SectionExplainer
+                        title={"Correlation between expression and nearby spatial location"}
+                        details={"+1 indicates positive spatial autocorrelation while " +
+                            "-1 indicates negative spatial autocorrelation."}
+                        vizTips={"A volcano-like plot for positive and negative markers."}
+                    />
 
                     <ParamWrap>
                         <Controller
@@ -141,10 +145,8 @@ const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getCellE
                                         options={methods}
                                         description={
                                             <>
-                                                <p>Due to the precision issue of floating point in JavaScript,
-                                                    the result may be a bit different between each run</p>
-                                                <li>{"Moran'I: Local measurement"}</li>
-                                                <li>{"Geary'C: Global measurement"}</li>
+                                                <li>{"Moran' I: Local measurement"}</li>
+                                                <li>{"Geary' C: Global measurement"}</li>
                                             </>
                                         }
                                         {...field}/>

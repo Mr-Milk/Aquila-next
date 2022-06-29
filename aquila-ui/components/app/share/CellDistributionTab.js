@@ -145,9 +145,11 @@ const CellDistributionTab = ({cellData, bbox}) => {
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
                     <SectionExplainer title={"Distribution pattern of cells"}
-                                      details={"The distribution pattern suggests the spatial feature of a certain cell type. " +
+                                      details={"The distribution pattern suggests the " +
+                                          "spatial feature of a particular cell type. " +
                                           "The null hypothesis is that the cells are distributed randomly, " +
-                                          "3 methods are provided to test it. Results in random, aggregation or uniform pattern."}/>
+                                          "and 3 methods are provided to test it—results in " +
+                                          "random, aggregation, or uniform pattern."}/>
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -159,9 +161,10 @@ const CellDistributionTab = ({cellData, bbox}) => {
                                         options={methods}
                                         description={
                                             <>
-                                                <li>Index of dispersion: Random sampling</li>
-                                                <li>Morisita of index: Quadratic statistic</li>
-                                                <li>Clark-Evans Index: Nearest neighbors</li>
+                                                <li>Index of dispersion: Random sampling to draw null distribution.</li>
+                                                <li>Morisita of index: A quadratic statistics method.
+                                                    It rasterizes the ROI and compares among grids.</li>
+                                                <li>Clark-Evans Index: Based on numbers of nearest neighbors.</li>
                                             </>
                                         }
                                         {...field}/>
@@ -179,7 +182,7 @@ const CellDistributionTab = ({cellData, bbox}) => {
                                     {...field}
                                     min={100} max={2000} step={100}
                                     title={"Repeat Times"}
-                                    description={"Number of time to perform sampling"}
+                                    description={"Number of sampling times"}
                                     onChange={(_, value) => field.onChange(value)}
                                 />
                             )}

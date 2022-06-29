@@ -89,8 +89,8 @@ export const ExpMap2DThumbNail = ({cx, cy, exp}) => {
             height: ThumbNailSize,
             containLabel: true,
         },
-        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
-        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        xAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
         series: [
             {
                 type: dataSize < 15000 ? "scatter" : "scatterGL",
@@ -166,8 +166,8 @@ export const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, setCh
             left: '0%',
             right: '15%',
         },
-        xAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
-        yAxis: {show: false, scale: false, axisLabel: {show: false}, axisTick: {show: false}},
+        xAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
+        yAxis: {show: false, scale: true, axisLabel: {show: false}, axisTick: {show: false}},
         series: [
             {
                 type: dataSize < 15000 ? "scatter" : "scatterGL",

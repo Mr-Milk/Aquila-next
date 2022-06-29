@@ -37,7 +37,7 @@ const defaultValues = {
 const CellCentralityTab = ({roiID, cellData, getNeighbors}) => {
     const [showResult, setShowResult] = useState(0);
     const [runStatus, setRunStatus] = useState(false);
-    const {handleSubmit, formState: {errors, isValid}, watch, control} = useForm({
+    const {handleSubmit, formState: {isValid},control} = useForm({
         defaultValues,
     });
 
@@ -86,9 +86,11 @@ const CellCentralityTab = ({roiID, cellData, getNeighbors}) => {
                                         options={methods}
                                         description={
                                             <>
-                                                <li>Closseness</li>
-                                                <li>Betweenness</li>
-                                                <li>Degree</li>
+                                                <li>{"Closeness: The average length of the shortest path " +
+                                                    "between the node and all other nodes in the graph."}</li>
+                                                <li>{"Betweenness: The number of times a node acts as a " +
+                                                    "bridge along the shortest path between two other nodes."}</li>
+                                                <li>{"Degree: The number of links incident upon a node."}</li>
                                             </>
                                         }
                                         {...field}/>

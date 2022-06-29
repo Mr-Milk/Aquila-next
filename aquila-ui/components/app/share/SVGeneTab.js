@@ -130,8 +130,9 @@ const SVGeneTab = ({roiID, recordData, cellData, getCellExpBatch}) => {
         <Stack direction="row" sx={{height: '100%'}}>
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Correlation between expression and nearby spatial location"}/>
-
+                    <SectionTitleWrap
+                        title={"Whether the gene expression is dependent on spatial location"}
+                    />
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -141,12 +142,7 @@ const SVGeneTab = ({roiID, recordData, cellData, getCellExpBatch}) => {
                                     <Selector
                                         title={"Method"}
                                         options={methods}
-                                        description={
-                                            <>
-                                                <li>{"Moran'I: Local measurement"}</li>
-                                                <li>{"Geary'C: Global measurement"}</li>
-                                            </>
-                                        }
+                                        description={"SpatialDE"}
                                         {...field}/>
                                 )
                             }}

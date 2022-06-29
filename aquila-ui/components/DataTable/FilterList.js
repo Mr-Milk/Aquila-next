@@ -40,19 +40,19 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
     let ItemList = Object.entries(counter).sort((a, b) => b[1] - a[1])
     // .sort((a, b) => a[0].localeCompare(b[0]))
     if (showLess) {
-        ItemList = ItemList.slice(0, 10)
+        ItemList = ItemList.slice(0, 12)
     }
 
     return (
         <Stack direction="column">
-            <FormControl sx={{m: 2}} component="fieldset" variant="standard">
+            <FormControl component="fieldset" variant="standard">
                 <FormLabel component="legend" sx={{
                     fontSize: '1.1rem',
                     fontWeight: 500,
                     color: 'rgba(154,80,52,0.85)'
                 }}>{title.toUpperCase()}</FormLabel>
                 <Box sx={{
-                    maxHeight: '320px',
+                    maxHeight: '390px',
                     overflow: 'auto',
                     '&::-webkit-scrollbar': {display: 'none'},
                 }}>
@@ -83,7 +83,7 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
                                             />
                                         }
                                         label={<FilterItemText item={k} count={v}/>}
-                                        sx={{mb: 0.5}}
+                                        sx={{mb: 0.2}}
                                         key={i}
                                     />
                                 })
@@ -92,7 +92,7 @@ const FilterGroup = ({title, field, counter, filter, showLess, checkedList, upda
                     }
                 </Box>
                 {
-                    ((!showLess) && (ItemList.length > 11)) ? <Box sx={{
+                    ((!showLess) && (ItemList.length > 12)) ? <Box sx={{
                         pt: 0.5,
                         display: 'flex',
                         justifyContent: 'center',
@@ -256,8 +256,8 @@ const FilterList = ({data, updateDataFn}) => {
     return (
         <div>
             <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Stack direction="row" spacing={8}>
-                    <Stack direction="column" justifyContent="flex-start">
+                <Stack direction="row" spacing={6}>
+                    <Stack direction="column" justifyContent="flex-start" spacing={1}>
                         {
                             ['species', 'dimension', 'molecule'].map((f, i) => {
                                 return <FilterGroup field={f} title={f} counter={dataCounter[f]}

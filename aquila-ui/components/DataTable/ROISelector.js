@@ -116,18 +116,21 @@ function renderCellExpand(params) {
 const ROITable = ({roiMeta, updateFn}) => {
 
     const [pageSize, setPageSize] = useState(10);
-
     const renderData = [];
     roiMeta.map((d, i) => {
         let row = JSON.parse(d["meta"]);
         row['id'] = i
+        row['roi_id'] = d.roi_id
         renderData.push(row);
     });
 
     const getColumns = useCallback((data) => {
         let roiCol = []
         const columns = [];
-        const header = (data === undefined) ? ['roi_id'] : Object.keys(JSON.parse(data[0]['meta']));
+        let header = (data === undefined) ? ['roi_id'] : Object.keys(JSON.parse(data[0]['meta']));
+        if (!header.includes("roi_id")) {
+            header = ['roi_id', ...header]
+        }
         header.map((h) => {
             if (h === "roi_id") {
                 roiCol.push({

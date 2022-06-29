@@ -17,6 +17,7 @@ import {Counter} from "../../compute/math";
 import Heatmap from "../../Viz/Heatmap";
 import max from "loadsh/max"
 import min from "loadsh/min"
+import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const ComponentViz = ({ct = [], community}) => {
@@ -120,7 +121,13 @@ const SpatialCommunityTab = ({roiID, cellData, getNeighbors, bbox}) => {
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionTitleWrap title={"Calculate centrality of different cell types"}/>
+                    <SectionExplainer
+                        title={"Calculate centrality of different cell types"}
+                        details={"Graph community algorithms partition the " +
+                            "neighboring network into different communities."}
+                        vizTips={"The graph shows the cell communities, " +
+                            "and the heatmap shows the portion of different cell types in each community."}
+                    />
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -152,7 +159,7 @@ const SpatialCommunityTab = ({roiID, cellData, getNeighbors, bbox}) => {
                                     error={!(errors.trials === undefined)}
                                     placeholder="Number of iterations"
                                     helperText={"Positive Integer"} {...field}
-                                    description={"The number of iterations to refine results"}
+                                    description={"Number of iterations to refine results"}
                                 />
                             )}
                         />
@@ -168,7 +175,7 @@ const SpatialCommunityTab = ({roiID, cellData, getNeighbors, bbox}) => {
                                     error={!(errors.resolution === undefined)}
                                     placeholder="Resolution"
                                     helperText={"Positive Number"} {...field}
-                                    description={"The resolution parameter in partition strategy"}
+                                    description={"Control the size of communities"}
                                 />
                             )}
                         />

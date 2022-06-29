@@ -86,9 +86,9 @@ const CoExpTab = ({roiID, recordData, getCellExpBatch}) => {
 
             <form onSubmit={handleSubmit(handleRun)}>
                 <LeftPanel>
-                    <SectionExplainer title={"Markers co-expression analysis"}
-                                      details={"Reveal the relationship among markers, whether they express at the " +
-                                          "same pattern (+1) or complementary pattern (-1)."}/>
+                    <SectionExplainer title={"Expression pattern similarity between markers"}
+                                      details={"Reveal the relationship among markers expressing " +
+                                          "a similar pattern (+1) or an inverse pattern (-1)."}/>
                     <ParamWrap>
                         <Controller
                             name="method"
@@ -100,8 +100,8 @@ const CoExpTab = ({roiID, recordData, getCellExpBatch}) => {
                                         options={methods}
                                         description={
                                             <>
-                                                <li>Pearson correlation</li>
-                                                <li>Spearman correlation</li>
+                                                <li>Pearson: The linear correlation between the expression of two markers</li>
+                                                <li>Spearman: The rank correlation between the expression of two markers</li>
                                             </>
                                         }
                                         {...field}/>
