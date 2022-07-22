@@ -14,12 +14,12 @@ const sortMethods = [
     'Sort by Cell',
     'Sort by Marker',
     'Sort by ROI',
-    'Sort by Paper'
+    'Sort by Publication'
 ]
 
 
 const sortData = (data, method, order) => {
-    if (method === 'Sort by Paper') {
+    if (method === 'Sort by Publication') {
         return (order) ?
             data.sort((a, b) => a.source_name.localeCompare(b.source_name)) :
             data.sort((a, b) => b.source_name.localeCompare(a.source_name))

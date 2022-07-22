@@ -6,15 +6,20 @@ import Security from "../icons/Security";
 import Stack from "@mui/material/Stack";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 
 const FeaturesCard = ({title, content, icon}) => {
     return (
+        <Paper elevation={4}>
         <Grid container
               direction="column"
               spacing={2}
               sx={{
                   maxWidth: "360px",
-                  p: 4
+                  pt: 2,
+                  pb: 4,
+                  px: 4,
               }}>
             <Grid item>
                 <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2}>
@@ -26,6 +31,7 @@ const FeaturesCard = ({title, content, icon}) => {
                 <Typography variant="body1">{content}</Typography>
             </Grid>
         </Grid>
+            </Paper>
     )
 }
 
@@ -36,12 +42,30 @@ const FeaturesIntro = () => {
     const downSM = useMediaQuery(theme.breakpoints.down('sm'), {noSsr: true})
 
     return (
+        <>
+        <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mt: {
+                      xs: 2,
+                      md: 4,
+                  },
+                mb: {
+                      xs: 1,
+                      md: 3,
+                  },
+            }}>
+                <Typography variant="h4" fontFamily="Plus Jakarta Sans" fontWeight="600">Features</Typography>
+            </Box>
         <Grid container
               direction={downSM ? "column" : "row"}
               justifyContent="center"
               alignItems={downSM ? "center" : "flex-start"}
+              spacing={4}
               sx={{
-                  mb: 4
+                  mt: 4,
+                  mb: 8,
               }}
         >
             <Grid item>
@@ -68,6 +92,7 @@ const FeaturesIntro = () => {
                     Only analysis essential data is sent to the server and not stored.`}/>
             </Grid>
         </Grid>
+            </>
     )
 }
 
