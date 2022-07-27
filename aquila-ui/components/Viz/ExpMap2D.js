@@ -175,7 +175,7 @@ export const ExpMap2D = ({cx, cy, exp, markerName, symbolSize, canvasSize, setCh
                 data: renderData,
                 itemStyle: {
                     borderColor: '#555',
-                    borderWidth: (symbolSize < 3) ? 0 : 0.5,
+                    borderWidth: 0, //(symbolSize < 3) ? 0 : 0.5,
                 },
             },
         ],

@@ -26,6 +26,7 @@ import LockSharpIcon from '@mui/icons-material/LockSharp';
 
 const noCellTypeHelp = "Cell type annotation unavailable in this dataset"
 const noNeighborsHelp = "Run Find neighbors before proceeding";
+const only2DHelp = "Cannot run on to 3D dataset."
 
 
 const findNeighborsHelp = (neighborsReady, hasCellType) => {
@@ -41,7 +42,34 @@ const findNeighborsHelp = (neighborsReady, hasCellType) => {
 }
 
 
-const TabTitle = ({label, disabled, disabledText, disabledType, ...other}) => {
+const TabTitle = ({label, requireCT=false, requireNeighbors=false, run3d=true, status,
+                      disabled, disabledText, disabledType = "temporal", ...other}) => {
+
+    if (disabledText === undefined) {
+        disabledText = ""
+    }
+
+    if (disabled === undefined) {
+
+        if (requireNeighbors && !status.neighborsReady) {
+            disabled = true
+            disabledType = "temporal";
+            disabledText = `${noNeighborsHelp}\n`
+        }
+
+         if (requireCT && !status.hasCellType) {
+            disabled = true;
+            disabledType = "permanent";
+            disabledText = `${noCellTypeHelp}\n`
+        }
+
+        if (!run3d && status.is3D) {
+            disabled = true
+            disabledType = "permanent";
+            disabledText = `${only2DHelp}\n`
+        }
+    }
+
     if (disabled) {
         return (
             <Tooltip title={disabledText}>
@@ -67,7 +95,7 @@ const TabTitle = ({label, disabled, disabledText, disabledType, ...other}) => {
 
 const notLeaveTab = [0, 1, 2, 3, 4, 5, 6, 7];
 
-const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
+const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch, is3D=false}) => {
 
     const hasCellType = recordData.has_cell_type;
     const size = cellData.cell_x.length;
@@ -83,6 +111,11 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
         setNeighborsStatus(true)
     }
     const getNeighbors = useCallback(() => neighborsData.current, [])
+    const status = {
+        hasCellType: hasCellType,
+        neighborsReady: neighborsReady,
+        is3D: is3D
+    }
 
     useEffect(() => {
         setNeighborsStatus(false)
@@ -108,19 +141,16 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
                     aria-label="Analysis tab"
                     sx={{borderRight: 1, borderColor: 'divider', minWidth: "240px", minHeight: '700px',}}
                 >
-                    <TabTitle id="tab-b-0" label="Cell components" disabled={!hasCellType} disabledType="permanent"
-                              disabledText={noCellTypeHelp}/>
-                    <TabTitle id="tab-b-1" label="Cell density" disabled={!hasCellType} disabledType="permanent"
-                              disabledText={noCellTypeHelp}/>
-                    <TabTitle id="tab-b-2" label="Cell expression" disabled={!hasCellType} disabledType="permanent"
-                              disabledText={noCellTypeHelp}/>
+                    <TabTitle id="tab-b-0" label="Cell components" requireCT={true} status={status}/>
+                    <TabTitle id="tab-b-1" label="Cell density" requireCT={true} status={status}/>
+                    <TabTitle id="tab-b-2" label="Cell expression" requireCT={true} status={status}/>
                     <Tab id="tab-b-3" label="Co-Expression"/>
-                    <TabTitle id="tab-b-4" label="Cell distribution" disabled={!hasCellType} disabledType="permanent"
-                              disabledText={noCellTypeHelp}/>
-                    <TabTitle id="tab-b-5" label="Ripley Statistics" disabled={!hasCellType} disabledType="permanent"
-                              disabledText={noCellTypeHelp}/>
-                    <TabTitle id="tab-b-6" label="Spatial Entropy" disabled={!hasCellType} disabledType="permanent"
-                              disabledText={noCellTypeHelp}/>
+                    {/*no 3d*/}
+                    <TabTitle id="tab-b-4" label="Cell distribution" requireCT={true} run3d={false} status={status}/>
+                    {/*no 3d*/}
+                    <TabTitle id="tab-b-5" label="Ripley Statistics" requireCT={true} run3d={false} status={status}/>
+                    {/*no 3d*/}
+                    <TabTitle id="tab-b-6" label="Spatial Entropy" requireCT={true} run3d={false} status={status}/>
 
                     <Tab id="tab-b-7" label={
                         <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
@@ -132,27 +162,17 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
                         </div>
                     }
                     />
-                    <TabTitle id="tab-b-8" label="Spatial Community" disabled={!neighborsReady}
-                              disabledText={noNeighborsHelp}/>
-                    <TabTitle id="tab-b-9" label="Cell Centrality" disabled={(!hasCellType) || (!neighborsReady)}
-                              disabledText={findNeighborsHelp(neighborsReady, hasCellType)}
-                              disabledType={(!hasCellType) ? "permanent" : "temporal"}/>
-
-                    <TabTitle id="tab-b-10" label="Cell-Cell Interaction"
-                              disabled={(!hasCellType) || (!neighborsReady)}
-                              disabledText={findNeighborsHelp(neighborsReady, hasCellType)}
-                              disabledType={(!hasCellType) ? "permanent" : "temporal"}
-                    />
-                    <TabTitle id="tab-b-11"
-                              label="Spatial co-expression" disabled={!neighborsReady} disabledText={noNeighborsHelp}
-                    />
-                    <TabTitle id="tab-b-12" label="Spatial autocorrelation"
-                              disabled={!neighborsReady}
-                              disabledText={noNeighborsHelp}
-                    />
+                    <TabTitle id="tab-b-8" label="Spatial Community" requireNeighbors={true} status={status}/>
+                    <TabTitle id="tab-b-9" label="Cell Centrality" requireNeighbors={true} requireCT={true} status={status}/>
+                    <TabTitle id="tab-b-10" label="Cell-Cell Interaction" requireNeighbors={true} requireCT={true} status={status}/>
+                    <TabTitle id="tab-b-11" label="Spatial co-expression" requireNeighbors={true} status={status}/>
+                    <TabTitle id="tab-b-12" label="Spatial autocorrelation" requireNeighbors={true} status={status}/>
                     <TabTitle id="tab-b-13" label="Spatial variable gene"
-                              disabled={size > 5000}
-                              disabledText={"Unavailable for ROI > 5000 cells, Current SV algorithms are not efficient to run on large ROI"}
+                              disabled={is3D || size > 5000}
+                              disabledType={is3D ? "permanent" : "temporal"}
+                              disabledText={is3D ? "Cannot run on 3D dataset" :
+                                  "Unavailable for ROI > 5000 cells, " +
+                                  "Current SV algorithms are not efficient to run on large ROI"}
                     />
                 </Tabs>
 
@@ -187,11 +207,12 @@ const AnalysisTab = ({roiID, recordData, cellData, bbox, getCellExpBatch}) => {
                                       updateNeighbors={afterNeighbors}
                                       getNeighbors={getNeighbors}
                                       bbox={bbox}
+                                      is3D={is3D}
                     />
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={8}>
                     {/*spatial community*/}
-                    <SpatialCommunityTab roiID={roiID} cellData={cellData} getNeighbors={getNeighbors} bbox={bbox}/>
+                    <SpatialCommunityTab roiID={roiID} cellData={cellData} getNeighbors={getNeighbors} bbox={bbox} is3D={is3D}/>
                 </TabPanel>
                 <TabPanel roiID={roiID} value={value} index={9}>
                     {/*centrality*/}

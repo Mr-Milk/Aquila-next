@@ -43,7 +43,7 @@ const BoxPlot = ({data, xlabel, title}) => {
             axisLabel: {
                 interval: 0,
                 rotate: 45,
-                fontSize: 12,
+                fontSize: 10,
             },
             nameRotate: 30,
             nameGap: 30,
@@ -86,7 +86,7 @@ const BoxPlot = ({data, xlabel, title}) => {
     return <Echarts
         echarts={echarts}
         option={options}
-        style={{minWidth: 500, height: 500}}
+        style={{minWidth: 600, height: 500}}
     />
 }
 

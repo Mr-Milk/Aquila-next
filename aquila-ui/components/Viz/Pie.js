@@ -35,15 +35,23 @@ const Pie = ({arr, width, height, title}) => {
             trigger: 'item'
         },
         grid: {
+            show: false,
             top: 0,
+            left: 0,
             containLabel: true
         },
         legend: {
+            type: 'scroll',
+            // orient: 'vertical',
+            // height: '75%',
+            // align: "left",
+            // right: '0%',
+            // top: 'middle',
             data: legendData,
             bottom: 0,
-            left: 'center',
             itemHeight: 12,
             itemWidth: 12,
+            itemGap: 5,
             textStyle: {
                 fontSize: 12,
             },

@@ -14,44 +14,51 @@ import SectionTitleWrap from "../../InputComponents/SectionTitleWrap";
 import LeftPanel from "../../Layout/LeftPanel";
 import SubmitButton from "../../InputComponents/SubmitButton";
 import VolcanoPlot from "../../Viz/VolcanoPlot";
+import BarChart from "../../Viz/BarChart";
 import {displayMinMax} from "../../humanize";
 import SectionExplainer from "../../InputComponents/SectionExplainer";
 
 
 const Viz = ({data, pvalue}) => {
 
-    const x = [];
-    const y = [];
-    const label = [];
+    const values = [];
+    // const y = [];
+    const labels = [];
     console.log(data)
+    data.sort((a, b) => a.value - b.value);
     data.forEach((record) => {
 
-        x.push((record.value === null) ? 0 : record.value.toFixed(2))
-        let pvalue;
-        if (record.pvalue < 1e-10) {
-            pvalue = 1e-10
-        } else if (record.pvalue === null) {
-            pvalue = 1
-        } else {
-            pvalue = record.pvalue
-        }
-        y.push(-Math.log10(pvalue).toFixed(2))
-        // y.push(-pvalue)
-        label.push(record.marker)
-    })
+        values.push((record.value === null) ? 0 : record.value.toFixed(2))
+        // let pvalue;
+        // if (record.pvalue < 1e-10) {
+        //     pvalue = 1e-10
+        // } else if (record.pvalue === null) {
+        //     pvalue = 1
+        // } else {
+        //     pvalue = record.pvalue
+        // }
+        // y.push(-Math.log10(pvalue).toFixed(2))
+        // // y.push(-pvalue)
+        labels.push(record.marker)
+    });
 
-    let yrange = displayMinMax(y)
-    if (yrange[1] < 5) {
-        yrange = [0, 10]
-    }
+    // let yrange = displayMinMax(y)
+    // if (yrange[1] < 5) {
+    //     yrange = [0, 10]
+    // }
 
-    return <VolcanoPlot x={x} y={y} label={label}
-                        xrange={[-1, 1]}
-                        yrange={yrange}
-                        ytitle={"-log10(pval)"}
-                        xtitle={"Autocorrelation"}
-                        ythresh={-Math.log10(pvalue)}
-                        xthresh={0.5}
+    // return <VolcanoPlot x={x} y={y} label={label}
+    //                     xrange={[-1, 1]}
+    //                     yrange={yrange}
+    //                     ytitle={"-log10(pval)"}
+    //                     xtitle={"Autocorrelation"}
+    //                     ythresh={-Math.log10(pvalue)}
+    //                     xthresh={0.5}
+    // />
+    return <BarChart
+        labels={labels}
+        values={values}
+        flipXY={true}
     />
 }
 
@@ -129,7 +136,8 @@ const SpatialAutocorrTab = ({roiID, recordData, cellData, getNeighbors, getCellE
                 <LeftPanel>
                     <SectionExplainer
                         title={"Correlation between expression and nearby spatial location"}
-                        details={"+1 indicates positive spatial autocorrelation while " +
+                        details={"Whether similar values will locate together, " +
+                            "+1 indicates positive spatial autocorrelation while " +
                             "-1 indicates negative spatial autocorrelation."}
                         vizTips={"A volcano-like plot for positive and negative markers."}
                     />

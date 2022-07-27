@@ -3,6 +3,7 @@ import {
     get3dDataIdURL,
     getOneRecordURL,
     getOneROIMetaURL,
+    getCellExpBatch,
     useDataInfo,
     useCellData3D,
     useROIMeta, useExpData,
@@ -20,6 +21,7 @@ import {getBBox3D} from "../../components/compute/geo";
 import {parseROIDisplay} from "../../components/humanize";
 import ROIMaps from "../../components/app/ROIViz/ROIMaps";
 import ROIMapGallery from "../../components/app/ROIViz/ROIMapGallery";
+import AnalysisTab from "../../components/app/share/AnalysisTab";
 
 
 const ViewerPage3D = ({id, initROI, initROIMeta, initRecordData}) => {
@@ -112,6 +114,13 @@ const ViewerPage3D = ({id, initROI, initROIMeta, initRecordData}) => {
                      bbox={bbox}
                      is3D={true}
             />
+            <AnalysisTab roiID={currentROI}
+                         recordData={recordData}
+                         cellData={cellData}
+                         bbox={bbox}
+                         getCellExpBatch={getCellExpBatch}
+                         is3D={true}
+                />
         </Container>
     </>)
 }

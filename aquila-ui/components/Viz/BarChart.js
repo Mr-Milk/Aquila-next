@@ -17,7 +17,27 @@ echarts.use(
     ]
 )
 
-const BarChart = ({x, y, title}) => {
+const BarChart = ({labels, values, title, flipXY=false}) => {
+
+    //const [x, y] = flipXY ? [labels, values] : [values, labels];
+    const catAxis = {
+            type: 'category',
+            data: labels,
+            splitNumber: labels.length,
+            axisTick: {
+                alignWithLabel: true,
+            },
+            axisLabel: {
+                interval: 0,
+                rotate: 45,
+                fontSize: labels.length < 15 ? 12 : 10,
+            },
+            nameRotate: 30,
+            nameGap: 30,
+        };
+    const valueAxis = {
+            type: 'value',
+        };
 
     const options = {
         ...titleOpts(title),
@@ -28,27 +48,11 @@ const BarChart = ({x, y, title}) => {
         grid: {
             containLabel: true,
         },
-        xAxis: {
-            type: 'category',
-            data: x,
-            splitNumber: x.length,
-            axisTick: {
-                alignWithLabel: true,
-            },
-            axisLabel: {
-                interval: 0,
-                rotate: 45,
-                fontSize: 12,
-            },
-            nameRotate: 30,
-            nameGap: 30,
-        },
-        yAxis: {
-            type: 'value',
-        },
+        yAxis: flipXY ? catAxis : valueAxis,
+        xAxis: flipXY ? valueAxis : catAxis,
         series: [
             {
-                data: y,
+                data: values,
                 type: 'bar',
             }
         ]
@@ -57,7 +61,7 @@ const BarChart = ({x, y, title}) => {
     return <Echarts
         echarts={echarts}
         option={options}
-        style={{minWidth: 500, height: 500}}
+        style={{minWidth: 600, height: 600}}
     />
 }
 

@@ -68,7 +68,7 @@ const schema = object({
     trials: number().positive().integer().lessThan(50),
 })
 
-const SpatialCommunityTab = ({roiID, cellData, getNeighbors, bbox}) => {
+const SpatialCommunityTab = ({roiID, cellData, getNeighbors, bbox, is3D=false}) => {
     const [showResult, setShowResult] = useState(0);
     const [runStatus, setRunStatus] = useState(false);
     const {handleSubmit, formState: {errors, isValid}, watch, control} = useForm({
@@ -187,7 +187,9 @@ const SpatialCommunityTab = ({roiID, cellData, getNeighbors, bbox}) => {
             <OneItemCenter>
                 {
                     showResult !== 0 ?
-                        <Stack direction="column" alignItems="center"><GraphGL
+                        <Stack direction="column" alignItems="center">
+                            { is3D ? <></> :
+                            <GraphGL
                             title={"Cell Community"}
                             cx={cell_x}
                             cy={cellData.cell_y}
@@ -197,7 +199,7 @@ const SpatialCommunityTab = ({roiID, cellData, getNeighbors, bbox}) => {
                             weights={neighborsData.weights}
                             community={true}
                             rotate={180}
-                        />
+                        />}
                             <ComponentViz ct={cellData.cell_type} community={result.current}/>
                         </Stack> : null
                 }

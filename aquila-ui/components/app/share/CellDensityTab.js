@@ -1,13 +1,21 @@
-import BarChart from "components/Viz/BarChart";
+import BarChart from "../../Viz/BarChart";
 import {useCallback} from "react";
 import natsort from "natsort";
 import OneItemCenter from "../../Layout/OneItemCenter";
 
 
+const bboxSize = (bbox) => {
+    let area = Math.abs((bbox.x2 - bbox.x1) * (bbox.y2 - bbox.y1));
+    if (Object.hasOwnProperty('z1')) {
+        area *= Math.abs((bbox.z1 - bbox.z2))
+    }
+    return area;
+}
+
 const CellDensityTab = ({cellData, bbox}) => {
 
     const getDensityResult = useCallback(() => {
-        const area = Math.abs((bbox.x2 - bbox.x1) * (bbox.y2 - bbox.y1))
+        const area = Math.abs(bboxSize(bbox))
         const counts = {};
         cellData.cell_type.forEach((i) => {
             counts[i] = counts[i] ? counts[i] + 1 : 1;
@@ -19,7 +27,7 @@ const CellDensityTab = ({cellData, bbox}) => {
             result.y.push(counts[k] / area * 1000000)
         });
         return result
-    }, [bbox.x1, bbox.x2, bbox.y1, bbox.y2, cellData.cell_type])
+    }, [bbox, cellData.cell_type])
 
     const result = getDensityResult();
     if (!cellData) {
@@ -28,8 +36,8 @@ const CellDensityTab = ({cellData, bbox}) => {
     return (
         <OneItemCenter>
             <BarChart
-                x={result.x}
-                y={result.y}
+                labels={result.x}
+                values={result.y}
                 title="Relative cell density"
             />
         </OneItemCenter>

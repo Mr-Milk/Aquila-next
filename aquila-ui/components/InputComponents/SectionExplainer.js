@@ -20,6 +20,10 @@ const SectionExplainer = ({title, details, vizTips, sx, ...other}) => {
                     <ExpandMoreIcon color="action" sx={{
                         transform: open ? 'rotate(180deg)' : 'none',
                         transition: 'transform 0.1s',
+                        "&:hover": {
+                            color: 'primary.main',
+                            cursor: 'pointer',
+                        }
                     }}/>
                 </Stack>
                 {

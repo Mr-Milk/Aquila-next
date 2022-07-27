@@ -15,6 +15,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import LeftPanel from "../../Layout/LeftPanel";
 import SubmitButton from "../../InputComponents/SubmitButton";
 import SectionExplainer from "../../InputComponents/SectionExplainer";
+import Typography from "@mui/material/Typography";
 
 
 const getRunBody = (cellData, userData) => {
@@ -39,6 +40,9 @@ const getRunBody = (cellData, userData) => {
         r: parsedR,
         k: parsedK + 1,
     }
+    if (cellData.hasOwnProperty('cell_z')) {
+        body['z'] = cellData.cell_z
+    };
     return body;
 }
 
@@ -61,7 +65,7 @@ const schema = object({
 })
 
 
-const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
+const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox, is3D=false}) => {
 
     const [showResult, setShowResult] = useState(0);
     const [runStatus, setRunStatus] = useState(false);
@@ -92,7 +96,9 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
         //console.log(body)
         axios.post(runCellNeighbors, body).then((res) => {
             updateNeighbors(res.data)
-            setShowResult(showResult + 1)
+            if (!is3d) {
+                setShowResult(showResult + 1)
+            }
             setRunStatus(false)
         }).catch((e) => {
             //console.log(e)
@@ -193,6 +199,9 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox}) => {
                         p2={neighborsData.p2}
                         rotate={180}
                     /> : <></>
+                }
+                {
+                    is3D ? <Typography>Cannot visualize cell neighbors in 3D.</Typography> : <></>
                 }
             </OneItemCenter>
         </Stack>

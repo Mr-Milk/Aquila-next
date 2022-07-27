@@ -19,6 +19,9 @@ echarts.use(
 
 const LineChart = ({data, categories, xdata, title}) => {
 
+    const height = 400;
+    const width = 500;
+
     const plotData = data.map((r) => {
         return {
             name: r.name,
@@ -35,22 +38,34 @@ const LineChart = ({data, categories, xdata, title}) => {
         },
         grid: {
             show: true,
-            top: '28%',
-            bottom: '5%',
-            right: '10%',
-            left: '10%',
+            top: 'middle',
+            bottom: '0',
+            right: '16%',
+            left: '1%',
+            width: width,
+            height: height,
             containLabel: true,
         },
         legend: {
+            type: 'scroll',
             data: categories,
-            orient: 'horizontal',
-            top: '7%',
+            orient: 'vertical',
+            align: "left",
+            right: '0%',
+            top: 'middle',
+            height: '75%',
             itemWidth: 20,
-            itemHeight: 12,
+            itemHeight: 10,
             textStyle: {
                 fontSize: 11,
                 overflow: 'truncate'
-            }
+            },
+            formatter: function (name) {
+                return echarts.format.truncateText(name, 150, '14px Microsoft Yahei', '…');
+            },
+            tooltip: {
+                show: true
+            },
         },
         xAxis: {
             type: 'category',
@@ -76,7 +91,7 @@ const LineChart = ({data, categories, xdata, title}) => {
     return <Echarts
         echarts={echarts}
         option={options}
-        style={{minWidth: 500, height: 400}}
+        style={{minWidth: width + 150, height: height + 50}}
     />
 }
 

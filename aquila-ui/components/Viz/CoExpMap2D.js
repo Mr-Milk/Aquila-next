@@ -90,7 +90,7 @@ export const CoExpMap2D = ({cx, cy, exp, symbolSize, canvasSize, ...leftProps}) 
             itemStyle: {
                 color: renderColors[i],
                 borderColor: '#555',
-                borderWidth: (symbolSize < 3) ? 0 : 0.5,
+                borderWidth: 0,//(symbolSize < 3) ? 0 : 0.5,
             }
         }
     });
