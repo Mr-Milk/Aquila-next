@@ -7,6 +7,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import SortIcon from '@mui/icons-material/Sort';
+import Tooltip from "@mui/material/Tooltip";
 
 
 const sortMethods = [
@@ -64,7 +65,7 @@ const SortButton = ({displayData, updateDataFn}) => {
     }
 
     return (
-        <Stack direction="row" alignItems="center" sx={{minWidth: "180px", ml: 2, md: {mb: 2}}}>
+        <Stack direction="row" alignItems="center" sx={{minWidth: "180px", md: {mb: 2}}}>
 
             <Button
                 size="large"
@@ -94,13 +95,15 @@ const SortButton = ({displayData, updateDataFn}) => {
                 }
             </Menu>
 
+            <Tooltip title={order ? 'Current: Ascending' : 'Current: Descending'}>
             <IconButton
                 size="large"
                 color="secondary"
                 onClick={handleOrderClick}
             >
-                {order ? <ArrowDownwardIcon/> : <ArrowUpwardIcon/>}
+                {order ? <ArrowUpwardIcon/> : <ArrowDownwardIcon/>}
             </IconButton>
+                </Tooltip>
         </Stack>
     )
 }

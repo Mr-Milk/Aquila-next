@@ -9,6 +9,14 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import {getDataIdbyMarkerURL} from "../../data/get";
+import {IconBase} from "react-icons";
+import IconButton from "@mui/material/IconButton";
+
+const methodTips = {
+    "fuzz": "Search keywords...",
+    "marker": "Search protein/gene name",
+    "markerID": "Ensembl, NCBI, Entrez, etc."
+}
 
 const SearchRecords = ({data, updateDataFn}) => {
 
@@ -63,8 +71,41 @@ const SearchRecords = ({data, updateDataFn}) => {
         })
     }
 
+    const runGeneIDSearch = (inputID) => {
+        startTransition(() => {
+            if (inputID.length > 0) {
+                axios.get(`https://mygene.info/v3/query?q=${inputID}`).then((res) => {
+                    let data = res.data;
+                    if (data.total === 0) {
+                        updateDataFn([])
+                    } else {
+                        console.log(`Searching gene: ${data.hits[0].symbol}`)
+                        runMarkerSearch(data.hits[0].symbol)
+                    }
+                })
+            } else {
+                updateDataFn(data)
+            }
+        })
+    }
+
+    const methodExec = (method, ...args) => {
+
+        switch (method) {
+            case "fuzz":
+                runSearch(...args)
+                break;
+            case "marker":
+                runMarkerSearch(...args)
+                break;
+            case "markerID":
+                runGeneIDSearch(...args)
+                break;
+        }
+    }
+
     return <Stack direction="row" alignItems="center" sx={{width: '100%'}}>
-        <Search color="action"/>
+
         <Button
             size="large"
             endIcon={<ExpandMoreIcon/>}
@@ -86,17 +127,32 @@ const SearchRecords = ({data, updateDataFn}) => {
                 setAnchorEl(null);
                 setSearchMethod("marker")
             }}>Search Markers</MenuItem>
+            <MenuItem onClick={() => {
+                setAnchorEl(null);
+                setSearchMethod("markerID")
+            }}>Search Gene ID</MenuItem>
         </Menu>
+
         {/*<Search sx={{color: 'action.active', mr: 1, my: 0.5}}/>*/}
         <TextField fullWidth
                    size="medium"
                    variant="standard"
                    sx={{minWidth: '400px'}}
-                   placeholder={(searchMethod === "fuzz") ? "Search keywords..." : "Search markers..."}
-                   onChange={(e) => {
-                       (searchMethod === "fuzz") ? runSearch(e.target.value) : runMarkerSearch(e.target.value)
-                   }}
+                   placeholder={methodTips[searchMethod]}
+                   // onChange={(e) => {
+                   //     methodExec(searchMethod, e.target.value)
+                   //     //(searchMethod === "fuzz") ? runSearch(e.target.value) : runMarkerSearch(e.target.value)
+                   // }}
+                   onKeyUp={(e) => {
+                       if (e.key === "Enter") {
+                           methodExec(searchMethod, e.target.value)
+                       }
+                   }
+                   }
         />
+        <IconButton color="secondary">
+            <Search/>
+        </IconButton>
     </Stack>
 }
 

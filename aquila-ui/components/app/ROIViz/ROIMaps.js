@@ -30,6 +30,7 @@ const ROIMaps = ({roiID, roiMeta, recordData, cellData, bbox, is3D=false, getExp
                     cellData={cellData}
                     is3D={is3D}
                     markers={recordData.markers}
+                    species={recordData.species}
                     getExpDataFn={getExpDataFn}
                 />
             </TabPanel>

@@ -25,7 +25,11 @@ const RecordsPanel = ({data}) => {
                 mb: 4,
                 backgroundColor: "#fafafa"
             }}>
-                <Grid container justifyContent="center" alignItems="center" sx={{
+                <Grid
+                    container
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{
                     px: 4,
                     my: 2,
                 }}>

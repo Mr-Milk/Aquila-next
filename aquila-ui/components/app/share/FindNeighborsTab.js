@@ -96,7 +96,7 @@ const FindNeighborsTab = ({cellData, updateNeighbors, getNeighbors, bbox, is3D=f
         //console.log(body)
         axios.post(runCellNeighbors, body).then((res) => {
             updateNeighbors(res.data)
-            if (!is3d) {
+            if (!is3D) {
                 setShowResult(showResult + 1)
             }
             setRunStatus(false)

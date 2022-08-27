@@ -19,6 +19,8 @@ import SectionExplainer from "../../InputComponents/SectionExplainer";
 import {ExpMap3D, ExpMap3DThumbNail} from "../../Viz/ExpMap3D";
 import {CoExpMap3D} from "../../Viz/CoExpMap3D";
 import {CellMap3D} from "../../Viz/CellMap3D";
+import useSWR from "swr";
+import axios from "axios";
 
 
 const ExpPreviewItem = ({roiID, cellData, marker, is3D, getExpDataFn, setCurrentMarker}) => {
@@ -61,6 +63,16 @@ const ExpPreviewItem = ({roiID, cellData, marker, is3D, getExpDataFn, setCurrent
 
 const MemoExpPreviewItem = memo(ExpPreviewItem)
 
+const InfoField = ({ title, value}) => {
+    return <Stack direction="row" spacing={1}>
+                                <Typography variant={"subtitle2"} fontWeight={400}>{title}</Typography>
+                                <Typography variant={"subtitle2"} sx={{
+                                    color: "secondary.main",
+                                    wordBreak: 'break-all'
+                                }}>{value}</Typography>
+                            </Stack>
+}
+
 
 const ExpGallery = ({roiID, cellData, markers, is3D, getExpDataFn, setCurrentMarker}) => {
     return <Grid container spacing={1}
@@ -75,9 +87,56 @@ const ExpGallery = ({roiID, cellData, markers, is3D, getExpDataFn, setCurrentMar
         })
     }</Grid>
 }
+const fetcher = (...args) => fetch(...args).then((res) => res.json())
+
+const fallbackGeneData = {
+    name: "",
+    symbol: "",
+    entrezgene: "",
+    uniprot: ""
+}
+
+const GeneInfo = ({name, species, molecule}) => {
+    let url;
+    if (species === undefined) {
+        url = `https://mygene.info/v3/query?q=${name}`
+    } else
+        url = `https://mygene.info/v3/query?q=${name}&species=${species}`
+    const {data: query, error} = useSWR(url, fetcher)
+    const [geneData, setGeneData] = useState(fallbackGeneData)
+
+    useEffect(() => {
+        if (query !== undefined) {
+            if (query.total > 0) {
+                let best = query.hits[0]
+                axios.get(`https://mygene.info/v3/gene/${best.entrezgene}`)
+                    .then((res) => {
+                        let data = res.data;
+                        setGeneData({
+                            name: data.name,
+                            symbol: data.symbol,
+                            entrezgene: data.entrezgene,
+                            uniprot: data.uniprot["Swiss-Prot"]
+                        })
+                    })
+
+            }
+        } else {
+            setGeneData(fallbackGeneData)
+        }
+
+    }, [query])
+
+    return <>
+        <InfoField title={'Symbol'} value={geneData.symbol}/>
+        <InfoField title={'Name'} value={geneData.name}/>
+        <InfoField title={'EntrezID'} value={geneData.entrezgene}/>
+        <InfoField title={'UniprotID'} value={geneData.uniprot}/>
+    </>
+}
 
 
-export const ExpPanel = ({roiID, cellData, markers, is3D, getExpDataFn}) => {
+export const ExpPanel = ({roiID, cellData, markers, species, is3D, getExpDataFn}) => {
 
     const cellCount = cellData.cell_x.length;
     const [userMarkers, setUserMarkers] = useState([markers[0]]);
@@ -112,6 +171,9 @@ export const ExpPanel = ({roiID, cellData, markers, is3D, getExpDataFn}) => {
                 </ParamWrap>
                 <ParamWrap>
                     <ExpDist arr={expData.expression} title={`${currentMarker}`}/>
+                </ParamWrap>
+                <ParamWrap>
+                    <GeneInfo name={currentMarker} species={species} molecule={cellData.molecule}/>
                 </ParamWrap>
                 <ParamWrap>
                     <Ranger value={symbolSize} min={1} max={10} step={1} title={"Point Size"}
@@ -181,13 +243,14 @@ export const CellMapPanel = ({cellData, roiMeta, bbox, is3D}) => {
                 <SectionTitleWrap title={`Current ROI`}>
                     {
                         roiMeta.map((r, i) => {
-                            return <Stack key={i} direction="row" spacing={1}>
-                                <Typography variant={"subtitle2"} fontWeight={400}>{r.header}</Typography>
-                                <Typography variant={"subtitle2"} sx={{
-                                    color: "secondary.main",
-                                    wordBreak: 'break-all'
-                                }}>{r.value}</Typography>
-                            </Stack>
+                            return <InfoField title={r.header} value={r.value} key={i}/>
+                            // return <Stack key={i} direction="row" spacing={1}>
+                            //     <Typography variant={"subtitle2"} fontWeight={400}>{r.header}</Typography>
+                            //     <Typography variant={"subtitle2"} sx={{
+                            //         color: "secondary.main",
+                            //         wordBreak: 'break-all'
+                            //     }}>{r.value}</Typography>
+                            // </Stack>
                         })
                     }
                 </SectionTitleWrap>

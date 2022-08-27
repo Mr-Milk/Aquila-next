@@ -118,6 +118,7 @@ const getDataCounter = (data) => {
     const disease = [];
     const dimension = [];
     const molecule = [];
+    const hasCellType = [];
 
     data.map((r) => {
         species.push(r.species)
@@ -126,6 +127,7 @@ const getDataCounter = (data) => {
         disease.push(r.disease)
         dimension.push(r.is_3d ? '3D' : '2D')
         molecule.push(r.molecule)
+        hasCellType.push(r.has_cell_type ? 'Yes' : 'No')
     })
 
     return {
@@ -134,7 +136,8 @@ const getDataCounter = (data) => {
         organ: new Counter(organ),
         disease: new Counter(disease),
         dimension: new Counter(dimension),
-        molecule: new Counter(molecule)
+        molecule: new Counter(molecule),
+        'Cell Type': new Counter(hasCellType)
     }
 }
 
@@ -146,6 +149,7 @@ const filterInitState = {
     disease: [],
     dimension: [],
     molecule: [],
+    'Cell Type': []
 }
 
 
@@ -155,7 +159,8 @@ const checkedFieldInitState = {
     molecule: {},
     technology: {},
     organ: {},
-    disease: {}
+    disease: {},
+    'Cell Type': []
 }
 
 const FilterList = ({data, updateDataFn}) => {
@@ -215,6 +220,7 @@ const FilterList = ({data, updateDataFn}) => {
     const showButtonText = showLess ? "More Filters" : "Less Filters"
 
     const filterData = useCallback((data, filter) => {
+        console.log(filter)
         return data.filter((r) => {
             const passFilterSpecies = (filter.species.length > 0) ? filter.species.includes(r.species) : true;
             const passFilterTech = (filter.technology.length > 0) ? filter.technology.includes(r.technology) : true;
@@ -222,9 +228,10 @@ const FilterList = ({data, updateDataFn}) => {
             const passFilterDisease = (filter.disease.length > 0) ? filter.disease.includes(r.disease) : true;
             const passFilterDimension = (filter.dimension.length > 0) ? filter.dimension.includes(r.is_3d ? '3D' : '2D') : true;
             const passFilterMolecule = (filter.molecule.length > 0) ? filter.molecule.includes(r.molecule) : true;
+            const passFilterCellType = (filter['Cell Type'].length > 0) ? filter['Cell Type'].includes(r.has_cell_type ? 'Yes' : 'No') : true;
 
             return (passFilterSpecies && passFilterTech && passFilterOrgan
-                && passFilterDisease && passFilterDimension && passFilterMolecule)
+                && passFilterDisease && passFilterDimension && passFilterMolecule && passFilterCellType)
         })
     }, [])
 
@@ -259,7 +266,7 @@ const FilterList = ({data, updateDataFn}) => {
                 <Stack direction="row" spacing={6}>
                     <Stack direction="column" justifyContent="flex-start" spacing={1}>
                         {
-                            ['species', 'dimension', 'molecule'].map((f, i) => {
+                            ['species'].map((f, i) => {
                                 return <FilterGroup field={f} title={f} counter={dataCounter[f]}
                                                     filter={filter} checkedList={checkedList} key={i}
                                                     updateOnChange={updateOnChange}
@@ -277,6 +284,17 @@ const FilterList = ({data, updateDataFn}) => {
                             />
                         })
                     }
+                    <Stack direction="column" justifyContent="flex-start" spacing={2}>
+                        {
+                            ['dimension', 'molecule', 'Cell Type'].map((f, i) => {
+                                return <FilterGroup field={f} title={f} counter={dataCounter[f]}
+                                                    filter={filter} checkedList={checkedList} key={i}
+                                                    updateOnChange={updateOnChange}
+
+                                />
+                            })
+                        }
+                    </Stack>
                 </Stack>
 
             </Box>

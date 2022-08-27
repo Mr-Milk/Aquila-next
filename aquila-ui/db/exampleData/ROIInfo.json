@@ -1,1 +1,12 @@
-[{"roi_id": "Field of View-0", "data_uuid": "Example Data (mini seqFISH data)", "meta": "{\"Field of View\": 0, \"roi_id\": \"Field of View-0\", \"data_uuid\": \"Example Data (mini seqFISH data)\"}"}, {"roi_id": "Field of View-1", "data_uuid": "Example Data (mini seqFISH data)", "meta": "{\"Field of View\": 1, \"roi_id\": \"Field of View-1\", \"data_uuid\": \"Example Data (mini seqFISH data)\"}"}]
+[
+  {
+    "roi_id": "Field of View-1",
+    "data_uuid": "Example Data (mini seqFISH data)",
+    "meta": "{\"Field of View\": 1, \"roi_id\": \"Field of View-1\", \"data_uuid\": \"Example Data (mini seqFISH data)\"}"
+  },
+  {
+    "roi_id": "Field of View-2",
+    "data_uuid": "Example Data (mini seqFISH data)",
+    "meta": "{\"Field of View\": 2, \"roi_id\": \"Field of View-2\", \"data_uuid\": \"Example Data (mini seqFISH data)\"}"
+  }
+]
