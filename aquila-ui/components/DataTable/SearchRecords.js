@@ -13,9 +13,18 @@ import {IconBase} from "react-icons";
 import IconButton from "@mui/material/IconButton";
 
 const methodTips = {
-    "fuzz": "Search keywords...",
-    "marker": "Search protein/gene name",
-    "markerID": "Ensembl, NCBI, Entrez, etc."
+    "fuzz": {
+        name: "Keywords",
+        tip: "Search keywords..."
+    },
+    "marker": {
+        name: "Markers",
+        tip: "Search protein/gene name..."
+    },
+    "markerID": {
+        name: "Gene ID",
+        tip: "Ensembl, NCBI, Entrez, etc..."
+    }
 }
 
 const SearchRecords = ({data, updateDataFn}) => {
@@ -79,7 +88,6 @@ const SearchRecords = ({data, updateDataFn}) => {
                     if (data.total === 0) {
                         updateDataFn([])
                     } else {
-                        console.log(`Searching gene: ${data.hits[0].symbol}`)
                         runMarkerSearch(data.hits[0].symbol)
                     }
                 })
@@ -109,10 +117,14 @@ const SearchRecords = ({data, updateDataFn}) => {
         <Button
             size="large"
             endIcon={<ExpandMoreIcon/>}
-            sx={{ml: 1, mr: 2, my: 0.5, textTransform: 'none', color: 'action.active'}}
+            sx={{
+                mr: 1, my: 0.5,
+                textTransform: 'none', color: 'action.active',
+                minWidth: "110px",
+        }}
             onClick={handleClick}
         >
-            {(searchMethod === "fuzz") ? 'Keywords' : 'Markers'}
+            {methodTips[searchMethod].name}
         </Button>
         <Menu
             anchorEl={anchorEl}
@@ -138,7 +150,7 @@ const SearchRecords = ({data, updateDataFn}) => {
                    size="medium"
                    variant="standard"
                    sx={{minWidth: '400px'}}
-                   placeholder={methodTips[searchMethod]}
+                   placeholder={methodTips[searchMethod].tip}
                    // onChange={(e) => {
                    //     methodExec(searchMethod, e.target.value)
                    //     //(searchMethod === "fuzz") ? runSearch(e.target.value) : runMarkerSearch(e.target.value)
