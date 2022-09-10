@@ -1,7 +1,7 @@
 import Search from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import Fuse from 'fuse.js';
-import {startTransition, useState} from "react";
+import {startTransition, useRef, useState} from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -31,6 +31,7 @@ const SearchRecords = ({data, updateDataFn}) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [searchMethod, setSearchMethod] = useState("fuzz");
+    const searchText = useRef("");
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -121,7 +122,7 @@ const SearchRecords = ({data, updateDataFn}) => {
                 mr: 1, my: 0.5,
                 textTransform: 'none', color: 'action.active',
                 minWidth: "110px",
-        }}
+            }}
             onClick={handleClick}
         >
             {methodTips[searchMethod].name}
@@ -151,10 +152,10 @@ const SearchRecords = ({data, updateDataFn}) => {
                    variant="standard"
                    sx={{minWidth: '400px'}}
                    placeholder={methodTips[searchMethod].tip}
-                   // onChange={(e) => {
-                   //     methodExec(searchMethod, e.target.value)
-                   //     //(searchMethod === "fuzz") ? runSearch(e.target.value) : runMarkerSearch(e.target.value)
-                   // }}
+                   onChange={(e) => {
+                       searchText.current = e.target.value
+                   }
+                   }
                    onKeyUp={(e) => {
                        if (e.key === "Enter") {
                            methodExec(searchMethod, e.target.value)
@@ -162,7 +163,10 @@ const SearchRecords = ({data, updateDataFn}) => {
                    }
                    }
         />
-        <IconButton color="secondary">
+        <IconButton color="secondary" onClick={() =>
+            methodExec(searchMethod, searchText.current)
+        }
+        >
             <Search/>
         </IconButton>
     </Stack>
