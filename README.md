@@ -38,10 +38,18 @@ The UI part is implemented using Next.js, the analysis part is powered by indexe
 We also use WebWorker to run tasks parallel on the web.
 
 To run a dev build with HMR
+
+8G RAM is needed to run a dev build,
+```shell
+$Env:NODE_OPTIONS="--max-old-space-size=8192" # powershell
+export NODE_OPTIONS="--max-old-space-size=8192" # linux
+```
 ```shell
 cd aquila-ui
 yarn dev
 ```
+
+
 
 ## Deployment
 
