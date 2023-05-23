@@ -1,5 +1,4 @@
 import {Container} from "@mui/material";
-import SectionIntro from "components/Intro/SectionIntro";
 import {fetcher, getDbStatsURL} from "data/get";
 import StatsIntro from "../components/Intro/StatsIntro";
 import FeaturesIntro from "../components/Intro/FeaturesIntro";
@@ -15,6 +14,7 @@ import Divider from "@mui/material/Divider";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {useTheme} from "@mui/material/styles";
 import OneItemCenter from "../components/Layout/OneItemCenter";
+import Link from "@mui/material/Link";
 
 
 const LinkButton = ({href, children, ...props}) => {
@@ -39,27 +39,41 @@ const LinkButton = ({href, children, ...props}) => {
 const Home = ({dbStats}) => {
 
     const theme = useTheme();
-    const matches = useMediaQuery(theme.breakpoints.down('sm'), { noSsr: true})
+    const matches = useMediaQuery(theme.breakpoints.down('sm'), {noSsr: true})
 
     return (
         <Container component="section" maxWidth="xl">
 
-            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1} sx={{
+            <Grid container direction="row" justifyContent="center"
+                  alignItems="center" spacing={1} sx={{
                 py: 4,
                 mb: 2,
             }}>
                 <Grid item xs={10} md={6}>
                     <Stack spacing={2}>
-                        <Typography variant="h2" fontFamily="Plus Jakarta Sans" color="grass" fontWeight="700">Exploring Spatial
+                        <Typography variant="h2" fontFamily="Plus Jakarta Sans"
+                                    color="grass" fontWeight="700">Exploring
+                            Spatial
                             Omics</Typography>
-                        <Typography variant={matches ? "body1" : "h6"} fontWeight="400">
+                        <Typography variant={matches ? "body1" : "h6"}
+                                    fontWeight="400">
                             {"The spatial omics database and online analysis platform for biologists." +
                                 "Visualize spatial omics data at any scale and " +
                                 "run spatial analysis with zero code."}
                         </Typography>
+                        <Typography>
+                            {"Read our publication on "}
+                            <Link href="https://doi.org/10.1093/nar/gkac874">
+                            <span style={{fontStyle: "italic"}}>
+                                {"Nucleic Acids Research"}
+                                </span>
+                            </Link>
+                        </Typography>
                         <Stack direction="row" spacing={2}>
-                            <LinkButton href="/view" startIcon={<RocketLaunchRoundedIcon/>}>Explore</LinkButton>
-                            <LinkButton href="/analysis" startIcon={<AnalyticsRoundedIcon/>}>Analysis</LinkButton>
+                            <LinkButton href="/view" startIcon={
+                                <RocketLaunchRoundedIcon/>}>Explore</LinkButton>
+                            <LinkButton href="/analysis" startIcon={
+                                <AnalyticsRoundedIcon/>}>Analysis</LinkButton>
                         </Stack>
                     </Stack>
                 </Grid>

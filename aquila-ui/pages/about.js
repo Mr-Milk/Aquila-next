@@ -12,7 +12,8 @@ import Head from "next/head";
 
 
 const Title = ({children}) => {
-    return <Typography variant="h6" sx={{mt: 4, mb: 2,}}>{children}</Typography>
+    return <Typography variant="h6"
+                       sx={{mt: 4, mb: 2,}}>{children}</Typography>
 }
 
 const Content = ({children}) => {
@@ -23,7 +24,8 @@ const TechItem = ({text, src}) => {
     return (
         <Stack alignItems="center">
             <Avatar variant="rounded" src={src}/>
-            <Typography variant="subtitle1" sx={{fontWeight: 500}}>{text}</Typography>
+            <Typography variant="subtitle1"
+                        sx={{fontWeight: 500}}>{text}</Typography>
         </Stack>
     )
 }
@@ -55,9 +57,15 @@ const API = ({method, entry, details}) => {
     return (
         <>
             <Stack direction="row" spacing={2} sx={{my: 1}}>
-                <Typography sx={{color: methodColor, fontWeight: 600}}>{method}</Typography>
+                <Typography sx={{
+                    color: methodColor,
+                    fontWeight: 600
+                }}>{method}</Typography>
                 <Typography sx={{fontWeight: 600}}>{entry}</Typography>
-                <Typography sx={{fontStyle: "italic", color: "#656765"}}>{details}</Typography>
+                <Typography sx={{
+                    fontStyle: "italic",
+                    color: "#656765"
+                }}>{details}</Typography>
             </Stack>
             <Divider sx={{maxWidth: "600px"}}/>
         </>
@@ -78,14 +86,25 @@ const AboutPage = ({images}) => {
 
             <Stack direction="row" alignItems="center" spacing={2}>
                 <Link href="https://github.com/Mr-Milk">
-                    <Avatar src="https://avatars.githubusercontent.com/u/23433306?v=4"/>
+                    <Avatar
+                        src="https://avatars.githubusercontent.com/u/23433306?v=4"/>
                 </Link>
                 <Stack>
                     <Typography variant={"subtitle1"}>{"Milk"}</Typography>
-                    <Typography variant={"caption"}>yb97643@um.edu.mo</Typography>
+                    <Typography
+                        variant={"caption"}>yb97643@um.edu.mo</Typography>
                 </Stack>
 
             </Stack>
+
+            <Title>{"Publication"}</Title>
+            <Content>{"Aquila: a spatial omics database and analysis platform"}
+                <Link href="https://doi.org/10.1093/nar/gkac874">
+                    <Typography fontStyle="italic">
+                        {"Nucleic Acids Research"}
+                    </Typography>
+                </Link>
+            </Content>
 
             <Title>Data Request</Title>
             <Content>{"If you found a dataset is not included in our database, you can either send an email to me or " +
@@ -97,15 +116,24 @@ const AboutPage = ({images}) => {
                 "that need to replace"}</Content>
             <Box component="div" sx={{my: 2}}>
                 <API method={"ROOT"}
-                     entry={<a href="https://api.aquila.cheunglab.org">https://api.aquila.cheunglab.org</a>}/>
-                <API entry={"/data_ids"} details={"Get all data ID in the database."}/>
-                <API entry={"/records"} details={"Get records and their related information."}/>
-                <API entry={"/record/{data_id}"} details={"Get one record by specifying a data ID."}/>
-                <API entry={"/rois/{data_id}"} details={"Get all ROI information of a data."}/>
-                <API entry={"/roi/{roi_id}"} details={"Get one ROI information by specifying a ROI ID."}/>
-                <API entry={"/cell_info/{roi_id} "} details={"Get all cell information in a ROI."}/>
-                <API entry={"/cell_exp/{roi_id}/{marker}"} details={"Get cell expression of a marker in a ROI."}/>
-                <API entry={"/static/{data_id}.zip"} details={"Download the dataset by specifying as data ID."}/>
+                     entry={<a
+                         href="https://api.aquila.cheunglab.org">https://api.aquila.cheunglab.org</a>}/>
+                <API entry={"/data_ids"}
+                     details={"Get all data ID in the database."}/>
+                <API entry={"/records"}
+                     details={"Get records and their related information."}/>
+                <API entry={"/record/{data_id}"}
+                     details={"Get one record by specifying a data ID."}/>
+                <API entry={"/rois/{data_id}"}
+                     details={"Get all ROI information of a data."}/>
+                <API entry={"/roi/{roi_id}"}
+                     details={"Get one ROI information by specifying a ROI ID."}/>
+                <API entry={"/cell_info/{roi_id} "}
+                     details={"Get all cell information in a ROI."}/>
+                <API entry={"/cell_exp/{roi_id}/{marker}"}
+                     details={"Get cell expression of a marker in a ROI."}/>
+                <API entry={"/static/{data_id}.zip"}
+                     details={"Download the dataset by specifying as data ID."}/>
             </Box>
 
 
@@ -117,17 +145,22 @@ const AboutPage = ({images}) => {
                 "The data sent to the server only contains location, expression and cell type information. "}</Content>
 
             <Title>{"Advanced spatial omics analysis on large dataset"}</Title>
-            <Content>{"Allow me to shamelessly promote "}<a href="https://github.com/Mr-Milk/SpatialTis" target="_blank"
-                                                            rel="noreferrer">SpatialTis</a>
+            <Content>{"Allow me to shamelessly promote "}<a
+                href="https://github.com/Mr-Milk/SpatialTis" target="_blank"
+                rel="noreferrer">SpatialTis</a>
                 {": a spatial single-cell spatial analysis software written in Python and the underlying algorithms are implemented in Rust. " +
                     "It's easy to use and extremely fast. It allows you to perform analysis on hundreds or thousands of ROI simultaneously" +
-                    "and visualize it. If you are interested, try it out!"}</Content>
+                    "and visualize it. If you are interested, try it out!"}
+            </Content>
 
-            <Stack direction="column" justifyContent="center" alignItems="center" sx={{my: 4}}>
-                <a href="https://github.com/Mr-Milk/SpatialTis" target="_blank" rel="noreferrer">
+            <Stack direction="column" justifyContent="center"
+                   alignItems="center" sx={{my: 4}}>
+                <a href="https://github.com/Mr-Milk/SpatialTis" target="_blank"
+                   rel="noreferrer">
                     <Image {...images.spatialtisLogo} alt="spatialtis-logo"/>
                 </a>
-                <Typography variant={"caption"} sx={{mt: 1}}>{"SpatialTis"}</Typography>
+                <Typography variant={"caption"}
+                            sx={{mt: 1}}>{"SpatialTis"}</Typography>
             </Stack>
             <Title>{"Technology stack for building Aquila"}</Title>
             <Content>{"If you are interested in the architecture of Aquila. " +
@@ -135,12 +168,15 @@ const AboutPage = ({images}) => {
                 "You can also check the Github repository to view the source code, it's open-sourced. "}
                 <a href="https://github.com/Mr-Milk/Aquila-next"><GitHub/></a>
             </Content>
-            <Stack direction="column" justifyContent="center" alignItems="center" sx={{my: 4}}>
+            <Stack direction="column" justifyContent="center"
+                   alignItems="center" sx={{my: 4}}>
                 <Image {...images.structure} alt="Aquila structure"/>
-                <Typography variant={"caption"} sx={{mt: 1}}>{"Architecture of Aquila"}</Typography>
+                <Typography variant={"caption"}
+                            sx={{mt: 1}}>{"Architecture of Aquila"}</Typography>
             </Stack>
 
-            <Stack direction="row" spacing={4} justifyContent="center" alignItems="center">
+            <Stack direction="row" spacing={4} justifyContent="center"
+                   alignItems="center">
                 <TechItem
                     src="https://www.pinclipart.com/picdir/middle/537-5374089_react-js-logo-clipart.png"
                     text="React"
@@ -155,7 +191,8 @@ const AboutPage = ({images}) => {
                 />
             </Stack>
 
-            <Stack direction="row" spacing={4} justifyContent="center" alignItems="center" sx={{my: 2}}>
+            <Stack direction="row" spacing={4} justifyContent="center"
+                   alignItems="center" sx={{my: 2}}>
                 <TechItem
                     src="https://avatars.githubusercontent.com/u/32776943?s=200&v=4"
                     text="Actix"
@@ -176,8 +213,14 @@ const AboutPage = ({images}) => {
 
 
 export const getStaticProps = async () => {
-    const {base64: base64Str, img: imgStr} = await getPlaiceholder("/Aquila-Structure.png")
-    const {base64: base64ST, img: imgST} = await getPlaiceholder("/SpatialTis-Logo.svg")
+    const {
+        base64: base64Str,
+        img: imgStr
+    } = await getPlaiceholder("/Aquila-Structure.png")
+    const {
+        base64: base64ST,
+        img: imgST
+    } = await getPlaiceholder("/SpatialTis-Logo.svg")
     return {
         props: {
             images: {
