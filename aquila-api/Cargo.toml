@@ -27,7 +27,7 @@ rayon = "1.5.1"
 itertools = "0.10.3"
 kiddo = "0.2.3"
 delaunator = "1.0.1"
-geo = "0.18.0"
+geo = "0.28.0"
 counter = "0.5.3"
 ordered-float = "2.10.0"
 ndarray = { version = "0.15.4", features =['rayon', 'serde'] }
